@@ -9,8 +9,6 @@ const Home: NextPage = () => {
       <Head>
         <title>Home</title>
       </Head>
-
-      <Script src="../path/to/flowbite/dist/flowbite.js" />
     </>
   )
 }
