@@ -1,10 +1,17 @@
+import Head from "next/head"
+import Script from "next/script"
+
 import type { NextPage } from 'next'
 
 const Home: NextPage = () => {
   return (
-  <div className='text-3xl font-bold underline'>
-    Hello. 
-  </div>
+    <>
+      <Head>
+        <title>Home</title>
+      </Head>
+
+      <Script src="../path/to/flowbite/dist/flowbite.js" />
+    </>
   )
 }
 
