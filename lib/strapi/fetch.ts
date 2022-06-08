@@ -1,15 +1,5 @@
 import qs from "qs";
-
-/**
- * Get full Strapi URL from path
- * @param {string} path Path of the URL
- * @returns {string} Full Strapi URL
- */
-export function getStrapiURL(path = "") {
-  return `${
-    process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"
-  }${path}`;
-}
+import getStrapiURL from "~/strapi/url";
 
 /**
  * Helper to make GET requests to Strapi API endpoints
@@ -18,7 +8,8 @@ export function getStrapiURL(path = "") {
  * @param {Object} options Options passed to fetch
  * @returns Parsed API call response
  */
-export async function fetchAPI(path, urlParamsObject = {}, options = {}) {
+
+export default async function fetchAPI(path: string, urlParamsObject: object = {}, options: object = {}) {
   // Merge default and user options
   const mergedOptions = {
     headers: {
