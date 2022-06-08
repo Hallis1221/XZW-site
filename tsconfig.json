@@ -15,7 +15,10 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "~/*": ["./lib/*"]
+      "strapi/*": ["./lib/strapi/*"],
+      "context": ["./lib/context/*"],
+      "log": ["./lib/logger"],
+      "src": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

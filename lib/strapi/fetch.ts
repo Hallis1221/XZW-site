@@ -1,5 +1,5 @@
 import qs from "qs";
-import getStrapiURL from "~/strapi/url";
+import getStrapiURL from "strapi/url";
 
 /**
  * Helper to make GET requests to Strapi API endpoints
@@ -23,7 +23,7 @@ export default async function fetchAPI(path: string, urlParamsObject: object = {
   const requestUrl = `${getStrapiURL(
     `/api${path}${queryString ? `?${queryString}` : ""}`
   )}`;
-
+  
   // Trigger API call
   const response = await fetch(requestUrl, mergedOptions);
 
