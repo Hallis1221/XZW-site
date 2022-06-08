@@ -4,9 +4,11 @@ import fetchAPI from "strapi/fetch";
 import Head from "next/head";
 import { getStrapiMedia } from "strapi/media";
 import GlobalContext from "context/global";
+import getGlobal from "strapi/global";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { global } = pageProps;
+
   return (
     <>
       <Head>
@@ -43,31 +45,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           content={global.attributes.SEO.Description}
         />
       </Head>
-      
+
       <GlobalContext.Provider value={global.attributes}>
         <Component {...pageProps} />
       </GlobalContext.Provider>
     </>
   );
-}
-
-export async function getStaticProps() {
-  const res = await fetchAPI("/global", {
-    populate: {
-      Favicon: "*",
-      SEO: {
-        populate: "*",
-      },
-    },
-  });
-
-  return {
-    props: {
-      global: res.data,
-    },
-    // TODO, make revalidation strapi dynamic
-    revalidate: 1,
-  };
 }
 
 export default MyApp;

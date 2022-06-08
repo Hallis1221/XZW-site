@@ -1,3 +1,5 @@
 export type SeoProps = {
-  pageSeo: {};
+  pageSeo: {
+    title: string;
+  };
 };

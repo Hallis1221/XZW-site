@@ -3,46 +3,35 @@ import Head from "next/head";
 import type { NextPage } from "next";
 import fetchAPI from "strapi/fetch";
 import { getStrapiMedia } from "strapi/media";
+import getGlobal from "strapi/global";
+import { Seo } from "../components/seo";
 
 // TODO - type this
-const Home: NextPage = ({ global }: any) => {
+const Home: NextPage = ({ home }: any) => {
   return (
     <>
-      <Head>
-        <link rel="shortcut icon" href={global.attributes.Favicon} />
-
-        {/* Meta title */}
-        <title>{global.attributes.SEO.Title}</title>
-
-        {/* Meta images */}
-        <meta property="og:image" content={global.attributes.shareImage} />
-        <meta name="twitter:image" content={global.attributes.shareImage} />
-        <meta name="image" content={global.attributes.shareImage} />
-
-        {/* Meta description */}
-        <meta name="description" content={global.attributes.SEO.Description} />
-        <meta property="og:description" content={global.attributes.SEO.Description} />
-        <meta name="twitter:description" content={global.attributes.SEO.Description} />
-      </Head>
-      <div>
-        
-      </div>
+      <Seo
+        pageSeo={{
+          title: home.attributes.SEO.Title,
+        }}
+      ></Seo>
     </>
   );
 };
 
 export async function getStaticProps() {
-  const res = await fetchAPI("/global", {
+  const res = await fetchAPI("/home", {
     populate: {
-      Favicon: "*",
       SEO: {
         populate: "*",
       },
     },
   });
+
   return {
     props: {
-      global: res.data,
+      global: await getGlobal(),
+      home: res.data,
     },
     // TODO, make revalidation strapi dynamic
     revalidate: 1,

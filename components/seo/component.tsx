@@ -5,15 +5,16 @@ import GlobalContext from "context/global";
 import { getStrapiMedia } from "strapi/media";
 import Head from "next/head";
 
-const Seo: FunctionComponent<SeoProps> = ({ pageSeo }) => {
-  const { SEO, siteName } = useContext(GlobalContext) as any;
+export const Seo: FunctionComponent<SeoProps> = ({ pageSeo }) => {
+  const { SEO, Sitename } = useContext(GlobalContext) as any;
 
   const fullSeo = {
     ...SEO,
     ...pageSeo,
-    metaTitle: `${SEO.Title} | ${siteName}`,
+    metaTitle: `${pageSeo.title} | ${Sitename}`,
     shareImage: getStrapiMedia(SEO.ShareImage),
   };
+  
   return (
     <Head>
       {fullSeo.metaTitle && (
@@ -42,5 +43,3 @@ const Seo: FunctionComponent<SeoProps> = ({ pageSeo }) => {
     </Head>
   );
 };
-
-export default Seo;

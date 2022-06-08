@@ -13,6 +13,7 @@
   "_moduleAliases": {
     "strapi": "./lib/strapi",
     "context": "./lib/context",
+    "components": "./components",
     "log": "./lib/logger",
     "src": "./"
   },
