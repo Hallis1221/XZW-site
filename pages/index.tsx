@@ -15,4 +15,13 @@ const Home: NextPage = () => {
   )
 }
 
+export async function getStaticProps(){
+  
+  return {
+    props: {},
+    // TODO, make revalidation strapi dynamic
+    revalidate: 1
+  }
+}
+
 export default Home
