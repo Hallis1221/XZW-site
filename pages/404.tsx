@@ -30,7 +30,7 @@ export async function getStaticProps() {
     props: {
       page: res.data,
     },
-    // TODO, make revalidation strapi dynamic
-    revalidate: 3000,
+    // TODO, make revalidation strapi dynamic?
+    revalidate: 60 * 30, // In seconds, here it is 30 minutes
   };
 }
