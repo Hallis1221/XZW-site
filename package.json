@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "link-module-alias && next start",
     "lint": "next lint",
-    "postinstall": "link-module-alias",
-    "preinstall": "link-module-alias && link-module-alias clean "
+    "postinstall": "link-module-alias"
   },
   "_moduleAliases": {
     "strapi": "./lib/strapi",
