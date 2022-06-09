@@ -1,10 +1,7 @@
-import Head from "next/head";
-
 import type { NextPage } from "next";
 import fetchAPI from "strapi/fetch";
-import { getStrapiMedia } from "strapi/media";
 import getGlobal from "strapi/global";
-import { Seo } from "../components/seo";
+import { Seo } from "components/seo";
 
 // TODO - type this
 const Home: NextPage = ({ home }: any) => {
@@ -15,6 +12,9 @@ const Home: NextPage = ({ home }: any) => {
           title: home.attributes.SEO.Title,
         }}
       ></Seo>
+
+      <div>
+      </div>
     </>
   );
 };
@@ -34,7 +34,7 @@ export async function getStaticProps() {
       home: res.data,
     },
     // TODO, make revalidation strapi dynamic
-    revalidate: 1,
+    revalidate: 3000,
   };
 }
 
