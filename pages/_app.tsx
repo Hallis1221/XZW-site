@@ -9,10 +9,12 @@ import { Navbar, Button, Flowbite, Spinner } from "flowbite-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import App from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
+  /* This is a implementation of getInitialProps for the client side.  
   let [global, setGlobal]: any = useState({});
 
   useEffect(() => {
@@ -20,6 +22,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       setGlobal(global);
     });
   }, []);
+
+  */
+  
+const {global} = pageProps;
 
   if (!global || !global.attributes)
     return (
@@ -77,7 +83,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <GlobalContext.Provider value={global.attributes || undefined}>
-        <Flowbite>
           <Navbar fluid={true} rounded={true}>
             <Navbar.Brand href="https://flowbite.com/">
               <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
@@ -104,10 +109,18 @@ function MyApp({ Component, pageProps }: AppProps) {
           </Navbar>
 
           <Component {...pageProps} />
-        </Flowbite>
       </GlobalContext.Provider>
     </>
   );
 }
+
+MyApp.getInitialProps = async (ctx: any) => {
+  // Calls page's `getInitialProps` and fills `appProps.pageProps`
+  const appProps = await App.getInitialProps(ctx);
+
+  // Pass the data to our page via props
+  return { ...appProps, pageProps: { global: await getGlobal() } };
+};
+
 
 export default MyApp;

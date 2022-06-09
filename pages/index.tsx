@@ -30,7 +30,6 @@ export async function getStaticProps() {
 
   return {
     props: {
-      global: await getGlobal(),
       home: res.data,
     },
     // TODO, make revalidation strapi dynamic
@@ -39,3 +38,49 @@ export async function getStaticProps() {
 }
 
 export default Home;
+
+
+/*
+
+import type { NextPage } from "next";
+import fetchAPI from "strapi/fetch";
+import getGlobal from "strapi/global";
+import { Seo } from "components/seo";
+
+// TODO - type this
+const Page: NextPage = ({ page }: any) => {
+  return (
+    <>
+      <Seo
+        pageSeo={{
+          title: page.attributes.SEO.Title,
+        }}
+      ></Seo>
+
+      <div>
+      </div>
+    </>
+  );
+};
+
+export async function getStaticProps() {
+  const res = await fetchAPI("/page", {
+    populate: {
+      SEO: {
+        populate: "*",
+      },
+    },
+  });
+
+  return {
+    props: {
+      page: res.data,
+    },
+    // TODO, make revalidation strapi dynamic
+    revalidate: 3000,
+  };
+}
+
+export default Page;
+
+*/

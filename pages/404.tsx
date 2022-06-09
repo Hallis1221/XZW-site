@@ -28,7 +28,6 @@ export async function getStaticProps() {
 
   return {
     props: {
-      global: await getGlobal(),
       page: res.data,
     },
     // TODO, make revalidation strapi dynamic
