@@ -4,7 +4,13 @@ async function getGlobal() {
   const res = await fetchAPI("/global", {
     populate: {
       Favicon: "*",
+      ActionButton: {
+        populate: "*"
+      },
       SEO: {
+        populate: "*",
+      },
+      Pages: {
         populate: "*",
       },
     },
