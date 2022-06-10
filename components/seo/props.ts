@@ -1,5 +1,6 @@
+import { MetaSeo } from "types/seo";
+
 export type SeoProps = {
-  pageSeo: {
-    title: string;
-  };
-};
+    pageSeo: MetaSeo
+    global: any,
+  };;

@@ -14,6 +14,7 @@
     "context": "./lib/context",
     "components": "./components",
     "log": "./lib/logger",
+    "types": "./lib/types",
     "src": "./"
   },
   "dependencies": {

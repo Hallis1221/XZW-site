@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import App from "next/app";
+import { Seo } from "src/components/seo";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -25,7 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   */
   
-const {global} = pageProps;
+const {global, page} = pageProps;
 
   if (!global || !global.attributes)
     return (
@@ -48,41 +49,12 @@ const {global} = pageProps;
 
   return (
     <>
-      <Head>
-        <link
-          rel="shortcut icon"
-          href={getStrapiMedia(global.attributes.Favicon)}
-        />
-
-        {/* Meta title */}
-        <title>{global.attributes.SEO.Title}</title>
-
-        {/* Meta images */}
-        <meta
-          property="og:image"
-          content={getStrapiMedia(global.attributes.SEO.ShareImage)}
-        />
-        <meta
-          name="twitter:image"
-          content={getStrapiMedia(global.attributes.SEO.ShareImage)}
-        />
-        <meta
-          name="image"
-          content={getStrapiMedia(global.attributes.SEO.ShareImage)}
-        />
-
-        {/* Meta description */}
-        <meta name="description" content={global.attributes.SEO.Description} />
-        <meta
-          property="og:description"
-          content={global.attributes.SEO.Description}
-        />
-        <meta
-          name="twitter:description"
-          content={global.attributes.SEO.Description}
-        />
-      </Head>
+      
       <GlobalContext.Provider value={global.attributes || undefined}>
+        <Seo
+        pageSeo={page.attributes.seo}
+        global={global.attributes}
+        />
           <Navbar fluid={true} rounded={true}>
             <Navbar.Brand href="https://flowbite.com/">
               <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
@@ -90,8 +62,8 @@ const {global} = pageProps;
               </span>
             </Navbar.Brand>
             <div className="flex md:order-2">
-              <Link href={global.attributes.ActionButton.href}>
-                <Button>{global.attributes.ActionButton.DisplayName}</Button>
+              <Link href={global.attributes.ActionButton.href || ""}>
+                <Button>{global.attributes.ActionButton.DisplayName || ""}</Button>
               </Link>
               <Navbar.Toggle />
             </div>

@@ -7,11 +7,7 @@ import { Seo } from "components/seo";
 const Home: NextPage = ({ home }: any) => {
   return (
     <>
-      <Seo
-        pageSeo={{
-          title: home.attributes.SEO.Title,
-        }}
-      ></Seo>
+    
 
       <div>
       </div>
@@ -22,7 +18,7 @@ const Home: NextPage = ({ home }: any) => {
 export async function getStaticProps() {
   const res = await fetchAPI("/home", {
     populate: {
-      SEO: {
+      seo: {
         populate: "*",
       },
     },
@@ -30,7 +26,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      home: res.data,
+      page: res.data,
     },
     // TODO, make revalidation strapi dynamic?
     revalidate: 60 * 30, // In seconds, here it is 30 minutes

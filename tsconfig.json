@@ -16,10 +16,11 @@
     "incremental": true,
     "paths": {
       "strapi/*": ["./lib/strapi/*"],
-      "context": ["./lib/context/*"],
-      "components": ["./components/*"],
+      "context/*": ["./lib/context/*"],
+      "types/*": ["./lib/types/*"],
+      "src/*": ["./*"],
+      "components/*": ["./components/*"],
       "log": ["./lib/logger"],
-      "src": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

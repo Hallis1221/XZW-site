@@ -9,12 +9,6 @@ import Link from "next/link";
 const Page: NextPage = ({ page, gloser }: any) => {
   return (
     <>
-      <Seo
-        pageSeo={{
-          title: page.attributes.SEO.Title,
-        }}
-      ></Seo>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {gloser.map((glose: any) => {
           return (
