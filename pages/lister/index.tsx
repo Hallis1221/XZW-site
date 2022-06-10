@@ -4,7 +4,8 @@ import getGlobal from "strapi/global";
 import { Seo } from "components/seo";
 
 // TODO - type this
-const Page: NextPage = ({ page }: any) => {
+const Page: NextPage = ({ page, gloser }: any) => {
+  console.log(gloser)
   return (
     <>
       <Seo
@@ -27,9 +28,17 @@ export async function getStaticProps() {
     },
   });
 
+  const gloserRes = await fetchAPI("/glose-listes", {
+    populate: {
+      title: "*",
+      description: "*",
+    },
+  })
+
   return {
     props: {
       page: res.data,
+      gloser: gloserRes.data,
     },
     // TODO, make revalidation strapi dynamic?
     revalidate: 60 * 30, // In seconds, here it is 30 minutes
