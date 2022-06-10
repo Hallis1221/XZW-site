@@ -4,56 +4,61 @@ import type { NextPage, GetStaticPropsContext } from "next";
 
 import fetchAPI from "strapi/fetch";
 import { MetaSeo } from "types/seo";
-import { Rating, Table } from "flowbite-react";
+import { Button, Card, Modal, Rating, Table } from "flowbite-react";
+import { useState } from "react";
+import { ExclamationCircleIcon } from "@heroicons/react/solid";
 
 // TODO - type this
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalGlose, setModalGlose] = useState<Glose>();
+
   return (
     <div className="relative">
-      <Rating className="hidden md:inline-flex absolute right-0 mt-3 mr-3 ">
-        <Rating.Star />
-        <Rating.Star />
-        <Rating.Star />
-        <Rating.Star />
-        <Rating.Star filled={false} />
-      </Rating>
+      <div className="hidden md:inline">
+        <Rating className=" absolute right-0 mt-3 mr-3 ">
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star />
+          <Rating.Star filled={false} />
+        </Rating>
 
-      <div className="flex flex-row justify-center">
-        <h1 className="text-center text-5xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-          {liste.title}
-        </h1>
-      </div>
+        <div className="flex flex-row justify-center">
+          <h1 className="text-center text-5xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+            {liste.title}
+          </h1>
+        </div>
 
-      <div className="w-full flex justify-center mt-4 text">
-        <p className="w-10/12 font-normal text-gray-700 dark:text-gray-400">
-          {liste.description.substring(0, 500)}
-          {liste.description.length > 500 ? "..." : ""}
-        </p>
-      </div>
+        <div className="w-full flex justify-center mt-4 text">
+          <p className="w-10/12 font-normal text-gray-700 dark:text-gray-400">
+            {liste.description.substring(0, 500)}
+            {liste.description.length > 500 ? "..." : ""}
+          </p>
+        </div>
 
-      <div className="mt-10">
-        <Table>
-          <Table.Head>
-            <Table.HeadCell>Norsk</Table.HeadCell>
-            <Table.HeadCell>Pīnyīn</Table.HeadCell>
-            <Table.HeadCell>Hànzì</Table.HeadCell>
-            <Table.HeadCell>
-              <div className="sr-only">Stroke-order</div>
-            </Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {liste.gloser.map((glose: Glose) => {
+        <div className="mt-10 ">
+          <Table>
+            <Table.Head>
+              <Table.HeadCell>Norsk</Table.HeadCell>
+              <Table.HeadCell>Pīnyīn</Table.HeadCell>
+              <Table.HeadCell>Hànzì</Table.HeadCell>
+              <Table.HeadCell>
+                <div className="sr-only">Stroke-order</div>
+              </Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {liste.gloser.map((glose: Glose) => {
                 return (
-                    <Table.Row key={glose.Standard} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <Table.Row
+                    key={glose.Standard}
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                  >
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {glose.Standard}
                     </Table.Cell>
-                    <Table.Cell>
-                        {glose.Pinyin}
-                    </Table.Cell>
-                    <Table.Cell>
-                        {glose.Chinese}
-                    </Table.Cell>
+                    <Table.Cell>{glose.Pinyin}</Table.Cell>
+                    <Table.Cell>{glose.Chinese}</Table.Cell>
                     <Table.Cell>
                       <div
                         className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
@@ -64,11 +69,96 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     </Table.Cell>
                   </Table.Row>
                 );
-                }
-            )}
-           
-          </Table.Body>
-        </Table>
+              })}
+            </Table.Body>
+          </Table>
+        </div>
+      </div>
+
+      <div className="mt-10 md:hidden flex justify-center">
+        <div className="max-w-sm">
+          <Card>
+            <div className="mb-4 flex flex-col items-center justify-between">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                {liste.title}
+              </h5>
+              <h4 className="mt-3 leading-none text-gray-900 dark:text-white">
+                Lær {liste.gloser.length} gloser om {liste.title.toLowerCase()}.
+              </h4>
+            </div>
+            <div className="flow-root">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                {liste.gloser.map((glose: Glose) => {
+                  return (
+                    <li
+                      key={glose.Standard}
+                      className="py-3 sm:py-4"
+                      onClick={() => {
+                          setModalGlose(glose);
+                          setModalOpen(true);
+                      }}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="shrink-0"></div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                            {glose.Standard}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            {glose.Pinyin}
+                          </p>
+                        </div>
+                        <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                          {glose.Chinese}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </Card>
+        </div>
+        <div className="h-screen">
+          <Modal
+            show={modalOpen}
+            placement="center"
+            size="7xl"
+            onClose={() => {
+              setModalOpen(false);
+            }}
+          >
+            <Modal.Body className="h-full">
+              <div className="text-center min-h-max">
+                <h1 className="text-5xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+                    {modalGlose?.Standard}
+                </h1>
+                <div className="flex flex-row justify-center">
+                    <p className="text-xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+                        {modalGlose?.Pinyin}
+                    </p>
+                </div>
+                <div className="flex flex-row justify-center">
+                    <p className="text-xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+                        {modalGlose?.Chinese}
+                    </p>
+                </div>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    color="alternative"
+                    onClick={() => {
+                      setModalOpen(false);
+                    }}
+                  >
+                   Lukk
+                  </Button>
+                 
+                </div>
+              </div>
+            </Modal.Body>
+         
+          </Modal>
+        </div>
       </div>
     </div>
   );
@@ -118,9 +208,27 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 }
 
 export async function getStaticPaths() {
-    // TODO
+  const gloserRes = await fetchAPI("/glose-listes");
+  gloserRes.attributes = undefined;
+
+  let paths: { params: { id: string } }[] = [];
+
+  gloserRes.data.forEach(
+    (element: {
+      id: number;
+      attributes: {
+        Title: string;
+      };
+    }) => {
+      paths.push({
+        params: {
+          id: `${element.attributes.Title}-${element.id}`,
+        },
+      });
+    }
+  );
   return {
-    paths: [{ params: { id: "tid-1" } }, { params: { id: "tid-2" } }, { params: { id: "tid-3" } }, { params: { id: "tid-4" } }],
+    paths,
     fallback: "blocking",
   };
 }

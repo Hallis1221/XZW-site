@@ -14,6 +14,7 @@ export default async function fetchAPI(path: string, urlParamsObject: object = {
   const mergedOptions = {
     headers: {
       "Content-Type": "application/json",
+      'Authorization': 'Bearer ' + process.env.STRAPI_API_KEY,
     },
     ...options,
   };
