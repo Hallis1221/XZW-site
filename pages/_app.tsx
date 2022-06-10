@@ -78,28 +78,22 @@ function MyApp({ Component, pageProps }: AppProps) {
           </Navbar.Collapse>
         </Navbar>
 
-       <div className="m-10">
-       <Component {...pageProps} />
-       </div>
+        <div className="m-10">
+          <Component {...pageProps} />
+        </div>
 
-<div className="absolute bottom-0 w-screen">
-<Footer className="relative  mt-10">
-          <Footer.Copyright href="#" by="Halvor V" year={2022}/>
-          <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
-  
-            {global.attributes.Pages.map((page: any) => (
-              <Footer.Link
-                key={page.id}
-                href={page.href}
-              >
-                {page.DisplayName}
-              </Footer.Link>
-            ))}
-          </Footer.LinkGroup>
-        </Footer>
-</div>
-
-       
+        <div className="absolute bottom-0 w-screen">
+          <Footer className="relative mt-10">
+            <Footer.Copyright href="#" by="Halvor V" year={2022} />
+            <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
+              {global.attributes.Pages.map((page: any) => (
+                <Footer.Link key={page.id} href={page.href}>
+                  {page.DisplayName}
+                </Footer.Link>
+              ))}
+            </Footer.LinkGroup>
+          </Footer>
+        </div>
       </GlobalContext.Provider>
     </>
   );
