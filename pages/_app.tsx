@@ -78,9 +78,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           </Navbar.Collapse>
         </Navbar>
 
-        <Component {...pageProps} />
+       <div className="m-10">
+       <Component {...pageProps} />
+       </div>
 
-<Footer className="absolute bottom-0">
+<div className="absolute bottom-0 w-screen">
+<Footer className="relative  mt-10">
           <Footer.Copyright href="#" by="Halvor V" year={2022}/>
           <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
   
@@ -94,6 +97,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             ))}
           </Footer.LinkGroup>
         </Footer>
+</div>
 
        
       </GlobalContext.Provider>

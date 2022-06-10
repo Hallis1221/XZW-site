@@ -2,5 +2,6 @@ export type Glose = {
     Standard: string;
     Pinyin: string;
     Chinese: string;
-    Aktiv: boolean;
 }
+
+export type DBGlose = Glose & {Aktiv: boolean};

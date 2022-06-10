@@ -12,7 +12,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {gloser.map((glose: any) => {
           return (
-            <Card key={glose.id} className="m-10 w-fit ">
+            <Card key={glose.id} className="m-5 w-fit ">
               <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {glose.attributes.Title}
               </h5>
