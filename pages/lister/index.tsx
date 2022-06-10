@@ -14,7 +14,16 @@ const Page: NextPage = ({ page, gloser }: any) => {
         }}
       ></Seo>
 
-      <div></div>
+      <div>
+
+        {gloser.forEach((glose: any) => {
+          return (
+            <div>
+              {glose.title}
+              </div>
+          )
+        })}
+      </div>
     </>
   );
 };
