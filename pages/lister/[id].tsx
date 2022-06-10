@@ -120,7 +120,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 export async function getStaticPaths() {
     // TODO
   return {
-    paths: [{ params: { id: "tid-1" } }],
+    paths: [{ params: { id: "tid-1" } }, { params: { id: "tid-2" } }, { params: { id: "tid-3" } }, { params: { id: "tid-4" } }],
     fallback: "blocking",
   };
 }
