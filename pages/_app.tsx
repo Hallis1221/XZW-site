@@ -47,39 +47,39 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <GlobalContext.Provider value={global.attributes || undefined}>
         <Seo pageSeo={page.attributes.seo} global={global.attributes} />
-        <Flowbite>
-          <Navbar fluid={true} rounded={true}>
-            <Navbar.Brand href="https://flowbite.com/">
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                {global.attributes.Sitename}
-              </span>
-            </Navbar.Brand>
-            <div className="flex md:order-2">
-              <Link href={global.attributes.ActionButton.href || ""}>
-                <Button>
-                  {global.attributes.ActionButton.DisplayName || ""}
-                </Button>
-              </Link>
-              <Navbar.Toggle />
-            </div>
-            <Navbar.Collapse>
-              {global.attributes.Pages.map((page: any) => (
-                <Navbar.Link
-                  key={page.id}
-                  href={page.href}
-                  active={router.pathname === page.href ? true : false}
-                >
-                  {page.DisplayName}
-                </Navbar.Link>
-              ))}
-            </Navbar.Collapse>
-          </Navbar>
-
-          <div className="m-10 ">
-            <Component {...pageProps} />
+        {/* <Flowbite> */}
+        <Navbar fluid={true} rounded={true}>
+          <Navbar.Brand href="https://flowbite.com/">
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+              {global.attributes.Sitename}
+            </span>
+          </Navbar.Brand>
+          <div className="flex md:order-2">
+            <Link href={global.attributes.ActionButton.href || ""}>
+              <Button>
+                {global.attributes.ActionButton.DisplayName || ""}
+              </Button>
+            </Link>
+            <Navbar.Toggle />
           </div>
+          <Navbar.Collapse>
+            {global.attributes.Pages.map((page: any) => (
+              <Navbar.Link
+                key={page.id}
+                href={page.href}
+                active={router.pathname === page.href ? true : false}
+              >
+                {page.DisplayName}
+              </Navbar.Link>
+            ))}
+          </Navbar.Collapse>
+        </Navbar>
 
-          {/* <div className="xl:absolute xl:bottom-0 w-screen -z-10">
+        <div className="m-10 ">
+          <Component {...pageProps} />
+        </div>
+
+        {/* <div className="xl:absolute xl:bottom-0 w-screen -z-10">
           <Footer className="relative mt-10">
             <Footer.Copyright href="#" by="Halvor V" year={2022} />
             <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
@@ -91,7 +91,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Footer.LinkGroup>
           </Footer>
         </div> */}
-        </Flowbite>
+        {/* </Flowbite> */}
       </GlobalContext.Provider>
     </>
   );

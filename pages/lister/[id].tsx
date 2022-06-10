@@ -4,8 +4,7 @@ import type { NextPage, GetStaticPropsContext } from "next";
 
 import fetchAPI from "strapi/fetch";
 import { MetaSeo } from "types/seo";
-import { Card, Rating, Table } from "flowbite-react";
-import { useState } from "react";
+import { Button, Card, Rating, Table } from "flowbite-react";
 import React from "react";
 
 // TODO - type this
@@ -33,6 +32,8 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             {liste.description.length > 500 ? "..." : ""}
           </p>
         </div>
+
+
 
         <div className="mt-10 ">
           <Table>
@@ -69,6 +70,58 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               })}
             </Table.Body>
           </Table>
+        </div>
+
+        <div className="flex justify-between my-10 ">
+          <Card className="w-1/2">
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Lær PĪNYĪN
+            </h5>
+            <p className="font-normal text-gray-700 dark:text-gray-400">
+              Occaecat consectetur proident tempor cupidatat proident sint ipsum elit ad dolor ad id commodo. Ad cillum id proident reprehenderit et veniam. Sit ut quis est cupidatat exercitation eiusmod dolor magna ad est id est mollit. Nostrud sint labore incididunt id dolor non.
+            </p>
+            <Button>
+              Start nå
+              <svg
+                className="ml-2 -mr-1 h-4 w-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Button>
+          </Card>
+   
+          <Card className="w-1/2">
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Lær HÀNZÌ
+            </h5>
+            <p className="font-normal text-gray-700 dark:text-gray-400">
+              Occaecat consectetur proident tempor cupidatat proident sint ipsum elit ad dolor ad id commodo. Ad cillum id proident reprehenderit et veniam. Sit ut quis est cupidatat exercitation eiusmod dolor magna ad est id est mollit. Nostrud sint labore incididunt id dolor non.
+            </p>
+            <Button>
+              Start nå
+              <svg
+                className="ml-2 -mr-1 h-4 w-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Button>
+          </Card>
+
+          
         </div>
       </div>
 
