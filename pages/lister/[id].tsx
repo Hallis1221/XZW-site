@@ -10,7 +10,6 @@ import React from "react";
 
 // TODO - type this
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
-
   return (
     <div className="relative">
       <div className="hidden md:inline">
@@ -91,10 +90,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     <li
                       key={glose.Standard}
                       className="py-3 sm:py-4"
-                      onClick={() => {
-                        setModalGlose(glose);
-                        setModalOpen(true);
-                      }}
+                      onClick={() => {}}
                     >
                       <div className="flex items-center space-x-4">
                         <div className="shrink-0"></div>
@@ -117,8 +113,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             </div>
           </Card>
         </div>
-      
-   
       </div>
     </div>
   );
