@@ -23,6 +23,7 @@ export async function getStaticProps() {
   const res = await fetchAPI("/not-found", {
     populate: {
       ErrorMessage: "*",
+      seo: "*"
     },
   });
 

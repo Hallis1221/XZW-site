@@ -11,7 +11,7 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
     ...global.seo,
     ...pageSeo,
     metaTitle:
-      pageSeo.metaTitle || global.seo.metaTitle
+      pageSeo.metaTitle || global.seo.metaTitle 
         ? `${pageSeo.metaTitle || global.seo.metaTitle} | ${global.Sitename}`
         : global.Sitename,
     metaImage:
@@ -32,10 +32,10 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
     <Head>
       {/* Title tags */}
       <>
-        <title>{seo.metaTitle}</title>
-        <meta name="title" content={seo.metaTitle} />
-        <meta property="og:title" content={seo.metaTitle} />
-        <meta name="twitter:title" content={seo.metaTitle} />
+        <title>{seo.metaTitle || "" }</title>
+        <meta name="title" content={seo.metaTitle || ""} />
+        <meta property="og:title" content={seo.metaTitle || ""} />
+        <meta name="twitter:title" content={seo.metaTitle || ""} />
       </>
 
       {/* Description tags */}
@@ -51,7 +51,7 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
           property="og:image"
           content={seo.metaImage ? getStrapiMedia(seo.metaImage) : ""}
         />
-        <meta property="og:image:alt" content={seo.metaTitle} />
+        <meta property="og:image:alt" content={seo.metaTitle || ""} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
       </>
