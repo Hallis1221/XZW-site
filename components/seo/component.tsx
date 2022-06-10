@@ -7,15 +7,16 @@ import Head from "next/head";
 import { MetaSeo, MetaSocial } from "types/seo";
 
 export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
+
   const seo: MetaSeo = {
     ...global.seo,
     ...pageSeo,
     metaTitle:
-      pageSeo.metaTitle || global.seo.metaTitle 
-        ? `${pageSeo.metaTitle || global.seo.metaTitle} | ${global.Sitename}`
+      pageSeo?.metaTitle || global?.seo?.metaTitle 
+        ? `${pageSeo?.metaTitle || global.seo.metaTitle} | ${global.Sitename}`
         : global.Sitename,
     metaImage:
-      pageSeo.metaImage || global.seo.metaImage
+      pageSeo?.metaImage || global?.seo?.metaImage
         ? getStrapiMedia(pageSeo.metaImage || global.seo.metaImage)
         : null,
   };
@@ -32,7 +33,7 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
     <Head>
       {/* Title tags */}
       <>
-        <title>{seo.metaTitle || "" }</title>
+        <title>{seo.metaTitle || ""}</title>
         <meta name="title" content={seo.metaTitle || ""} />
         <meta property="og:title" content={seo.metaTitle || ""} />
         <meta name="twitter:title" content={seo.metaTitle || ""} />
