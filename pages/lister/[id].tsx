@@ -4,14 +4,12 @@ import type { NextPage, GetStaticPropsContext } from "next";
 
 import fetchAPI from "strapi/fetch";
 import { MetaSeo } from "types/seo";
-import { Button, Card, Modal, Rating, Table } from "flowbite-react";
+import { Card, Rating, Table } from "flowbite-react";
 import { useState } from "react";
-import { ExclamationCircleIcon } from "@heroicons/react/solid";
+import React from "react";
 
 // TODO - type this
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalGlose, setModalGlose] = useState<Glose>();
 
   return (
     <div className="relative">
@@ -94,8 +92,8 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                       key={glose.Standard}
                       className="py-3 sm:py-4"
                       onClick={() => {
-                          setModalGlose(glose);
-                          setModalOpen(true);
+                        setModalGlose(glose);
+                        setModalOpen(true);
                       }}
                     >
                       <div className="flex items-center space-x-4">
@@ -119,46 +117,8 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             </div>
           </Card>
         </div>
-        <div className="h-screen">
-          <Modal
-            show={modalOpen}
-            placement="center"
-            size="7xl"
-            onClose={() => {
-              setModalOpen(false);
-            }}
-          >
-            <Modal.Body className="h-full">
-              <div className="text-center min-h-max">
-                <h1 className="text-5xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-                    {modalGlose?.Standard}
-                </h1>
-                <div className="flex flex-row justify-center">
-                    <p className="text-xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-                        {modalGlose?.Pinyin}
-                    </p>
-                </div>
-                <div className="flex flex-row justify-center">
-                    <p className="text-xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-                        {modalGlose?.Chinese}
-                    </p>
-                </div>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    color="alternative"
-                    onClick={() => {
-                      setModalOpen(false);
-                    }}
-                  >
-                   Lukk
-                  </Button>
-                 
-                </div>
-              </div>
-            </Modal.Body>
-         
-          </Modal>
-        </div>
+      
+   
       </div>
     </div>
   );
