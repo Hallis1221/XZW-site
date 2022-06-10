@@ -5,7 +5,7 @@ import Head from "next/head";
 import { getStrapiMedia } from "strapi/media";
 import GlobalContext from "context/global";
 import getGlobal from "strapi/global";
-import { Navbar, Button, Flowbite, Spinner } from "flowbite-react";
+import { Navbar, Button, Flowbite, Spinner, Footer } from "flowbite-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -25,8 +25,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   */
-  
-const {global, page} = pageProps;
+
+  const { global, page } = pageProps;
 
   if (!global || !global.attributes)
     return (
@@ -49,38 +49,53 @@ const {global, page} = pageProps;
 
   return (
     <>
-      
       <GlobalContext.Provider value={global.attributes || undefined}>
-        <Seo
-        pageSeo={page.attributes.seo}
-        global={global.attributes}
-        />
-          <Navbar fluid={true} rounded={true}>
-            <Navbar.Brand href="https://flowbite.com/">
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                {global.attributes.Sitename}
-              </span>
-            </Navbar.Brand>
-            <div className="flex md:order-2">
-              <Link href={global.attributes.ActionButton.href || ""}>
-                <Button>{global.attributes.ActionButton.DisplayName || ""}</Button>
-              </Link>
-              <Navbar.Toggle />
-            </div>
-            <Navbar.Collapse>
-              {global.attributes.Pages.map((page: any) => (
-                <Navbar.Link
-                  key={page.id}
-                  href={page.href}
-                  active={router.pathname === page.href ? true : false}
-                >
-                  {page.DisplayName}
-                </Navbar.Link>
-              ))}
-            </Navbar.Collapse>
-          </Navbar>
+        <Seo pageSeo={page.attributes.seo} global={global.attributes} />
+        <Navbar fluid={true} rounded={true}>
+          <Navbar.Brand href="https://flowbite.com/">
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+              {global.attributes.Sitename}
+            </span>
+          </Navbar.Brand>
+          <div className="flex md:order-2">
+            <Link href={global.attributes.ActionButton.href || ""}>
+              <Button>
+                {global.attributes.ActionButton.DisplayName || ""}
+              </Button>
+            </Link>
+            <Navbar.Toggle />
+          </div>
+          <Navbar.Collapse>
+            {global.attributes.Pages.map((page: any) => (
+              <Navbar.Link
+                key={page.id}
+                href={page.href}
+                active={router.pathname === page.href ? true : false}
+              >
+                {page.DisplayName}
+              </Navbar.Link>
+            ))}
+          </Navbar.Collapse>
+        </Navbar>
 
-          <Component {...pageProps} />
+        <Component {...pageProps} />
+
+<Footer className="absolute bottom-0">
+          <Footer.Copyright href="#" by="Halvor V" year={2022}/>
+          <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
+  
+            {global.attributes.Pages.map((page: any) => (
+              <Footer.Link
+                key={page.id}
+                href={page.href}
+              >
+                {page.DisplayName}
+              </Footer.Link>
+            ))}
+          </Footer.LinkGroup>
+        </Footer>
+
+       
       </GlobalContext.Provider>
     </>
   );
@@ -93,6 +108,5 @@ MyApp.getInitialProps = async (ctx: any) => {
   // Pass the data to our page via props
   return { ...appProps, pageProps: { global: await getGlobal() } };
 };
-
 
 export default MyApp;

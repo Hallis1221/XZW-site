@@ -20,7 +20,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
                 {glose.attributes.Description.substring(0, 200)}
                 {glose.attributes.Description.length > 200 ? "..." : ""}
               </p>
-              <Link href={"/" + glose.attributes.Title.toLowerCase() + "-" + glose.id + "/"}>
+              <Link href={"lister/" + glose.attributes.Title.toLowerCase() + "-" + glose.id + "/"}>
                 <Button>
                   {glose.attributes.ActionTekst}
                   <svg
