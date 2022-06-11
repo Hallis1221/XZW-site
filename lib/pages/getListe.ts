@@ -42,8 +42,6 @@ export default async function getListe({
     gloser: listeDB.Gloser,
   };
 
-  console.log(liste);
-
   return {
     liste,
     
