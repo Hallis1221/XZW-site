@@ -3,13 +3,12 @@
   <img src="https://xzw-admin.herokuapp.com/uploads/favicon_3540cb39b3.ico" alt="Logo" width="auto" height="auto" />
 </p>
 <p align="center">
-  <b>**xzw** er ganske enkelt en nettside for å pugge kinesiske gloser. xzw har som mål å være et alternativ til *quizlet* som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal xzw få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan xzw skal fortsette å bli [her](https://github.com/users/Hallis1221/projects/1/views/2). xzw er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md </b></br>
-  <sub> Nettsiden er åpen på <a href="https://xzw.halvor.codes">https://xzw.halvor.codes</a>.<sub>
+  <b>xzw er ganske enkelt en nettside for å pugge kinesiske gloser. xzw har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal xzw få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan xzw skal fortsette å bli [(https://github.com/users/Hallis1221/projects/1/views/2)](https://github.com/users/Hallis1221/projects/1/views/2). xzw er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md </b></br>
+  <sub> Se en demo her <a href="https://xzw.halvor.codes">https://xzw.halvor.codes</a>.<sub>
 </p>
 
 <br />
 
-{{template:demo}}
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#table-of-contents)
 
@@ -18,21 +17,6 @@
 - [➤ Table of Contents](#-table-of-contents)
 - [➤ Contributors](#-contributors)
 - [➤ License](#-license)
-
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#contributors)
-
-## ➤ Contributors
-	
-
-| [<img alt="Halvor Vivelstad" src="https://avatars.githubusercontent.com/u/46447358?v=4" width="100">](https://halvor.codes) |
-|:--------------------------------------------------:|
-| [Halvor Vivelstad](https://halvor.codes)         |
-| [halvorviv@gmail.com](mailto:halvorviv@gmail.com) |
-| 🔥                                               |
- 
-
-
-
 <p align="center">
 		<a href="https://david-dm.org/hallis1221/xzw-site"><img alt="Dependencies" src="https://img.shields.io/david/hallis1221/xzw-site.svg" height="20"/></a>
 <a href="https://github.com/hallis1221/xzw-site/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/hallis1221/xzw-site.svg" height="20"/></a>
@@ -47,14 +31,24 @@
 <a href="undefined"><img alt="Lisens" src="undefined" height="20"/></a>
 	</p>
 
-bullets
 
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#contributors)
+
+## ➤ Contributors
+	
+
+| [<img alt="Halvor Vivelstad" src="https://avatars.githubusercontent.com/u/46447358?v=4" width="100">](https://halvor.codes) |
+|:--------------------------------------------------:|
+| [Halvor Vivelstad](https://halvor.codes)         |
+| [halvorviv@gmail.com](mailto:halvorviv@gmail.com) |
+| 🔥                                               |
+ 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#license)
 
 ## ➤ License
 	
-Åpen kildekode under [Creative Commons Legal Code](https://opensource.org/licenses/Creative Commons Legal Code).
+Licensed under [Creative Commons Legal Code](https://opensource.org/licenses/Creative Commons Legal Code).
 Creative Commons Legal Code
 
 CC0 1.0 Universal
