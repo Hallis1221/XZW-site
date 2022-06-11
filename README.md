@@ -1,5 +1,5 @@
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#velkommen-til-pkgname-versjon-pkgversion-)
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#velkommen-til-pkgname-versjon-pkgversion-)
 
 # ➤ Velkommen til xzw versjon 0.1.0. 
 <p align="center">
@@ -9,9 +9,8 @@
 
 <br />
 
-{{ template:contributors }}
 
-[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#license)
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png)](#license)
 
 ## ➤ License
 	
