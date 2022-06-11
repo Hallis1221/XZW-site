@@ -88,6 +88,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           </Table>
         </div>
 
+        {/* This is just a prototype - likely will not split hanzi and pinyin*/}
         <div className="flex justify-between my-10  ">
           {/* Next.js Link doesn't work here, so we use an <a> */}
           <a href={`${id}/gjennomgang/flashcards`} className="w-1/2">
