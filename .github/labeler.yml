@@ -1,4 +1,7 @@
-// TODO
+# TODO
 
+# Add 'repo' label to any root file changes
+repo:
+- '*'
 UI:
 - components/**/*
