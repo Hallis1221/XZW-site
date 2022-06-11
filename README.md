@@ -3,8 +3,8 @@
   <img src="https://xzw-admin.herokuapp.com/uploads/favicon_3540cb39b3.ico" alt="Logo" width="auto" height="auto" />
 </p>
 <p align="center">
-  <b>xzw er ganske enkelt en nettside for å pugge kinesiske gloser. xzw har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal xzw få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan xzw skal fortsette å bli [(https://github.com/users/Hallis1221/projects/1/views/2)](https://github.com/users/Hallis1221/projects/1/views/2). xzw er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md </b></br>
-  <sub> Se en demo her <a href="https://xzw.halvor.codes">https://xzw.halvor.codes</a>.<sub>
+  <b>xzw er ganske enkelt en nettside for å pugge kinesiske gloser. xzw har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal xzw få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan xzw skal fortsette å bli her; https://github.com/users/Hallis1221/projects/1/views/2. xzw er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md </b></br>
+  <sub> Nettsiden er live her; <a href="https://xzw.halvor.codes">https://xzw.halvor.codes</a>.<sub>
 </p>
 
 <br />

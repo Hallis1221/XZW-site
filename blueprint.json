@@ -6,7 +6,7 @@
     },
     "pkg": {
         "title": "Velkommen til {{pkg.name}} versjon {{pkg.version}}.",
-        "description": "{{pkg.name}} er ganske enkelt en nettside for å pugge kinesiske gloser. {{pkg.name}} har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal {{pkg.name}} få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan {{pkg.name}} skal fortsette å bli [her](https://github.com/users/Hallis1221/projects/1/views/2). {{pkg.name}} er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md ",
+        "description": "{{pkg.name}} er ganske enkelt en nettside for å pugge kinesiske gloser. {{pkg.name}} har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal {{pkg.name}} få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan xzw skal fortsette å bli her; https://github.com/users/Hallis1221/projects/1/views/2. {{pkg.name}} er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md ",
         "contributors": [
             {
                 "name": "Halvor Vivelstad",
