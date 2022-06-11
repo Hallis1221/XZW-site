@@ -1,7 +1,7 @@
+/* Import types */
 import type { NextPage } from "next";
+/* Import API calls */
 import fetchAPI from "strapi/fetch";
-import getGlobal from "strapi/global";
-import { Seo } from "components/seo";
 
 // TODO - type this
 const Home: NextPage = ({ home }: any) => {

@@ -1,6 +1,8 @@
+/* Flowbite components */
 import { Toast } from "flowbite-react";
-import getGlobal from "strapi/global";
+/* HeroIcon components */
 import { XIcon } from "@heroicons/react/solid";
+/* API calls */
 import fetchAPI from "strapi/fetch";
 
 export default function Custom404({page}: any) {

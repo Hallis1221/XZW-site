@@ -1,9 +1,11 @@
+/* Types */
 import type { NextPage } from "next";
-import fetchAPI from "strapi/fetch";
-import getGlobal from "strapi/global";
-import { Seo } from "components/seo";
-import { Button, Card } from "flowbite-react";
+/* Next.js components */
 import Link from "next/link";
+/* Flowbite components */
+import { Button, Card } from "flowbite-react";
+/* API calls */
+import fetchAPI from "strapi/fetch";
 
 // TODO - type this
 const Page: NextPage = ({ page, gloser }: any) => {

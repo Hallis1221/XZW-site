@@ -1,26 +1,31 @@
-import "../styles/globals.css";
+/**
+ * This is the entry point for the application. That is to say, every page in the application will be "underneath" this file. 
+ * The following properties apply to the application as a whole, unless otherwise specified in the file.
+ * @author Halvor Vivelstad.
+ * @version 0.0.1
+ * @license CCLC - Creative Commons Legal Code. 
+ * @see https://github.com/Hallis1221/XZW-site/blob/main/license.md
+ */
+
+/* Types */
 import type { AppProps } from "next/app";
+/* Styles */
+import "../styles/globals.css";
+/* Components */
 import GlobalContext from "context/global";
-import getGlobal from "strapi/global";
-import { Navbar, Button, Flowbite, Spinner, Footer } from "flowbite-react";
-import { useRouter } from "next/router";
+import { Seo } from "src/components/seo";
+/* Next.js components */
 import Link from "next/link";
 import App from "next/app";
-import { Seo } from "src/components/seo";
+/* Flowbite components */
+import { Navbar, Button, Spinner } from "flowbite-react";
+/* API calls */
+import getGlobal from "strapi/global";
+/* Hooks */
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-
-  /* This is a implementation of getInitialProps for the client side.  
-  let [global, setGlobal]: any = useState({});
-
-  useEffect(() => {
-    getGlobal().then((global) => {
-      setGlobal(global);
-    });
-  }, []);
-
-  */
 
   const { global, page } = pageProps;
 

@@ -1,12 +1,14 @@
-import type { DBGlose, Glose } from "types/glose";
+/* Types */
+import type { Glose } from "types/glose";
 import type { GloseListe } from "types/gloseListe";
 import type { NextPage, GetStaticPropsContext } from "next";
-
+import type { MetaSeo } from "types/seo";
+/* FLowbite components */
+import {  Card, Rating, Table } from "flowbite-react";
+/* Hooks */
+import {  useState } from "react";
+/* API calls */
 import fetchAPI from "strapi/fetch";
-import { MetaSeo } from "types/seo";
-import { Button, Card, Modal, Rating, Table } from "flowbite-react";
-import React, { Fragment, useState } from "react";
-import Link from "next/link";
 import getListe from "src/lib/pages/getListe";
 
 const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
@@ -80,7 +82,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
 
         <div className="flex justify-between my-10  ">
           {/* Next.js Link doesn't work here, so we use an <a> */}
-          <a href={`${id}/lær/flashcards`} className="w-1/2">
+          <a href={`${id}/gjennomgang/flashcards`} className="w-1/2">
             <Card className="hover:shadow-blue-600 mr-10 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -99,7 +101,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
             </Card>
           </a>
 
-          <a href="lær" className="w-1/2">
+          <a href="gjennomgang" className="w-1/2">
             <Card className="hover:shadow-blue-600 ml-10 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
