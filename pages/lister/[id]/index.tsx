@@ -4,20 +4,25 @@ import type { GloseListe } from "types/gloseListe";
 import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
 /* FLowbite components */
-import {  Card, Rating, Table } from "flowbite-react";
+import { Card, Rating, Table } from "flowbite-react";
 /* Hooks */
-import {  useState } from "react";
+import { MutableRefObject, useState, useRef, SetStateAction } from "react";
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
+import { GloseDetailsPopup } from "src/components/glose/details";
 
 const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
   page,
   liste,
   id,
 }) => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentModalContent, setCurrentModalContent] = useState<Glose | any>();
+
+  const hanziRef: MutableRefObject<HTMLDivElement | null> =
+    useRef<HTMLDivElement>(null);
+  const hanziQuizRef: MutableRefObject<HTMLDivElement | null> =
+    useRef<HTMLDivElement>(null);
 
   return (
     <div className="relative">
@@ -68,7 +73,10 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                     <Table.Cell>
                       <div
                         className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
-                        onClick={() => {}}
+                        onClick={() => {
+                          setCurrentModalContent(glose);
+                          window.scrollTo(0, 0);
+                        }}
                       >
                         Stroke-order
                       </div>
@@ -120,9 +128,24 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
             </Card>
           </a>
         </div>
+        <div
+          className={`absolute flex top-0 h-full w-full ${
+            currentModalContent ? "z-10 " : " -z-10"
+          } 
+      `}
+        >
+          <div className="relative flex justify-self-center w-full">
+            <GloseDetailsPopup
+              currentModalContent={currentModalContent}
+              setCurrentModalContent={setCurrentModalContent}
+              hanziQuizRef={hanziQuizRef}
+              hanziRef={hanziRef}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="mt-10 md:hidden flex justify-center">
+      <div className="mt-10 md:hidden md:-z-50  flex justify-center ">
         <div className="max-w-sm">
           <Card>
             <div className="mb-4 flex flex-col items-center justify-between">
@@ -139,10 +162,9 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                   return (
                     <li
                       key={glose.Standard}
-                      className="py-3 sm:py-4"
+                      className="py-3 sm:py-4 hover:cursor-pointer"
                       onClick={() => {
                         setCurrentModalContent(glose);
-                        setModalIsOpen(true);
                         window.scrollTo(0, 0);
                       }}
                     >
@@ -167,46 +189,12 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
             </div>
           </Card>
         </div>
-        <div
-          className={`absolute flex h-full w-full  ${
-            modalIsOpen ? "inline" : "hidden"
-          } `}
-        >
-          <div
-            className="absolute flex h-full w-full bg-opacity-75 bg-white"
-            onClick={() => {
-              setModalIsOpen(false);
-            }}
-          />
-          <div className="absolute flex justify-center items-center z-10 w-full">
-            <div className="max-w-sm min-w-full w-full ">
-              {typeof currentModalContent === "object" ? (
-                <Card>
-                  <h5 className="text-2xl font-bold tracking-tight  text-gray-900 dark:text-white">
-                    {currentModalContent?.Standard}
-                  </h5>
-                  <p className="font-normal tracking-widest text-gray-700 dark:text-gray-400">
-                    {currentModalContent?.Pinyin}
-                  </p>
-                  <p className="font-normal tracking-widest text-gray-700 dark:text-gray-400">
-                    {currentModalContent?.Chinese.split("").map(
-                      (letter: string, index: number) => {
-                        return (
-                          <span
-                            key={index}
-                            className="inline-block m-2 hover:underline hover:text-blue-600"
-                          >
-                            {letter}
-                          </span>
-                        );
-                      }
-                    )}
-                  </p>
-                </Card>
-              ) : null}
-            </div>
-          </div>
-        </div>
+        <GloseDetailsPopup
+          currentModalContent={currentModalContent}
+          setCurrentModalContent={setCurrentModalContent}
+          hanziQuizRef={hanziQuizRef}
+          hanziRef={hanziRef}
+        />
       </div>
     </div>
   );
@@ -221,7 +209,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     },
   });
 
-  let {liste } = await getListe({ id: ctx.params?.id?.toString() });
+  let { liste } = await getListe({ id: ctx.params?.id?.toString() });
 
   if (!liste) return { notFound: true };
 
