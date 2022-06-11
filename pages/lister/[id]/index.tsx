@@ -4,11 +4,19 @@ import type { NextPage, GetStaticPropsContext } from "next";
 
 import fetchAPI from "strapi/fetch";
 import { MetaSeo } from "types/seo";
-import { Button, Card, Rating, Table } from "flowbite-react";
-import React from "react";
+import { Button, Card, Modal, Rating, Table } from "flowbite-react";
+import React, { Fragment, useState } from "react";
+import Link from "next/link";
+import getListe from "src/lib/pages/getListe";
 
-// TODO - type this
-const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
+const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
+  page,
+  liste,
+  id,
+}) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentModalContent, setCurrentModalContent] = useState<Glose | any>();
+
   return (
     <div className="relative">
       <div className="hidden md:inline">
@@ -32,8 +40,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             {liste.description.length > 500 ? "..." : ""}
           </p>
         </div>
-
-
 
         <div className="mt-10 ">
           <Table>
@@ -72,56 +78,45 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
           </Table>
         </div>
 
-        <div className="flex justify-between my-10 ">
-          <Card className="w-1/2">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Lær PĪNYĪN
-            </h5>
-            <p className="font-normal text-gray-700 dark:text-gray-400">
-              Occaecat consectetur proident tempor cupidatat proident sint ipsum elit ad dolor ad id commodo. Ad cillum id proident reprehenderit et veniam. Sit ut quis est cupidatat exercitation eiusmod dolor magna ad est id est mollit. Nostrud sint labore incididunt id dolor non.
-            </p>
-            <Button>
-              Start nå
-              <svg
-                className="ml-2 -mr-1 h-4 w-4"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-          </Card>
-   
-          <Card className="w-1/2">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Lær HÀNZÌ
-            </h5>
-            <p className="font-normal text-gray-700 dark:text-gray-400">
-              Occaecat consectetur proident tempor cupidatat proident sint ipsum elit ad dolor ad id commodo. Ad cillum id proident reprehenderit et veniam. Sit ut quis est cupidatat exercitation eiusmod dolor magna ad est id est mollit. Nostrud sint labore incididunt id dolor non.
-            </p>
-            <Button>
-              Start nå
-              <svg
-                className="ml-2 -mr-1 h-4 w-4"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-          </Card>
+        <div className="flex justify-between my-10  ">
+          {/* Next.js Link doesn't work here, so we use an <a> */}
+          <a href={`${id}/lær/flashcards`} className="w-1/2">
+            <Card className="hover:shadow-blue-600 mr-10 hover:cursor-pointer">
+              <>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Lær PĪNYĪN
+                </h5>
+                <p className="font-normal text-gray-700 dark:text-gray-400">
+                  Pinyin (Hanzi: 拼音; pīnyīn) er den offisielle metode i Kina
+                  for å transkribere mandarin, og har siden 1950-årene i
+                  Folkerepublikken Kina, og siden senest 1980-årene i resten av
+                  verden, vært den mest brukte metode for å skrive kinesisk som
+                  lydskrift. Systemet ble utviklet av en regjeringsnedsatt
+                  komite i 1950-årene, under ledelse av lingvisten Zhou
+                  Youguang.
+                </p>
+              </>
+            </Card>
+          </a>
 
-          
+          <a href="lær" className="w-1/2">
+            <Card className="hover:shadow-blue-600 ml-10 hover:cursor-pointer">
+              <>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Lær HÀNZÌ
+                </h5>
+                <p className="font-normal text-gray-700 dark:text-gray-400">
+                  Kinesiske skrifttegn eller Hanzi (tradisjonell kinesisk: 漢字
+                  forenklet kinesisk: 汉字, pinyin: Hànzì; Hàn-folkets
+                  skrifttegn, også kalt sinogrammer) er et sett på flere tusen
+                  fonetisk-piktografiske tegn som brukes for å skrive kinesisk,
+                  japansk, koreansk, og også eldre former for vietnamesisk.
+                  Tegnsettet er i Taiwan, Korea og Japan kjent som henholdsvis
+                  hancha, hanja, og kanji.
+                </p>
+              </>
+            </Card>
+          </a>
         </div>
       </div>
 
@@ -143,7 +138,11 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     <li
                       key={glose.Standard}
                       className="py-3 sm:py-4"
-                      onClick={() => {}}
+                      onClick={() => {
+                        setCurrentModalContent(glose);
+                        setModalIsOpen(true);
+                        window.scrollTo(0, 0);
+                      }}
                     >
                       <div className="flex items-center space-x-4">
                         <div className="shrink-0"></div>
@@ -166,6 +165,46 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             </div>
           </Card>
         </div>
+        <div
+          className={`absolute flex h-full w-full  ${
+            modalIsOpen ? "inline" : "hidden"
+          } `}
+        >
+          <div
+            className="absolute flex h-full w-full bg-opacity-75 bg-white"
+            onClick={() => {
+              setModalIsOpen(false);
+            }}
+          />
+          <div className="absolute flex justify-center items-center z-10 w-full">
+            <div className="max-w-sm min-w-full w-full ">
+              {typeof currentModalContent === "object" ? (
+                <Card>
+                  <h5 className="text-2xl font-bold tracking-tight  text-gray-900 dark:text-white">
+                    {currentModalContent?.Standard}
+                  </h5>
+                  <p className="font-normal tracking-widest text-gray-700 dark:text-gray-400">
+                    {currentModalContent?.Pinyin}
+                  </p>
+                  <p className="font-normal tracking-widest text-gray-700 dark:text-gray-400">
+                    {currentModalContent?.Chinese.split("").map(
+                      (letter: string, index: number) => {
+                        return (
+                          <span
+                            key={index}
+                            className="inline-block m-2 hover:underline hover:text-blue-600"
+                          >
+                            {letter}
+                          </span>
+                        );
+                      }
+                    )}
+                  </p>
+                </Card>
+              ) : null}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -180,34 +219,23 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     },
   });
 
-  const listeID: string | undefined = ctx.params?.id?.toString().split("-")[1];
-  let liste = await fetchAPI(`/glose-listes/${listeID}`, {
-    populate: {
-      Title: "*",
-      Description: "*",
-      Gloser: {
-        populate: "*",
-      },
-    },
-  }).then((res) => res.data.attributes);
+  let {liste } = await getListe({ id: ctx.params?.id?.toString() });
+
+  if (!liste) return { notFound: true };
 
   res.data.attributes.seo = {
-    metaTitle: liste.Title,
-    metaDescription: liste.Description,
-    keywords: liste.Gloser.map((glose: Glose) => glose.Standard).toString(),
+    metaTitle: liste.title,
+    metaDescription: liste.description,
+    keywords: liste.gloser.map((glose: Glose) => glose.Standard).toString(),
   } as MetaSeo;
-
-  // Remove each glose where Aktiv is false or undefined
-  liste.Gloser = liste.Gloser.filter((glose: DBGlose) => {
-    return glose.Aktiv === true;
-  });
 
   return {
     props: {
+      id: ctx.params?.id || null,
       liste: {
-        title: liste.Title,
-        description: liste.Description,
-        gloser: liste.Gloser,
+        title: liste.title,
+        description: liste.description,
+        gloser: liste.gloser,
       },
       page: res.data,
     },
