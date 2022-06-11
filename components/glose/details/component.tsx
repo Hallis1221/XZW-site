@@ -44,7 +44,9 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
                       return (
                         <span
                           key={index}
-                          className="inline-block m-2 hover:underline hover:cursor-pointer hover:text-blue-600"
+                          className={`inline-block m-2 hover:underline hover:cursor-pointer ${
+                            hanziFocused === letter ? "text-blue-600 underline" : ""
+                          }`}
                           onClick={() => {
                             setHanziFocused("");
 
