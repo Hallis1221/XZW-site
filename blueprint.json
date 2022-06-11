@@ -1,7 +1,63 @@
 {
     "line": "cloudy",
+    "demo": "https://xzw.halvor.codes",
+    "logo": {
+        "src": "https://xzw-admin.herokuapp.com/uploads/favicon_3540cb39b3.ico"
+    },
     "pkg": {
-        "description": "**{{pkg.name}}** er ganske enkelt en nettside for å pugge kinesiske gloser. {{pkg.name}} har som mål å være et alternativ til *quizlet* som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal {{pkg.name}} få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan {{pkg.name}} skal fortsette å bli [her](https://github.com/users/Hallis1221/projects/1/views/2). {{pkg.name}} er tilgjengelig som åpen kildekode. ",
-        "demo": "https://xzw.halvor.codes"
-    }
+        "title": "Velkommen til {{pkg.name}} versjon {{pkg.version}}.",
+        "description": "**{{pkg.name}}** er ganske enkelt en nettside for å pugge kinesiske gloser. {{pkg.name}} har som mål å være et alternativ til *quizlet* som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal {{pkg.name}} få flere spill og funksjoner som 'gamifier' det å lære kinesisk. Se et roadmap for hvordan {{pkg.name}} skal fortsette å bli [her](https://github.com/users/Hallis1221/projects/1/views/2). {{pkg.name}} er tilgjengelig som åpen kildekode. Se lisense på bunnen av siden, eller i LICENSE.md ",
+        "contributors": [
+            {
+                "name": "Halvor Vivelstad",
+                "email": "halvorviv@gmail.com",
+                "url": "https://halvor.codes",
+                "img": "https://avatars.githubusercontent.com/u/46447358?v=4",
+                "info": [
+                    "🔥"
+                ]
+            }
+        ]
+    },
+    "ids": {
+        "github": "hallis1221/xzw-site"
+    },
+    "badges": [
+        {
+            "alt": "Top språk",
+            "url": "https://img.shields.io/github/languages/top/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Sikkerhet",
+            "url": "https://img.shields.io/snyk/vulnerabilities/github/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Åpne issues",
+            "url": "https://img.shields.io/github/issues/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Lukkede issues",
+            "url": "https://img.shields.io/github/issues-closed-raw/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Åpne pull requests",
+            "url": "https://img.shields.io/github/issues-pr/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Lukkede pull requests",
+            "url": "https://img.shields.io/github/issues-pr-closed/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Nettside status",
+            "url": "https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fxzw.halvor.codes"
+        },
+        {
+            "alt": "Aktivitet",
+            "url": "https://img.shields.io/github/commit-activity/w/hallis1221/xzw-site?style=plastic"
+        },
+        {
+            "alt": "Lisens",
+            "Url": "https://img.shields.io/github/license/hallis1221/xzw-site"
+        }
+    ]
 }
