@@ -1,2 +1,2 @@
-Velkommen til {{pkg.name}} version {{pkg.version}}. 
+# Velkommen til {{pkg.name}} version {{pkg.version}}. 
 {{pkg.name}} er ganske enkelt en nettside for å pugge kinesiske gloser. {{pkg.name}} har som mål å være et alternativ til quizlet som lar deg lære stroke-order, hanzi og pinyin. Etterhvert skal {{pkg.name}} få flere spill og funksjoner som "gamifier" det å lære kinesisk. Se et roadmap for hvordan {{pkg.name}} skal fortsette å bli (her)[https://github.com/users/Hallis1221/projects/1/views/2]. {{pkg.name}} er tilgjengelig som åpen kildekode under {{pkg.license}}.
