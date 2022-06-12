@@ -7,10 +7,6 @@ import fetchAPI from "strapi/fetch";
 const Home: NextPage = ({ home }: any) => {
   return (
     <>
-    
-
-      <div>
-      </div>
     </>
   );
 };
