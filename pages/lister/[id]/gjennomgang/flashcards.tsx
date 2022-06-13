@@ -5,15 +5,59 @@ import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
 /* FLowbite components */
 import { Card } from "flowbite-react";
+/* Hooks */
+import { useState } from "react";
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
+  let [currentCardNumber, setCurrentCard] = useState<number>(0);
+  
+  const glose: Glose = liste.gloser[currentCardNumber];
+
   return (
-    <Card>
-      <h1>{liste.title}</h1>
-    </Card>
+    <div className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50">
+      <div className="w-screen z-10 mt-20 text-center text-5xl font-semibold">
+        {
+          currentCardNumber+1 + "/" + (liste.gloser.length)
+        }
+      </div>
+      <div className="h-full flex justify-center sm:justify-start">
+
+        <div
+          className="bg-transparent w-1/6 hidden sm:inline"
+          onClick={() => {
+            if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+          }}
+        />
+   
+            <Card
+              key={liste.gloser[currentCardNumber].Standard}
+              className={`relative w-5/6 h-2/6 mt-[25%] sm:mt-[5%] sm:h-3/4 md:w-3/4 xl:mt-10  ${
+                currentCardNumber === liste.gloser.indexOf(glose)
+                  ? "inline"
+                  : "hidden"
+              }`}
+            >
+              <div className="flex flex-col justify-center items-center">
+                <h1 className="m-24 text-center text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+                  {glose.Standard}
+                </h1>
+              </div>
+            </Card>
+          
+      
+        <div
+          className="bg-transparent w-1/6 hidden sm:inline"
+          onClick={() => {
+            if (currentCardNumber <= liste.gloser.length && currentCardNumber !== liste.gloser.length - 1)
+              setCurrentCard(currentCardNumber + 1);
+          }}
+        />
+      </div>
+      
+    </div>
   );
 };
 
