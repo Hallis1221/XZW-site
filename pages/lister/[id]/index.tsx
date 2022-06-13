@@ -110,7 +110,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
             </Card>
           </a>
 
-          <a href="gjennomgang" className="w-1/2">
+          <a href={`${id}/gjennomgang/flashcards/hanzi`}  className="w-1/2">
             <Card className="hover:shadow-blue-600 ml-10 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
