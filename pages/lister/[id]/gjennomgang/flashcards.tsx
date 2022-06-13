@@ -7,56 +7,79 @@ import type { MetaSeo } from "types/seo";
 import { Card } from "flowbite-react";
 /* Hooks */
 import { useState } from "react";
+import { useSwipeable } from "react-swipeable";
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
+import { ArrowCircleLeftIcon, ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
-  
+
   const glose: Glose = liste.gloser[currentCardNumber];
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+    },
+    onSwipedRight: () => {
+      if (currentCardNumber < liste.gloser.length - 1)
+        setCurrentCard(currentCardNumber + 1);
+    },
+  });
+
   return (
-    <div className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50">
-      <div className="w-screen z-10 mt-20 text-center text-5xl font-semibold">
-        {
-          currentCardNumber+1 + "/" + (liste.gloser.length)
-        }
+    <div
+      className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50"
+      {...handlers}
+    >
+      <div className="w-screen z-10 mt-20 text-center text-4xl sm:text-5xl font-semibold">
+        {currentCardNumber + 1 + "/" + liste.gloser.length}
       </div>
       <div className="h-full flex justify-center sm:justify-start">
-
         <div
-          className="bg-transparent w-1/6 hidden sm:inline"
+          className="bg-transparent w-1/6 hidden sm:flex justify-center"
           onClick={() => {
             if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
           }}
-        />
-   
-            <Card
-              key={liste.gloser[currentCardNumber].Standard}
-              className={`relative w-5/6 h-2/6 mt-[25%] sm:mt-[5%] sm:h-3/4 md:w-3/4 xl:mt-10  ${
-                currentCardNumber === liste.gloser.indexOf(glose)
-                  ? "inline"
-                  : "hidden"
-              }`}
-            >
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="m-24 text-center text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-                  {glose.Standard}
-                </h1>
-              </div>
-            </Card>
-          
-      
+        
+        >
+              <div className="h-full flex flex-col justify-center">
+          <ArrowLeftIcon className="h-24 mb-24"/>
+          </div>
+        </div>
+
+        <Card
+          key={liste.gloser[currentCardNumber].Standard}
+          className={`relative w-5/6 h-2/6 mt-[25%] sm:mt-[5%] sm:h-3/4 md:w-3/4 xl:mt-10  ${
+            currentCardNumber === liste.gloser.indexOf(glose)
+              ? "inline"
+              : "hidden"
+          }`}
+        >
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="m-24 text-center  w-full text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-semibold  tracking-wide text-gray-900 dark:text-white">
+              {glose.Standard}
+            </h1>
+          </div>
+        </Card>
+
         <div
-          className="bg-transparent w-1/6 hidden sm:inline"
+          className="bg-transparent w-1/6 hidden sm:flex justify-center"
           onClick={() => {
-            if (currentCardNumber <= liste.gloser.length && currentCardNumber !== liste.gloser.length - 1)
+            if (
+              currentCardNumber <= liste.gloser.length &&
+              currentCardNumber !== liste.gloser.length - 1
+            )
               setCurrentCard(currentCardNumber + 1);
           }}
-        />
+         
+        >
+          <div className="h-full flex flex-col justify-center">
+          <ArrowRightIcon className="h-24 mb-24"/>
+          </div>
+        </div>
       </div>
-      
     </div>
   );
 };
