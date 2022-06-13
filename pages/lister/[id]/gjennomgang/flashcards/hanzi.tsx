@@ -4,32 +4,43 @@ import type { GloseListe } from "types/gloseListe";
 import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
 /* FLowbite components */
-import { Button, Card } from "flowbite-react";
+import { Button } from "flowbite-react";
+/* Components */
+import { NavArrow } from "src/components/navArrow";
+import { Flashcard } from "src/components/flashcard";
+import { FlashcardWithActions } from "src/components/flashcardWithActions/component";
 /* Hooks */
 import { useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import useKeypress from "react-use-keypress";
+
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
-import {
-  ArrowCircleLeftIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-} from "@heroicons/react/solid";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
 
+  const [flipped, setFlipped] = useState<boolean>(false);
+
   const glose: Glose = cards[currentCardNumber];
+
+  useKeypress(" ", () => setFlipped(!flipped));
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
+      setFlipped(false);
       if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
     },
     onSwipedRight: () => {
-      if (currentCardNumber < cards.length - 1)
+      setFlipped(false);
+      if (
+        currentCardNumber <= cards.length &&
+        currentCardNumber !== cards.length - 1
+      )
         setCurrentCard(currentCardNumber + 1);
+      else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
     },
   });
 
@@ -41,86 +52,76 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 
   return (
     <div
-      className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50"
+      className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50 overflow-hidden"
       {...handlers}
     >
       <div className="w-screen z-10 mt-20 text-center text-4xl sm:text-5xl font-semibold">
         {currentCardNumber + 1 + "/" + cards.length}
       </div>
       <div className="h-full flex sm:justify-start">
-        <div
-          className="bg-transparent w-1/6 hidden sm:flex justify-center"
+        <NavArrow
+          left
           onClick={() => {
+            setFlipped(false);
             if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
           }}
-        >
-          <div className="h-full flex flex-col justify-center">
-            <ArrowLeftIcon className="h-24 mb-24" />
-          </div>
-        </div>
+        />
 
         <div className="h-full w-full flex flex-col">
-          <div className="relative h-full flex justify-center w-full">
-            <Card
-              key={cards[currentCardNumber].Standard}
-              className={` w-5/6 h-2/6 mt-[25%] sm:mt-[5%] sm:h-3/4 md:w-3/4 xl:mt-10  ${
-                currentCardNumber === cards.indexOf(glose) ? "inline" : "hidden"
-              }`}
-            >
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="m-24 text-center  w-full text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-semibold  tracking-wide text-gray-900 dark:text-white">
-                  {glose.Standard}
-                </h1>
-              </div>
-            </Card>
-          </div>
-          <div className="w-full flex justify-center">
-            <div className="absolute bottom-0 h-1/6 w-full ">
-              <div className="flex justify-evenly h-full mx-[21%]">
-                <div className="flex justify-between w-full">
-                  <Button
-                    className="h-24 w-64 mx-5 mt-5"
-                    color="green"
-                    onClick={() => {
-                      // Remove card from list
-                      setCards(
-                        cards.filter((card) => card.Standard !== glose.Standard)
-                      );
-                    }}
-                  >
-                    Got it!
-                  </Button>
-                  <Button className="h-24 w-64 mx-5 mt-5" color="red" onClick={
-                    () => {
-                      if (
-                        currentCardNumber <= cards.length &&
-                        currentCardNumber !== cards.length - 1
-                      )
-                        setCurrentCard(currentCardNumber + 1);
-                    }
-                  }>
-                    Not yet
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Flashcard
+            flipped={flipped}
+            onClick={() => setFlipped(!flipped)}
+            front={glose.Standard}
+            back={glose.Chinese}
+          />
+          <FlashcardWithActions
+            desktopButtons={
+              <Button
+                className="h-24 w-full mx-5 mt-5"
+                color="green"
+                onClick={() => {
+                  setFlipped(false);
+
+                  // Remove card from list
+                  setCards(
+                    cards.filter((card) => card.Standard !== glose.Standard)
+                  );
+                }}
+              >
+                Got it!
+              </Button>
+            }
+            mobileButtons={
+              <Button
+                className="inline md:hidden h-24 w-full mx-5 mb-5"
+                color="green"
+                onClick={() => {
+                  setFlipped(false);
+
+                  // Remove card from list
+                  setCards(
+                    cards.filter((card) => card.Standard !== glose.Standard)
+                  );
+                }}
+              >
+                Got it!
+              </Button>
+            }
+          />
         </div>
 
-        <div
-          className="bg-transparent w-1/6 hidden sm:flex justify-center"
+        <NavArrow
+          right
           onClick={() => {
+            setFlipped(false);
             if (
               currentCardNumber <= cards.length &&
               currentCardNumber !== cards.length - 1
             )
               setCurrentCard(currentCardNumber + 1);
+            else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
           }}
-        >
-          <div className="h-full flex flex-col justify-center">
-            <ArrowRightIcon className="h-24 mb-24" />
-          </div>
-        </div>
+        />
       </div>
     </div>
   );
