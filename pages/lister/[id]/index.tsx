@@ -88,42 +88,27 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           </Table>
         </div>
 
-        {/* This is just a prototype - likely will not split hanzi and pinyin*/}
-        <div className="flex justify-between my-10  ">
+        <div className="my-10 w-full">
           {/* Next.js Link doesn't work here, so we use an <a> */}
-          <a href={`${id}/gjennomgang/flashcards`} className="w-1/2">
-            <Card className="hover:shadow-blue-600 mr-10 hover:cursor-pointer">
+          <a
+            href={`${id}/spill`}
+            className="w-full flex justify-center"
+          >
+            <Card className="hover:shadow-blue-600 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Lær PĪNYĪN
+                  Start å lære
                 </h5>
                 <p className="font-normal text-gray-700 dark:text-gray-400">
-                  Pinyin (Hanzi: 拼音; pīnyīn) er den offisielle metode i Kina
-                  for å transkribere mandarin, og har siden 1950-årene i
-                  Folkerepublikken Kina, og siden senest 1980-årene i resten av
-                  verden, vært den mest brukte metode for å skrive kinesisk som
-                  lydskrift. Systemet ble utviklet av en regjeringsnedsatt
-                  komite i 1950-årene, under ledelse av lingvisten Zhou
-                  Youguang.
-                </p>
-              </>
-            </Card>
-          </a>
-
-          <a href={`${id}/gjennomgang/flashcards/hanzi`}  className="w-1/2">
-            <Card className="hover:shadow-blue-600 ml-10 hover:cursor-pointer">
-              <>
-                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Lær HÀNZÌ
-                </h5>
-                <p className="font-normal text-gray-700 dark:text-gray-400">
-                  Kinesiske skrifttegn eller Hanzi (tradisjonell kinesisk: 漢字
-                  forenklet kinesisk: 汉字, pinyin: Hànzì; Hàn-folkets
-                  skrifttegn, også kalt sinogrammer) er et sett på flere tusen
-                  fonetisk-piktografiske tegn som brukes for å skrive kinesisk,
-                  japansk, koreansk, og også eldre former for vietnamesisk.
-                  Tegnsettet er i Taiwan, Korea og Japan kjent som henholdsvis
-                  hancha, hanja, og kanji.
+                  Ut fugiat culpa aliqua ea pariatur nulla elit excepteur labore
+                  laboris duis. Commodo eu est incididunt ipsum sunt in mollit
+                  ut esse eiusmod nulla. Ea elit ex exercitation voluptate nisi
+                  amet elit nostrud laboris culpa id aliquip voluptate qui. Duis
+                  consectetur commodo consectetur ex fugiat tempor amet velit.
+                  Esse pariatur consectetur eu ut commodo eu exercitation minim
+                  sunt sunt. Duis anim sunt culpa culpa. Id mollit tempor
+                  ullamco nulla consequat dolore dolore occaecat ad consequat
+                  officia amet veniam fugiat.
                 </p>
               </>
             </Card>
@@ -189,6 +174,22 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
               </ul>
             </div>
           </Card>
+          <div className="my-10 w-full">
+          {/* Next.js Link doesn't work here, so we use an <a> */}
+          <a
+            href={`${id}/spill`}
+            className="w-full flex justify-center"
+          >
+            <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
+              <>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Start å lære
+                </h5>
+              
+              </>
+            </Card>
+          </a>
+        </div>
         </div>
         <GloseDetailsPopup
           currentModalContent={currentModalContent}

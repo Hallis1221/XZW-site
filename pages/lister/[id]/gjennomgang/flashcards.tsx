@@ -3,8 +3,9 @@ import type { Glose } from "types/glose";
 import type { GloseListe } from "types/gloseListe";
 import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
+import { Card } from "types/card";
 /* FLowbite components */
-import { Button } from "flowbite-react";
+import { Button, Dropdown } from "flowbite-react";
 /* Components */
 import { NavArrow } from "components/navArrow";
 import { FlashcardWithActions } from "components/flashcardWithActions/component";
@@ -25,6 +26,10 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 
   const [flipped, setFlipped] = useState<boolean>(false);
   const glose: Glose = cards[currentCardNumber];
+  const [card, setCard] = useState<Card>({
+    front: glose.Standard,
+    back: glose.Chinese,
+  });
 
   useKeypress(" ", () => setFlipped(!flipped));
   useKeypress("ArrowRight", () => nextCard());
@@ -139,26 +144,31 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
         <div className="h-full w-full flex flex-col">
           <SwipeableFlashcard
             flipped={flipped}
-            glose={glose}
+            card={card}
             setFlipped={setFlipped}
             onLeft={() => nextCard()}
             onRight={() => removeCard()}
           />
           <FlashcardWithActions
             desktopButtons={
-              <Button
-                className="h-24 w-full mx-5 mt-5"
-                color="green"
-                onClick={() => removeCard()}
-              >
-                Got it!
-              </Button>
+              <div className="w-full mx-2 mt-5">
+                <Button
+                  className="h-24 w-full mb-2"
+                  color="green"
+                  onClick={() => removeCard()}
+                >
+                  Got it!
+                </Button>
+
+                <CardSettings glose={glose} card={card} setCard={setCard} />
+              </div>
             }
             mobileButtons={
               <div className="absolute bottom-0 w-full mx-5 flex justify-center">
                 <div className="h-full w-11/12 flex flex-col mb-5">
+                <CardSettings glose={glose} card={card} setCard={setCard} isAbove/>
                   <Button
-                    className="inline md:hidden h-24 w-full mb-1"
+                    className="inline md:hidden h-24 w-full my-1"
                     color="green"
                     onClick={() => removeCard()}
                   >
@@ -182,6 +192,90 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     </div>
   );
 };
+
+function CardSettings({
+  setCard,
+  card,
+  glose,
+  isAbove = false,
+}: {
+  setCard: (card: Card) => void;
+  card: Card;
+  glose: Glose;
+  isAbove?: boolean;
+}) {
+  return (
+    <div className={`flex flex-row w-full justify-between ${
+      isAbove ? "mb-2" : "mt-2"
+    }`}>
+      <Dropdown label="Front" placement="top">
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: card.front,
+              back: glose.Chinese,
+            })
+          }
+        >
+          hànzì
+        </Dropdown.Item>
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: card.front,
+              back: glose.Pinyin,
+            })
+          }
+        >
+          pīnyīn
+        </Dropdown.Item>
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: card.front,
+              back: glose.Standard,
+            })
+          }
+        >
+          norsk
+        </Dropdown.Item>
+      </Dropdown>
+
+      <Dropdown label="Bak" placement="top">
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: glose.Chinese,
+              back: card.back,
+            })
+          }
+        >
+          hànzì
+        </Dropdown.Item>
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: glose.Pinyin,
+              back: card.back,
+            })
+          }
+        >
+          pīnyīn
+        </Dropdown.Item>
+        <Dropdown.Item
+          onClick={() =>
+            setCard({
+              front: glose.Standard,
+              back: card.back,
+            })
+          }
+        >
+          norsk
+        </Dropdown.Item>
+      </Dropdown>
+    </div>
+  );
+}
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   // TODO: switch to /lister/flashcard

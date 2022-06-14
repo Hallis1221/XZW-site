@@ -7,7 +7,7 @@ import { SwipeAbleFlashcardProps } from "./props";
 export function SwipeableFlashcard({
   flipped,
   setFlipped,
-  glose,
+  card,
   onLeft,
   onRight,
 }: SwipeAbleFlashcardProps) {
@@ -43,8 +43,8 @@ export function SwipeableFlashcard({
       <Flashcard
         flipped={flipped}
         onClick={() => setFlipped(!flipped)}
-        front={glose.Standard}
-        back={glose.Chinese}
+        front={card.front}
+        back={card.back}
       />
     </div>
   );
