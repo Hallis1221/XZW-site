@@ -100,7 +100,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               }}
             >
               <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl lg">
-                {page.attributes.OutOfCards}
+                {page.attributes.OutOfCards || "Ingen flere kort. Trykk hvorsomhelst for å starte på nytt."}
               </h1>
             </div>
           </div>
@@ -112,7 +112,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 
   function nextCard() {
     toast.remove();
-    toast.success(page.attributes.NextCard);
+    toast.success(page.attributes.NextCard || "Neste kort");
     if (cards.length <= 0) return;
 
     if (flipped) {
@@ -153,12 +153,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       setTimeout(() => {
         setCards(cards.filter((card) => card.Standard !== glose.Standard));
         toast.remove();
-        toast.success(page.attributes.CardRemoved);
+        toast.success(page.attributes.CardRemoved || "Kort fjernet");
       }, 400);
     } else {
       setCards(cards.filter((card) => card.Standard !== glose.Standard));
       toast.remove();
-      toast.success(page.attributes.CardRemoved);
+      toast.success(page.attributes.CardRemoved || "Kort fjernet");
     }
   }
 
@@ -192,7 +192,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                   color="green"
                   onClick={() => removeCard()}
                 >
-                  {page.attributes.Success}
+                  {page.attributes.Success || "Klarte det!"}
                 </Button>
               </div>
             }
@@ -210,15 +210,15 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     color="green"
                     onClick={() => removeCard()}
                   >
-                    {page.attributes.Success}
+                    {page.attributes.Success || "Klarte det!"}
                   </Button>
                   <Button
                     className="h-24 w-full mt-1"
                     color="red"
                     onClick={() => nextCard()}
                   >
-                    {page.attributes.Failure}
-                  </Button>
+                    {page.attributes.Failure || "Klarte det ikke"}
+                  </Button> 
                 </div>
               </div>
             }
