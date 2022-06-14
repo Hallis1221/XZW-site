@@ -21,6 +21,8 @@ import toast from "react-hot-toast";
 import { SwipeableFlashcard } from "src/components/swipeAbleFlashcard";
 import { CardSide } from "types/cardSide";
 
+// TODO use strapi texts
+
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
@@ -215,9 +217,9 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                   <Button
                     className="h-24 w-full mt-1"
                     color="red"
-                    onClick={() => removeCard()}
+                    onClick={() => nextCard()}
                   >
-                    Not yet
+                    Ikke ennå...
                   </Button>
                 </div>
               </div>

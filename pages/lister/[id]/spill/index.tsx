@@ -6,6 +6,8 @@ import fetchAPI from "strapi/fetch";
 import { Glose } from "types/glose";
 import { MetaSeo } from "types/seo";
 
+// TODO use strapi texts
+
 const SpillPage: NextPage<any> = ({ id }) => {
   console.log("id", id);
   return (
