@@ -19,6 +19,8 @@ import Link from "next/link";
 import App from "next/app";
 /* Flowbite components */
 import { Navbar, Button, Spinner } from "flowbite-react";
+/* React-hot-toast components */
+import { Toaster } from "react-hot-toast/dist/components/toaster";
 /* API calls */
 import getGlobal from "strapi/global";
 /* Hooks */
@@ -50,6 +52,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+    <Toaster/>
       <GlobalContext.Provider value={global.attributes || undefined}>
         <Seo pageSeo={page.attributes.seo} global={global.attributes} />
         {/* <Flowbite> */}

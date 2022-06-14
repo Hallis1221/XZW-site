@@ -17,6 +17,7 @@ import useKeypress from "react-use-keypress";
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
+import toast from "react-hot-toast";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
@@ -27,21 +28,13 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   const glose: Glose = cards[currentCardNumber];
 
   useKeypress(" ", () => setFlipped(!flipped));
+  useKeypress("ArrowRight", () => nextCard());
+  useKeypress("ArrowLeft", () => lastCard());
+  useKeypress("Enter", () => removeCard());
 
   const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      setFlipped(false);
-      if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
-    },
-    onSwipedRight: () => {
-      setFlipped(false);
-      if (
-        currentCardNumber <= cards.length &&
-        currentCardNumber !== cards.length - 1
-      )
-        setCurrentCard(currentCardNumber + 1);
-      else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
-    },
+    onSwipedLeft: () => lastCard(),
+    onSwipedRight: () => nextCard(),
   });
 
   if (cards.length === currentCardNumber) {
@@ -59,13 +52,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
         {currentCardNumber + 1 + "/" + cards.length}
       </div>
       <div className="h-full flex sm:justify-start">
-        <NavArrow
-          left
-          onClick={() => {
-            setFlipped(false);
-            if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
-          }}
-        />
+        <NavArrow left onClick={() => lastCard()} />
 
         <div className="h-full w-full flex flex-col">
           <Flashcard
@@ -79,14 +66,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               <Button
                 className="h-24 w-full mx-5 mt-5"
                 color="green"
-                onClick={() => {
-                  setFlipped(false);
-
-                  // Remove card from list
-                  setCards(
-                    cards.filter((card) => card.Standard !== glose.Standard)
-                  );
-                }}
+                onClick={() => removeCard()}
               >
                 Got it!
               </Button>
@@ -95,14 +75,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               <Button
                 className="inline md:hidden h-24 w-full mx-5 mb-5"
                 color="green"
-                onClick={() => {
-                  setFlipped(false);
-
-                  // Remove card from list
-                  setCards(
-                    cards.filter((card) => card.Standard !== glose.Standard)
-                  );
-                }}
+                onClick={() => removeCard()}
               >
                 Got it!
               </Button>
@@ -110,21 +83,52 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
           />
         </div>
 
-        <NavArrow
-          right
-          onClick={() => {
-            setFlipped(false);
-            if (
-              currentCardNumber <= cards.length &&
-              currentCardNumber !== cards.length - 1
-            )
-              setCurrentCard(currentCardNumber + 1);
-            else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
-          }}
-        />
+        <NavArrow right onClick={() => nextCard()} />
       </div>
     </div>
   );
+
+  function nextCard() {
+    if (flipped) {
+      setFlipped(false);
+      setTimeout(() => {
+        if (
+          currentCardNumber <= cards.length &&
+          currentCardNumber !== cards.length - 1
+        )
+          setCurrentCard(currentCardNumber + 1);
+        else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+      }, 400);
+    } else if (
+      currentCardNumber <= cards.length &&
+      currentCardNumber !== cards.length - 1
+    )
+      setCurrentCard(currentCardNumber + 1);
+    else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+  }
+
+  function lastCard() {
+    if (flipped) {
+      setFlipped(false);
+      setTimeout(() => {
+        if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+      }, 400);
+    } else if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+  }
+
+  function removeCard() {
+    if (flipped) {
+      setFlipped(false);
+      // Remove card from list
+      setTimeout(() => {
+        setCards(cards.filter((card) => card.Standard !== glose.Standard));
+        toast.success("Kort fjernet");
+      }, 400);
+    } else {
+      setCards(cards.filter((card) => card.Standard !== glose.Standard));
+      toast.success("Kort fjernet");
+    }
+  }
 };
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
