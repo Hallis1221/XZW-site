@@ -77,6 +77,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   }
 
   function nextCard() {
+    toast.remove();
     toast.success("Neste kort");
     if (cards.length <= 0) return;
 
@@ -117,10 +118,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       // Remove card from list
       setTimeout(() => {
         setCards(cards.filter((card) => card.Standard !== glose.Standard));
+        toast.remove();
         toast.success("Kort fjernet");
       }, 400);
     } else {
       setCards(cards.filter((card) => card.Standard !== glose.Standard));
+      toast.remove();
       toast.success("Kort fjernet");
     }
   }
