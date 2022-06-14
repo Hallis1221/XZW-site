@@ -51,11 +51,19 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
         <div className="mt-10 ">
           <Table>
             <Table.Head>
-              <Table.HeadCell>Norsk</Table.HeadCell>
-              <Table.HeadCell>Pīnyīn</Table.HeadCell>
-              <Table.HeadCell>Hànzì</Table.HeadCell>
               <Table.HeadCell>
-                <div className="sr-only">Stroke-order</div>
+                {page.attributes.Standard || "Norsk"}
+              </Table.HeadCell>
+              <Table.HeadCell>
+                {page.attributes.Pinyin || "Pīnyīn"}
+              </Table.HeadCell>
+              <Table.HeadCell>
+                {page.attributes.Hanzi || "Hànzì"}
+              </Table.HeadCell>
+              <Table.HeadCell>
+                <div className="sr-only">
+                  {page.attributes.Details || "Se mer"}
+                </div>
               </Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
@@ -78,7 +86,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                           window.scrollTo(0, 0);
                         }}
                       >
-                        Stroke-order
+                        {page.attributes.Details || "Se mer"}
                       </div>
                     </Table.Cell>
                   </Table.Row>
@@ -90,25 +98,15 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
 
         <div className="my-10 w-full">
           {/* Next.js Link doesn't work here, so we use an <a> */}
-          <a
-            href={`${id}/spill`}
-            className="w-full flex justify-center"
-          >
+          <a href={`${id}/spill`} className="w-full flex justify-center">
             <Card className="hover:shadow-blue-600 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Start å lære
+                  {page.attributes.ActionCard.title || "Start å lære"}
                 </h5>
                 <p className="font-normal text-gray-700 dark:text-gray-400">
-                  Ut fugiat culpa aliqua ea pariatur nulla elit excepteur labore
-                  laboris duis. Commodo eu est incididunt ipsum sunt in mollit
-                  ut esse eiusmod nulla. Ea elit ex exercitation voluptate nisi
-                  amet elit nostrud laboris culpa id aliquip voluptate qui. Duis
-                  consectetur commodo consectetur ex fugiat tempor amet velit.
-                  Esse pariatur consectetur eu ut commodo eu exercitation minim
-                  sunt sunt. Duis anim sunt culpa culpa. Id mollit tempor
-                  ullamco nulla consequat dolore dolore occaecat ad consequat
-                  officia amet veniam fugiat.
+                  {page.attributes.ActionCard.Description ||
+                    "Lær hva du skal gjøre"}
                 </p>
               </>
             </Card>
@@ -175,21 +173,17 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
             </div>
           </Card>
           <div className="my-10 w-full">
-          {/* Next.js Link doesn't work here, so we use an <a> */}
-          <a
-            href={`${id}/spill`}
-            className="w-full flex justify-center"
-          >
-            <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
-              <>
-                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Start å lære
-                </h5>
-              
-              </>
-            </Card>
-          </a>
-        </div>
+            {/* Next.js Link doesn't work here, so we use an <a> */}
+            <a href={`${id}/spill`} className="w-full flex justify-center">
+              <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
+                <>
+                  <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    {page.attributes.ActionCard.title || "Start å lære"}
+                  </h5>
+                </>
+              </Card>
+            </a>
+          </div>
         </div>
         <GloseDetailsPopup
           currentModalContent={currentModalContent}
@@ -203,8 +197,11 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
 };
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const res = await fetchAPI("/lister", {
+  const res = await fetchAPI("/liste", {
     populate: {
+      ActionCard: {
+        populate: "*",
+      },
       SEO: {
         populate: "*",
       },
