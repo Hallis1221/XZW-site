@@ -6,25 +6,24 @@ import type { MetaSeo } from "types/seo";
 /* FLowbite components */
 import { Button } from "flowbite-react";
 /* Components */
-import { NavArrow } from "src/components/navArrow";
-import { Flashcard } from "src/components/flashcard";
-import { FlashcardWithActions } from "src/components/flashcardWithActions/component";
+import { NavArrow } from "components/navArrow";
+import { FlashcardWithActions } from "components/flashcardWithActions/component";
 /* Hooks */
 import { useState } from "react";
-import { useSwipeable } from "react-swipeable";
+import { SwipeEventData, useSwipeable } from "react-swipeable";
 import useKeypress from "react-use-keypress";
 
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
 import toast from "react-hot-toast";
+import { SwipeableFlashcard } from "src/components/swipeAbleFlashcard";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
 
   const [flipped, setFlipped] = useState<boolean>(false);
-
   const glose: Glose = cards[currentCardNumber];
 
   useKeypress(" ", () => setFlipped(!flipped));
@@ -32,10 +31,26 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   useKeypress("ArrowLeft", () => lastCard());
   useKeypress("Enter", () => removeCard());
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => lastCard(),
-    onSwipedRight: () => nextCard(),
-  });
+  /*
+  return (
+    <div
+    className="h-96 w-96 bg-blue-200 relative flex justify-center" 
+    {...handlers}>
+      <div
+      className=" w-24 h-24 bg-red-500"
+        style={
+          swipeData ?
+          {
+            position: "absolute",
+          transform: `translateY(${swipeData?.deltaY }px) translateX(${swipeData?.deltaX }px)`,
+          } : 
+          {
+            backgroundColor: "blue",
+          }
+        }
+      ></div>
+    </div>
+  );*/
 
   if (cards.length === currentCardNumber) {
     if (cards.length <= 0)
@@ -43,13 +58,16 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
         <>
           <div className="h-screen w-full absolute top-0 left-0 -z-50">
             <div
-            className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
+              className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
                 setCards(liste.gloser);
                 setCurrentCard(0);
               }}
             >
-              <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl">  Ingen kort igjen. Trykk hvor som helst for å starte på nytt</h1>
+              <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl lg">
+                {" "}
+                Ingen kort igjen. Trykk hvor som helst for å starte på nytt
+              </h1>
             </div>
           </div>
         </>
@@ -59,6 +77,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   }
 
   function nextCard() {
+    toast.success("Neste kort");
     if (cards.length <= 0) return;
 
     if (flipped) {
@@ -107,10 +126,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   }
 
   return (
-    <div
-      className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50 overflow-hidden"
-      {...handlers}
-    >
+    <div className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50 overflow-hidden">
       <div className="w-screen z-10 mt-20 text-center text-4xl sm:text-5xl font-semibold">
         {currentCardNumber + 1 + "/" + cards.length}
       </div>
@@ -118,11 +134,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
         <NavArrow left onClick={() => lastCard()} />
 
         <div className="h-full w-full flex flex-col">
-          <Flashcard
+          <SwipeableFlashcard
             flipped={flipped}
-            onClick={() => setFlipped(!flipped)}
-            front={glose.Standard}
-            back={glose.Chinese}
+            glose={glose}
+            setFlipped={setFlipped}
+            onLeft={() => nextCard()}
+            onRight={() => removeCard()}
           />
           <FlashcardWithActions
             desktopButtons={
@@ -135,13 +152,24 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               </Button>
             }
             mobileButtons={
-              <Button
-                className="inline md:hidden h-24 w-full mx-5 mb-5"
-                color="green"
-                onClick={() => removeCard()}
-              >
-                Got it!
-              </Button>
+              <div className="absolute bottom-0 w-full mx-5 flex justify-center">
+                <div className="h-full w-11/12 flex flex-col mb-5">
+                  <Button
+                    className="inline md:hidden h-24 w-full mb-1"
+                    color="green"
+                    onClick={() => removeCard()}
+                  >
+                    Got it!
+                  </Button>
+                  <Button
+                    className="inline md:hidden h-24 w-full mt-1"
+                    color="red"
+                    onClick={() => removeCard()}
+                  >
+                    Not yet
+                  </Button>
+                </div>
+              </div>
             }
           />
         </div>
