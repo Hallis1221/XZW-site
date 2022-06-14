@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Seo pageSeo={page.attributes.seo} global={global.attributes} />
         {/* <Flowbite> */}
         <Navbar fluid={true} rounded={true}>
-          <Navbar.Brand href="https://flowbite.com/">
+          <Navbar.Brand href="/">
             <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               {global.attributes.Sitename}
             </span>
