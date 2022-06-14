@@ -2,6 +2,7 @@ import { PlayIcon } from "@heroicons/react/solid";
 import { Card } from "flowbite-react";
 import { FunctionComponent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { isHanzi } from "src/lib/regex/hanzi";
 import getStrokeRef from "src/lib/stroke-order/getRef";
 import { DetailsPopupProps } from "./props";
 
@@ -17,6 +18,14 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
     setHanziFocused("");
   }, [currentModalContent]);
 
+  currentModalContent?.Chinese.split("").forEach((str: string) => {
+    if (!isHanzi(str)) {
+      currentModalContent.Chinese = currentModalContent?.Chinese.replace(
+        str,
+        ""
+      );
+    }
+  });
   return (
     <div
       className={`absolute flex h-full w-full  ${
