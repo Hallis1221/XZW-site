@@ -10,7 +10,7 @@ import { Button, Dropdown } from "flowbite-react";
 import { NavArrow } from "components/navArrow";
 import { FlashcardWithActions } from "components/flashcardWithActions/component";
 /* Hooks */
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SwipeEventData, useSwipeable } from "react-swipeable";
 import useKeypress from "react-use-keypress";
 
@@ -19,10 +19,13 @@ import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
 import toast from "react-hot-toast";
 import { SwipeableFlashcard } from "src/components/swipeAbleFlashcard";
+import { CardSide } from "types/cardSide";
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
+  let [frontSide, setFrontSide] = useState<CardSide>();
+  let [backSide, setBackSide] = useState<CardSide>();
 
   const [flipped, setFlipped] = useState<boolean>(false);
   const glose: Glose = cards[currentCardNumber];
@@ -30,6 +33,13 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     front: glose.Standard,
     back: glose.Chinese,
   });
+
+  useEffect(() => {
+   setCard({
+    front: frontSide == "hanzi" ? glose.Chinese : frontSide == "pinyin" ? glose.Pinyin : glose.Standard,
+    back: backSide == "hanzi" ? glose.Chinese : backSide == "pinyin" ? glose.Pinyin : glose.Standard,
+   })
+  }, [frontSide, backSide, glose]);
 
   useKeypress(" ", () => setFlipped(!flipped));
   useKeypress("ArrowRight", () => nextCard());
@@ -160,13 +170,22 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                   Got it!
                 </Button>
 
-                <CardSettings glose={glose} card={card} setCard={setCard} />
+                <CardSettings
+                  glose={glose}
+                  setFront={setFrontSide}
+                  setBack={setBackSide}
+                />
               </div>
             }
             mobileButtons={
               <div className="absolute bottom-0 w-full mx-5 flex justify-center">
                 <div className="h-full w-11/12 flex flex-col mb-5">
-                <CardSettings glose={glose} card={card} setCard={setCard} isAbove/>
+                  <CardSettings
+                    setFront={setFrontSide}
+                    setBack={setBackSide}
+                    glose={glose}
+                    isAbove
+                  />
                   <Button
                     className="inline md:hidden h-24 w-full my-1"
                     color="green"
@@ -194,84 +213,34 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 };
 
 function CardSettings({
-  setCard,
-  card,
+  setBack,
+  setFront,
   glose,
   isAbove = false,
 }: {
-  setCard: (card: Card) => void;
-  card: Card;
+  setBack: Dispatch<SetStateAction<CardSide | undefined>>;
+  setFront: Dispatch<SetStateAction<CardSide | undefined>>;
   glose: Glose;
   isAbove?: boolean;
 }) {
   return (
-    <div className={`flex flex-row w-full justify-between ${
-      isAbove ? "mb-2" : "mt-2"
-    }`}>
+    <div
+      className={`flex flex-row w-full justify-between ${
+        isAbove ? "mb-2" : "mt-2"
+      }`}
+    >
       <Dropdown label="Front" placement="top">
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: card.front,
-              back: glose.Chinese,
-            })
-          }
-        >
-          hànzì
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: card.front,
-              back: glose.Pinyin,
-            })
-          }
-        >
-          pīnyīn
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: card.front,
-              back: glose.Standard,
-            })
-          }
-        >
+        <Dropdown.Item onClick={() => setFront("hanzi")}>hànzì</Dropdown.Item>
+        <Dropdown.Item onClick={() => setFront("pinyin")}>pīnyīn</Dropdown.Item>
+        <Dropdown.Item onClick={() => setFront("standard")}>
           norsk
         </Dropdown.Item>
       </Dropdown>
 
       <Dropdown label="Bak" placement="top">
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: glose.Chinese,
-              back: card.back,
-            })
-          }
-        >
-          hànzì
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: glose.Pinyin,
-              back: card.back,
-            })
-          }
-        >
-          pīnyīn
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() =>
-            setCard({
-              front: glose.Standard,
-              back: card.back,
-            })
-          }
-        >
-          norsk
-        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("hanzi")}>hànzì</Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("pinyin")}>pīnyīn</Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("standard")}>norsk</Dropdown.Item>
       </Dropdown>
     </div>
   );
