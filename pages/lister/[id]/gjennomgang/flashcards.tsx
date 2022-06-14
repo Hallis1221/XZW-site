@@ -30,29 +30,30 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   const [flipped, setFlipped] = useState<boolean>(false);
   const glose: Glose = cards[currentCardNumber];
   const [card, setCard] = useState<Card>({
-    front: glose.Standard,
-    back: glose.Chinese,
+    front: glose?.Standard || "",
+    back: glose?.Chinese || "",
   });
 
   useEffect(() => {
-    setCard({
-      front:
-        frontSide == "hanzi"
-          ? glose.Chinese
-          : frontSide == "pinyin"
-          ? glose.Pinyin
-          : frontSide == "standard"
-          ? glose.Standard
-          : glose.Pinyin + " (" + glose.Chinese + ")",
-      back:
-        backSide == "hanzi"
-          ? glose.Chinese
-          : backSide == "pinyin"
-          ? glose.Pinyin
-          : backSide == "standard"
-          ? glose.Standard
-          : glose.Pinyin + " (" + glose.Chinese + ")",
-    });
+    if (glose)
+      setCard({
+        front:
+          frontSide == "hanzi"
+            ? glose.Chinese
+            : frontSide == "pinyin"
+            ? glose.Pinyin
+            : frontSide == "standard"
+            ? glose.Standard
+            : glose.Pinyin + " (" + glose.Chinese + ")",
+        back:
+          backSide == "hanzi"
+            ? glose.Chinese
+            : backSide == "pinyin"
+            ? glose.Pinyin
+            : backSide == "standard"
+            ? glose.Standard
+            : glose.Pinyin + " (" + glose.Chinese + ")",
+      });
   }, [frontSide, backSide, glose]);
 
   useKeypress(" ", () => setFlipped(!flipped));
@@ -81,7 +82,11 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     </div>
   );*/
 
-  if (cards.length === currentCardNumber) {
+  if (
+    cards.length === currentCardNumber ||
+    card.back === "" ||
+    card.front === ""
+  ) {
     if (cards.length <= 0)
       return (
         <>
