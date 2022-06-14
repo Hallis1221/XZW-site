@@ -24,8 +24,8 @@ import { CardSide } from "types/cardSide";
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [currentCardNumber, setCurrentCard] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
-  let [frontSide, setFrontSide] = useState<CardSide>();
-  let [backSide, setBackSide] = useState<CardSide>();
+  let [frontSide, setFrontSide] = useState<CardSide>("standard");
+  let [backSide, setBackSide] = useState<CardSide>("pinyin_hanzi");
 
   const [flipped, setFlipped] = useState<boolean>(false);
   const glose: Glose = cards[currentCardNumber];
@@ -35,10 +35,24 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   });
 
   useEffect(() => {
-   setCard({
-    front: frontSide == "hanzi" ? glose.Chinese : frontSide == "pinyin" ? glose.Pinyin : glose.Standard,
-    back: backSide == "hanzi" ? glose.Chinese : backSide == "pinyin" ? glose.Pinyin : glose.Standard,
-   })
+    setCard({
+      front:
+        frontSide == "hanzi"
+          ? glose.Chinese
+          : frontSide == "pinyin"
+          ? glose.Pinyin
+          : frontSide == "standard"
+          ? glose.Standard
+          : glose.Pinyin + " (" + glose.Chinese + ")",
+      back:
+        backSide == "hanzi"
+          ? glose.Chinese
+          : backSide == "pinyin"
+          ? glose.Pinyin
+          : backSide == "standard"
+          ? glose.Standard
+          : glose.Pinyin + " (" + glose.Chinese + ")",
+    });
   }, [frontSide, backSide, glose]);
 
   useKeypress(" ", () => setFlipped(!flipped));
@@ -218,8 +232,8 @@ function CardSettings({
   glose,
   isAbove = false,
 }: {
-  setBack: Dispatch<SetStateAction<CardSide | undefined>>;
-  setFront: Dispatch<SetStateAction<CardSide | undefined>>;
+  setBack: Dispatch<SetStateAction<CardSide>>;
+  setFront: Dispatch<SetStateAction<CardSide>>;
   glose: Glose;
   isAbove?: boolean;
 }) {
@@ -235,12 +249,18 @@ function CardSettings({
         <Dropdown.Item onClick={() => setFront("standard")}>
           norsk
         </Dropdown.Item>
+        <Dropdown.Item onClick={() => setFront("pinyin_hanzi")}>
+          pīnyīn og hànzì
+        </Dropdown.Item>
       </Dropdown>
 
       <Dropdown label="Bak" placement="top">
         <Dropdown.Item onClick={() => setBack("hanzi")}>hànzì</Dropdown.Item>
         <Dropdown.Item onClick={() => setBack("pinyin")}>pīnyīn</Dropdown.Item>
         <Dropdown.Item onClick={() => setBack("standard")}>norsk</Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("pinyin_hanzi")}>
+          pīnyīn og hànzì
+        </Dropdown.Item>
       </Dropdown>
     </div>
   );
