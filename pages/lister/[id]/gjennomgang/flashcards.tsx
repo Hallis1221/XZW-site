@@ -11,7 +11,6 @@ import { NavArrow } from "components/navArrow";
 import { FlashcardWithActions } from "components/flashcardWithActions/component";
 /* Hooks */
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { SwipeEventData, useSwipeable } from "react-swipeable";
 import useKeypress from "react-use-keypress";
 
 /* API calls */
@@ -101,8 +100,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               }}
             >
               <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl lg">
-                {" "}
-                Ingen kort igjen. Trykk hvor som helst for å starte på nytt
+                {page.attributes.OutOfCards}
               </h1>
             </div>
           </div>
@@ -114,7 +112,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 
   function nextCard() {
     toast.remove();
-    toast.success("Neste kort");
+    toast.success(page.attributes.NextCard);
     if (cards.length <= 0) return;
 
     if (flipped) {
@@ -155,12 +153,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       setTimeout(() => {
         setCards(cards.filter((card) => card.Standard !== glose.Standard));
         toast.remove();
-        toast.success("Kort fjernet");
+        toast.success(page.attributes.CardRemoved);
       }, 400);
     } else {
       setCards(cards.filter((card) => card.Standard !== glose.Standard));
       toast.remove();
-      toast.success("Kort fjernet");
+      toast.success(page.attributes.CardRemoved);
     }
   }
 
@@ -183,43 +181,43 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
           <FlashcardWithActions
             desktopButtons={
               <div className="w-full mx-2 mt-5">
+                <CardSettings
+                  isAbove
+                  page={page}
+                  setFront={setFrontSide}
+                  setBack={setBackSide}
+                />
                 <Button
                   className="h-24 w-full mb-2"
                   color="green"
                   onClick={() => removeCard()}
                 >
-                  Got it!
+                  {page.attributes.Success}
                 </Button>
-
-                <CardSettings
-                  glose={glose}
-                  setFront={setFrontSide}
-                  setBack={setBackSide}
-                />
               </div>
             }
             mobileButtons={
               <div className="flex md:hidden absolute bottom-0 w-full mx-5 justify-center">
                 <div className="h-full w-11/12 flex flex-col mb-5">
                   <CardSettings
+                    isAbove
                     setFront={setFrontSide}
                     setBack={setBackSide}
-                    glose={glose}
-                    isAbove
+                    page={page}
                   />
                   <Button
                     className="h-24 w-full my-1"
                     color="green"
                     onClick={() => removeCard()}
                   >
-                    Got it!
+                    {page.attributes.Success}
                   </Button>
                   <Button
                     className="h-24 w-full mt-1"
                     color="red"
                     onClick={() => nextCard()}
                   >
-                    Ikke ennå...
+                    {page.attributes.Failure}
                   </Button>
                 </div>
               </div>
@@ -236,12 +234,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
 function CardSettings({
   setBack,
   setFront,
-  glose,
+  page,
   isAbove = false,
 }: {
   setBack: Dispatch<SetStateAction<CardSide>>;
   setFront: Dispatch<SetStateAction<CardSide>>;
-  glose: Glose;
+  page: any;
   isAbove?: boolean;
 }) {
   return (
@@ -251,22 +249,34 @@ function CardSettings({
       }`}
     >
       <Dropdown label="Front" placement="top">
-        <Dropdown.Item onClick={() => setFront("hanzi")}>hànzì</Dropdown.Item>
-        <Dropdown.Item onClick={() => setFront("pinyin")}>pīnyīn</Dropdown.Item>
+        <Dropdown.Item onClick={() => setFront("hanzi")}>
+          {page.attributes.Hanzi || "hànzì"}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setFront("pinyin")}>
+          {page.attributes.Pinyin || "pīnyīn"}
+        </Dropdown.Item>
         <Dropdown.Item onClick={() => setFront("standard")}>
-          norsk
+          {page.attributes.Standard || "norsk"}
         </Dropdown.Item>
         <Dropdown.Item onClick={() => setFront("pinyin_hanzi")}>
-          pīnyīn og hànzì
+          {page.attributes.Hanzi || "hànzì"} og{" "}
+          {page.attributes.Pinyin || "pīnyīn"}
         </Dropdown.Item>
       </Dropdown>
 
       <Dropdown label="Bak" placement="top">
-        <Dropdown.Item onClick={() => setBack("hanzi")}>hànzì</Dropdown.Item>
-        <Dropdown.Item onClick={() => setBack("pinyin")}>pīnyīn</Dropdown.Item>
-        <Dropdown.Item onClick={() => setBack("standard")}>norsk</Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("hanzi")}>
+          {page.attributes.Hanzi || "hànzì"}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("pinyin")}>
+          {page.attributes.Pinyin || "pīnyīn"}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setBack("standard")}>
+          {page.attributes.Standard || "norsk"}
+        </Dropdown.Item>
         <Dropdown.Item onClick={() => setBack("pinyin_hanzi")}>
-          pīnyīn og hànzì
+          {page.attributes.Hanzi || "hànzì"} og{" "}
+          {page.attributes.Pinyin || "pīnyīn"}
         </Dropdown.Item>
       </Dropdown>
     </div>
@@ -274,10 +284,17 @@ function CardSettings({
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  // TODO: switch to /lister/flashcard
-  const res = await fetchAPI("/lister", {
+  const listeRes = await fetchAPI("/lister", {
     populate: {
       SEO: {
+        populate: "*",
+      },
+    },
+  });
+
+  const pageRes = await fetchAPI("/flashcard", {
+    populate: {
+      Flashcard: {
         populate: "*",
       },
     },
@@ -287,21 +304,27 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (!liste) return { notFound: true };
 
-  res.data.attributes.seo = {
+  listeRes.data.attributes.seo = {
     metaTitle: liste.title,
     metaDescription: liste.description,
     keywords: liste.gloser.map((glose: Glose) => glose.Standard).toString(),
   } as MetaSeo;
 
+  let res: any = { data: {} };
+  res.data = {
+    ...listeRes.data,
+    ...pageRes.data,
+  };
+
   return {
     props: {
       id: ctx.params?.id || null,
+      page: res.data,
       liste: {
         title: liste.title,
         description: liste.description,
         gloser: liste.gloser,
       },
-      page: res.data,
     },
   };
 }

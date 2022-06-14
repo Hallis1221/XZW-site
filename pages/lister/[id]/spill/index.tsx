@@ -8,24 +8,21 @@ import { MetaSeo } from "types/seo";
 
 // TODO use strapi texts
 
-const SpillPage: NextPage<any> = ({ id }) => {
-  console.log("id", id);
+const SpillPage: NextPage<any> = ({ id, page }) => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Card className="m-5 w-fit ">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Flashcards
+            {page.attributes.Flashcard.Title}
           </h5>
           <p className="font-normal text-gray-700 dark:text-gray-400">
-            Reprehenderit et aute dolore minim nisi proident cupidatat magna ex
-            incididunt velit deserunt. Ut ullamco veniam occaecat non sunt
-            consectetur consequat. Est ipsum laborum magna non irure ipsum sit
-            elit duis enim nulla proident incididunt deserunt.
+            {page.attributes.Flashcard.Description.substring(0, 200)}
+            {page.attributes.Flashcard.Description.length > 200 ? "..." : ""}
           </p>
-          <Link href={  "/lister/" + id +"/gjennomgang/flashcards/" } >
+          <Link href={"/lister/" + id + "/gjennomgang/flashcards/"}>
             <Button>
-              Start å lære
+              {page.attributes.ActionTekst}
               <svg
                 className="ml-2 -mr-1 h-4 w-4"
                 fill="currentColor"
@@ -47,9 +44,17 @@ const SpillPage: NextPage<any> = ({ id }) => {
 };
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const res = await fetchAPI("/lister", {
+  const seoRes = await fetchAPI("/lister", {
     populate: {
       SEO: {
+        populate: "*",
+      },
+    },
+  });
+
+  const pageRes = await fetchAPI("/spill", {
+    populate: {
+      Flashcard: {
         populate: "*",
       },
     },
@@ -59,16 +64,21 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (!liste) return { notFound: true };
 
-  res.data.attributes.seo = {
+  seoRes.data.attributes.seo = {
     metaTitle: liste.title,
     metaDescription: liste.description,
     keywords: liste.gloser.map((glose: Glose) => glose.Standard).toString(),
   } as MetaSeo;
 
+  let res: any = { data: {} };
+  res.data = {
+    ...seoRes.data,
+    ...pageRes.data,
+  };
+
   return {
     props: {
       id: ctx.params?.id || null,
-
       page: res.data,
     },
   };
