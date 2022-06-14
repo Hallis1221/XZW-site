@@ -38,9 +38,72 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   });
 
   if (cards.length === currentCardNumber) {
-    if (cards.length <= 0) return <div>Ingen kort</div>;
+    if (cards.length <= 0)
+      return (
+        <>
+          <div className="h-screen w-full absolute top-0 left-0 -z-50">
+            <div
+            className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
+              onClick={() => {
+                setCards(liste.gloser);
+                setCurrentCard(0);
+              }}
+            >
+              <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl">  Ingen kort igjen. Trykk hvor som helst for å starte på nytt</h1>
+            </div>
+          </div>
+        </>
+      );
     setCurrentCard(0);
     return <div>Loading...</div>;
+  }
+
+  function nextCard() {
+    if (cards.length <= 0) return;
+
+    if (flipped) {
+      setFlipped(false);
+      setTimeout(() => {
+        if (
+          currentCardNumber <= cards.length &&
+          currentCardNumber !== cards.length - 1
+        )
+          setCurrentCard(currentCardNumber + 1);
+        else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+      }, 400);
+    } else if (
+      currentCardNumber <= cards.length &&
+      currentCardNumber !== cards.length - 1
+    )
+      setCurrentCard(currentCardNumber + 1);
+    else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+  }
+
+  function lastCard() {
+    if (cards.length <= 0) return;
+
+    if (flipped) {
+      setFlipped(false);
+      setTimeout(() => {
+        if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+      }, 400);
+    } else if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+  }
+
+  function removeCard() {
+    if (cards.length <= 0) return;
+
+    if (flipped) {
+      setFlipped(false);
+      // Remove card from list
+      setTimeout(() => {
+        setCards(cards.filter((card) => card.Standard !== glose.Standard));
+        toast.success("Kort fjernet");
+      }, 400);
+    } else {
+      setCards(cards.filter((card) => card.Standard !== glose.Standard));
+      toast.success("Kort fjernet");
+    }
   }
 
   return (
@@ -87,48 +150,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       </div>
     </div>
   );
-
-  function nextCard() {
-    if (flipped) {
-      setFlipped(false);
-      setTimeout(() => {
-        if (
-          currentCardNumber <= cards.length &&
-          currentCardNumber !== cards.length - 1
-        )
-          setCurrentCard(currentCardNumber + 1);
-        else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
-      }, 400);
-    } else if (
-      currentCardNumber <= cards.length &&
-      currentCardNumber !== cards.length - 1
-    )
-      setCurrentCard(currentCardNumber + 1);
-    else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
-  }
-
-  function lastCard() {
-    if (flipped) {
-      setFlipped(false);
-      setTimeout(() => {
-        if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
-      }, 400);
-    } else if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
-  }
-
-  function removeCard() {
-    if (flipped) {
-      setFlipped(false);
-      // Remove card from list
-      setTimeout(() => {
-        setCards(cards.filter((card) => card.Standard !== glose.Standard));
-        toast.success("Kort fjernet");
-      }, 400);
-    } else {
-      setCards(cards.filter((card) => card.Standard !== glose.Standard));
-      toast.success("Kort fjernet");
-    }
-  }
 };
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {

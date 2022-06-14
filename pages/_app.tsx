@@ -20,7 +20,7 @@ import App from "next/app";
 /* Flowbite components */
 import { Navbar, Button, Spinner } from "flowbite-react";
 /* React-hot-toast components */
-import { Toaster } from "react-hot-toast/dist/components/toaster";
+import { Toaster } from "react-hot-toast";
 /* API calls */
 import getGlobal from "strapi/global";
 /* Hooks */
