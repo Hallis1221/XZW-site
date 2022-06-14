@@ -124,7 +124,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
         )
           setCurrentCard(currentCardNumber + 1);
         else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
-      }, 400);
+      }, 250);
     } else if (
       currentCardNumber <= cards.length &&
       currentCardNumber !== cards.length - 1
@@ -140,7 +140,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       setFlipped(false);
       setTimeout(() => {
         if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
-      }, 400);
+      }, 250);
     } else if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
   }
 
@@ -197,7 +197,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               </div>
             }
             mobileButtons={
-              <div className="absolute bottom-0 w-full mx-5 flex justify-center">
+              <div className="flex md:hidden absolute bottom-0 w-full mx-5 justify-center">
                 <div className="h-full w-11/12 flex flex-col mb-5">
                   <CardSettings
                     setFront={setFrontSide}
@@ -206,14 +206,14 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     isAbove
                   />
                   <Button
-                    className="inline md:hidden h-24 w-full my-1"
+                    className="h-24 w-full my-1"
                     color="green"
                     onClick={() => removeCard()}
                   >
                     Got it!
                   </Button>
                   <Button
-                    className="inline md:hidden h-24 w-full mt-1"
+                    className="h-24 w-full mt-1"
                     color="red"
                     onClick={() => removeCard()}
                   >
