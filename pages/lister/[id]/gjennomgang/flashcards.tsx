@@ -38,6 +38,9 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   });
 
   useEffect(() => {
+    setGlose(cards[currentCardNumber]);
+  }, [currentCardNumber, cards]);
+  useEffect(() => {
     if (glose)
       setCard({
         front:
