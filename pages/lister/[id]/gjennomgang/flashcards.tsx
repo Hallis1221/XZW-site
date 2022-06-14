@@ -5,12 +5,13 @@ import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
 import { Card } from "types/card";
 /* FLowbite components */
-import { Button, Dropdown } from "flowbite-react";
+import { Button } from "flowbite-react";
 /* Components */
 import { NavArrow } from "components/navArrow";
 import { FlashcardWithActions } from "components/flashcardWithActions/component";
+import { CardSettings } from "components/cardSettings";
 /* Hooks */
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useKeypress from "react-use-keypress";
 
 /* API calls */
@@ -19,17 +20,18 @@ import getListe from "src/lib/pages/getListe";
 import toast from "react-hot-toast";
 import { SwipeableFlashcard } from "src/components/swipeAbleFlashcard";
 import { CardSide } from "types/cardSide";
+import { shuffle } from "src/lib/shuffle";
 
 // TODO use strapi texts
 
 const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
-  let [currentCardNumber, setCurrentCard] = useState<number>(0);
+  let [currentCardNumber, setCurrentCardNumber] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
   let [frontSide, setFrontSide] = useState<CardSide>("standard");
   let [backSide, setBackSide] = useState<CardSide>("pinyin_hanzi");
+  let [glose, setGlose] = useState<Glose>(cards[currentCardNumber]);
 
   const [flipped, setFlipped] = useState<boolean>(false);
-  const glose: Glose = cards[currentCardNumber];
   const [card, setCard] = useState<Card>({
     front: glose?.Standard || "",
     back: glose?.Chinese || "",
@@ -96,17 +98,18 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
                 setCards(liste.gloser);
-                setCurrentCard(0);
+                setCurrentCardNumber(0);
               }}
             >
               <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl lg">
-                {page.attributes.OutOfCards || "Ingen flere kort. Trykk hvorsomhelst for å starte på nytt."}
+                {page.attributes.OutOfCards ||
+                  "Ingen flere kort. Trykk hvorsomhelst for å starte på nytt."}
               </h1>
             </div>
           </div>
         </>
       );
-    setCurrentCard(0);
+    setCurrentCardNumber(0);
     return <div>Loading...</div>;
   }
 
@@ -122,15 +125,16 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
           currentCardNumber <= cards.length &&
           currentCardNumber !== cards.length - 1
         )
-          setCurrentCard(currentCardNumber + 1);
-        else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+          setCurrentCardNumber(currentCardNumber + 1);
+        else if (currentCardNumber === cards.length - 1)
+          setCurrentCardNumber(0);
       }, 250);
     } else if (
       currentCardNumber <= cards.length &&
       currentCardNumber !== cards.length - 1
     )
-      setCurrentCard(currentCardNumber + 1);
-    else if (currentCardNumber === cards.length - 1) setCurrentCard(0);
+      setCurrentCardNumber(currentCardNumber + 1);
+    else if (currentCardNumber === cards.length - 1) setCurrentCardNumber(0);
   }
 
   function lastCard() {
@@ -139,9 +143,10 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     if (flipped) {
       setFlipped(false);
       setTimeout(() => {
-        if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+        if (currentCardNumber > 0) setCurrentCardNumber(currentCardNumber - 1);
       }, 250);
-    } else if (currentCardNumber > 0) setCurrentCard(currentCardNumber - 1);
+    } else if (currentCardNumber > 0)
+      setCurrentCardNumber(currentCardNumber - 1);
   }
 
   function removeCard() {
@@ -186,6 +191,15 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                   page={page}
                   setFront={setFrontSide}
                   setBack={setBackSide}
+                  shuffleCards={() => {
+                    setCards(shuffle(cards));
+                    setGlose(cards[currentCardNumber]);
+                    setCurrentCardNumber(currentCardNumber);
+                    toast.remove();
+                    toast.success(
+                      page.attributes.CardsShuffled || "Kortete ble stokket"
+                    );
+                  }}
                 />
                 <Button
                   className="h-24 w-full mb-2"
@@ -204,6 +218,15 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     setFront={setFrontSide}
                     setBack={setBackSide}
                     page={page}
+                    shuffleCards={() => {
+                      setCards(shuffle(cards));
+                      setGlose(cards[currentCardNumber]);
+                      setCurrentCardNumber(currentCardNumber);
+                      toast.remove();
+                      toast.success(
+                        page.attributes.CardsShuffled || "Kortete ble stokket"
+                      );
+                    }}
                   />
                   <Button
                     className="h-24 w-full my-1"
@@ -218,7 +241,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                     onClick={() => nextCard()}
                   >
                     {page.attributes.Failure || "Klarte det ikke"}
-                  </Button> 
+                  </Button>
                 </div>
               </div>
             }
@@ -230,58 +253,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     </div>
   );
 };
-
-function CardSettings({
-  setBack,
-  setFront,
-  page,
-  isAbove = false,
-}: {
-  setBack: Dispatch<SetStateAction<CardSide>>;
-  setFront: Dispatch<SetStateAction<CardSide>>;
-  page: any;
-  isAbove?: boolean;
-}) {
-  return (
-    <div
-      className={`flex flex-row w-full justify-between ${
-        isAbove ? "mb-2" : "mt-2"
-      }`}
-    >
-      <Dropdown label="Front" placement="top">
-        <Dropdown.Item onClick={() => setFront("hanzi")}>
-          {page.attributes.Hanzi || "hànzì"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setFront("pinyin")}>
-          {page.attributes.Pinyin || "pīnyīn"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setFront("standard")}>
-          {page.attributes.Standard || "norsk"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setFront("pinyin_hanzi")}>
-          {page.attributes.Hanzi || "hànzì"} og{" "}
-          {page.attributes.Pinyin || "pīnyīn"}
-        </Dropdown.Item>
-      </Dropdown>
-
-      <Dropdown label="Bak" placement="top">
-        <Dropdown.Item onClick={() => setBack("hanzi")}>
-          {page.attributes.Hanzi || "hànzì"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setBack("pinyin")}>
-          {page.attributes.Pinyin || "pīnyīn"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setBack("standard")}>
-          {page.attributes.Standard || "norsk"}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setBack("pinyin_hanzi")}>
-          {page.attributes.Hanzi || "hànzì"} og{" "}
-          {page.attributes.Pinyin || "pīnyīn"}
-        </Dropdown.Item>
-      </Dropdown>
-    </div>
-  );
-}
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   const listeRes = await fetchAPI("/lister", {
