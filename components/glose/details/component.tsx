@@ -1,6 +1,6 @@
 import { PlayIcon } from "@heroicons/react/solid";
 import { Card } from "flowbite-react";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import getStrokeRef from "src/lib/stroke-order/getRef";
 import { DetailsPopupProps } from "./props";
 
@@ -11,6 +11,11 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
   hanziQuizRef,
 }) => {
   const [hanziFocused, setHanziFocused] = useState<string>();
+
+
+  useEffect(() => {
+    setHanziFocused("");
+  }, [currentModalContent]);
 
   return (
     <div
