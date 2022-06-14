@@ -1,6 +1,7 @@
 import { PlayIcon } from "@heroicons/react/solid";
 import { Card } from "flowbite-react";
 import { FunctionComponent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import getStrokeRef from "src/lib/stroke-order/getRef";
 import { DetailsPopupProps } from "./props";
 
@@ -11,7 +12,6 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
   hanziQuizRef,
 }) => {
   const [hanziFocused, setHanziFocused] = useState<string>();
-
 
   useEffect(() => {
     setHanziFocused("");
@@ -77,8 +77,9 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
                                 animationOptions: {
                                   onComplete: async (e) => {
                                     await new Promise((r) =>
-                                      setTimeout(r, 2500)
+                                      setTimeout(r, 2000)
                                     );
+
                                     if (
                                       currentHanziIndex <
                                       currentModalContent?.Chinese.length - 1
@@ -93,7 +94,6 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
                                   },
                                 },
                               });
-                          
                           }, 1);
                         }, 1);
                       }
@@ -123,6 +123,7 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
                               setTimeout(() => {
                                 if (hanziRef.current !== undefined)
                                   getStrokeRef({
+                                    forcePause: true,
                                     ref: hanziRef,
                                     word: letter,
                                     options: {
@@ -133,18 +134,19 @@ export const GloseDetailsPopup: FunctionComponent<DetailsPopupProps> = ({
                                       renderer: "canvas",
                                     },
                                   });
-                                getStrokeRef({
-                                  ref: hanziQuizRef,
-                                  word: letter,
-                                  quiz: true,
-                                  options: {
-                                    width: 150,
-                                    height: 150,
-                                    padding: 5,
-                                    showOutline: true,
-                                    renderer: "canvas",
-                                  },
-                                });
+                                if (hanziQuizRef.current !== undefined)
+                                  getStrokeRef({
+                                    ref: hanziQuizRef,
+                                    word: letter,
+                                    quiz: true,
+                                    options: {
+                                      width: 150,
+                                      height: 150,
+                                      padding: 5,
+                                      showOutline: true,
+                                      renderer: "canvas",
+                                    },
+                                  });
                               }, 1);
                             }, 1);
                           }}
