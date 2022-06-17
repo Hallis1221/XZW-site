@@ -12,36 +12,53 @@ const SpillPage: NextPage<any> = ({ id, page }) => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="m-5 w-fit ">
-          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {page.attributes.Flashcard.Title}
-          </h5>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            {page.attributes.Flashcard.Description.substring(0, 200)}
-            {page.attributes.Flashcard.Description.length > 200 ? "..." : ""}
-          </p>
-          <Link href={"/lister/" + id + "/gjennomgang/flashcards/"}>
-            <Button>
-              {page.attributes.ActionTekst}
-              <svg
-                className="ml-2 -mr-1 h-4 w-4"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-          </Link>
-        </Card>
+        <GameMode
+          title={page.attributes.Flashcard.Title}
+          description={page.attributes.Flashcard.Description}
+          page={page}
+          href={"/lister/" + id + "/gjennomgang/flashcards/"}
+        />
+        <GameMode
+          title={"Multiple choice"}
+          description={page.attributes.Flashcard.Description}
+          page={page}
+          href={"/lister/" + id + "/test/choices"}
+        />
       </div>
     </>
   );
 };
+
+function GameMode({ title, description, href, page }) {
+  return (
+    <Card className="m-5 w-fit ">
+      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        {title}
+      </h5>
+      <p className="font-normal text-gray-700 dark:text-gray-400">
+        {description.substring(0, 200)}
+        {description.length > 200 ? "..." : ""}
+      </p>
+      <Link href={href}>
+        <Button>
+          {page.attributes.ActionTekst}
+          <svg
+            className="ml-2 -mr-1 h-4 w-4"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </Button>
+      </Link>
+    </Card>
+  );
+}
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   const seoRes = await fetchAPI("/lister", {
