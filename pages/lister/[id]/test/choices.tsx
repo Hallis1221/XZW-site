@@ -11,8 +11,8 @@ import { AnswerType, QuestionType } from "types/mchoiceQuestion";
 import { MetaSeo } from "types/seo";
 
 export default function Page({ liste }) {
-  let [questionType, setQuestionType] = useState<QuestionType>("hanzi");
-  let [answerType, setAnswerType] = useState<AnswerType>("pinyin");
+  let [questionType, setQuestionType] = useState<QuestionType>();
+  let [answerType, setAnswerType] = useState<AnswerType>();
   let [gloser, setGloser] = useState<Glose[]>(Array.from(liste.gloser));
 
   let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(0);
@@ -31,6 +31,12 @@ export default function Page({ liste }) {
     undefined
   );
 
+    useEffect(() => {
+      console.log(questionType, answerType);
+      if (!answerType) setAnswerType("pinyin");
+      if (!questionType) setQuestionType("hanzi");
+    }, [answerType, questionType]);
+
   useEffect(() => {
     let glose = gloser[currentChoiceIndex];
     if (glose === undefined || gloser === undefined) {
@@ -42,8 +48,8 @@ export default function Page({ liste }) {
         CreateMChoice({
           liste: Array.from(gloser),
           glose: glose,
-          questionType,
-          answerType,
+          questionType: questionType || "hanzi",
+          answerType: answerType || "pinyin",
         })
       );
   }, [answerType, currentChoiceIndex, gloser, questionType]);
@@ -92,7 +98,6 @@ export default function Page({ liste }) {
                       let nyeGloser = Array.from(gloser);
                       nyeGloser.splice(currentChoiceIndex, 1);
                       setGloser(nyeGloser);
-                      setAnswerType("pinyin");
                     } else {
                       setChoiceManager({
                         key: id,
