@@ -10,6 +10,8 @@ import { Choice, MultiChoice } from "types/mchoice";
 import { AnswerType, QuestionType } from "types/mchoiceQuestion";
 import { MetaSeo } from "types/seo";
 
+
+// TODO: what a fucking mess
 export default function Page({ liste }) {
   let [questionType, setQuestionType] = useState<QuestionType>();
   let [answerType, setAnswerType] = useState<AnswerType>();
