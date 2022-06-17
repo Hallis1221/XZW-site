@@ -3,24 +3,26 @@ import type { Glose } from "types/glose";
 import type { GloseListe } from "types/gloseListe";
 import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
-import { Card } from "types/card";
+import type { Card } from "types/card";
 /* FLowbite components */
-import { Button } from "flowbite-react";
+import { Button, Card as FRCard } from "flowbite-react";
 /* Components */
 import { NavArrow } from "components/navArrow";
-import { FlashcardWithActions } from "components/flashcardWithActions/component";
-import { CardSettings } from "components/cardSettings";
+import { FlashcardWithActions } from "src/components/flashcard/withactions/component";
+import { CardSettings } from "src/components/flashcard/settings";
 /* Hooks */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useKeypress from "react-use-keypress";
 
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
 import toast from "react-hot-toast";
-import { SwipeableFlashcard } from "src/components/swipeAbleFlashcard";
+import { SwipeableFlashcard } from "src/components/flashcard/swipeable";
 import { CardSide } from "types/cardSide";
 import { shuffle } from "src/lib/shuffle";
+import { Flashcard, Flashside } from "src/components/flashcard";
+import { PrintCards } from "src/components/flashcard/print/component";
 
 // TODO use strapi texts
 
@@ -30,6 +32,8 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [frontSide, setFrontSide] = useState<CardSide>("standard");
   let [backSide, setBackSide] = useState<CardSide>("pinyin_hanzi");
   let [glose, setGlose] = useState<Glose>(cards[currentCardNumber]);
+
+  const printRef = useRef<HTMLDivElement>(null);
 
   const [flipped, setFlipped] = useState<boolean>(false);
   const [card, setCard] = useState<Card>({
@@ -67,27 +71,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   useKeypress("ArrowLeft", () => lastCard());
   useKeypress("Enter", () => removeCard());
 
-  /*
-  return (
-    <div
-    className="h-96 w-96 bg-blue-200 relative flex justify-center" 
-    {...handlers}>
-      <div
-      className=" w-24 h-24 bg-red-500"
-        style={
-          swipeData ?
-          {
-            position: "absolute",
-          transform: `translateY(${swipeData?.deltaY }px) translateX(${swipeData?.deltaX }px)`,
-          } : 
-          {
-            backgroundColor: "blue",
-          }
-        }
-      ></div>
-    </div>
-  );*/
-
   if (
     cards.length === currentCardNumber ||
     card.back === "" ||
@@ -115,6 +98,96 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     setCurrentCardNumber(0);
     return <div>Loading...</div>;
   }
+
+  return (
+    <div className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50 overflow-hidden">
+      <div className="w-screen z-10 mt-20 text-center text-4xl sm:text-5xl font-semibold">
+        {currentCardNumber + 1 + "/" + cards.length}
+      </div>
+      <div className="h-full flex sm:justify-start">
+        <NavArrow left onClick={() => lastCard()} />
+
+        <div className="h-full w-full flex flex-col">
+          <SwipeableFlashcard
+            flipped={flipped}
+            card={card}
+            setFlipped={setFlipped}
+            onLeft={() => nextCard()}
+            onRight={() => removeCard()}
+          />
+
+        <PrintCards printRef={printRef} liste={liste}/>
+          <FlashcardWithActions
+            desktopButtons={
+              <div className="w-full mx-2 mt-5">
+                <CardSettings
+                  isAbove
+                  printRef={printRef}
+                  page={page}
+                  setFront={setFrontSide}
+                  setBack={setBackSide}
+                  shuffleCards={() => {
+                    setCards(shuffle(cards));
+                    setGlose(cards[currentCardNumber]);
+                    setCurrentCardNumber(currentCardNumber);
+                    toast.remove();
+                    toast.success(
+                      page.attributes.CardsShuffled || "Kortete ble stokket"
+                    );
+                  }}
+                />
+                <Button
+                  className="h-24 w-full mb-2"
+                  color="green"
+                  onClick={() => removeCard()}
+                >
+                  {page.attributes.Success || "Klarte det!"}
+                </Button>
+              </div>
+            }
+            mobileButtons={
+              <div className="flex md:hidden absolute bottom-0 w-full mx-5 justify-center">
+                <div className="h-full w-11/12 flex flex-col mb-5">
+                  <CardSettings
+                    isAbove
+                    printRef={printRef}
+                    setFront={setFrontSide}
+                    setBack={setBackSide}
+                    page={page}
+                    shuffleCards={() => {
+                      setCards(shuffle(cards));
+                      setGlose(cards[currentCardNumber]);
+                      setCurrentCardNumber(currentCardNumber);
+                      toast.remove();
+                      toast.success(
+                        page.attributes.CardsShuffled || "Kortete ble stokket"
+                      );
+                    }}
+                  />
+                  <Button
+                    className="h-24 w-full my-1"
+                    color="green"
+                    onClick={() => removeCard()}
+                  >
+                    {page.attributes.Success || "Klarte det!"}
+                  </Button>
+                  <Button
+                    className="h-24 w-full mt-1"
+                    color="red"
+                    onClick={() => nextCard()}
+                  >
+                    {page.attributes.Failure || "Klarte det ikke"}
+                  </Button>
+                </div>
+              </div>
+            }
+          />
+        </div>
+
+        <NavArrow right onClick={() => nextCard()} />
+      </div>
+    </div>
+  );
 
   function nextCard() {
     toast.remove();
@@ -169,92 +242,6 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       toast.success(page.attributes.CardRemoved || "Kort fjernet");
     }
   }
-
-  return (
-    <div className="absolute top-0 left-0 h-screen flex flex-col justify-center w-screen -z-50 overflow-hidden">
-      <div className="w-screen z-10 mt-20 text-center text-4xl sm:text-5xl font-semibold">
-        {currentCardNumber + 1 + "/" + cards.length}
-      </div>
-      <div className="h-full flex sm:justify-start">
-        <NavArrow left onClick={() => lastCard()} />
-
-        <div className="h-full w-full flex flex-col">
-          <SwipeableFlashcard
-            flipped={flipped}
-            card={card}
-            setFlipped={setFlipped}
-            onLeft={() => nextCard()}
-            onRight={() => removeCard()}
-          />
-          <FlashcardWithActions
-            desktopButtons={
-              <div className="w-full mx-2 mt-5">
-                <CardSettings
-                  isAbove
-                  page={page}
-                  setFront={setFrontSide}
-                  setBack={setBackSide}
-                  shuffleCards={() => {
-                    setCards(shuffle(cards));
-                    setGlose(cards[currentCardNumber]);
-                    setCurrentCardNumber(currentCardNumber);
-                    toast.remove();
-                    toast.success(
-                      page.attributes.CardsShuffled || "Kortete ble stokket"
-                    );
-                  }}
-                />
-                <Button
-                  className="h-24 w-full mb-2"
-                  color="green"
-                  onClick={() => removeCard()}
-                >
-                  {page.attributes.Success || "Klarte det!"}
-                </Button>
-              </div>
-            }
-            mobileButtons={
-              <div className="flex md:hidden absolute bottom-0 w-full mx-5 justify-center">
-                <div className="h-full w-11/12 flex flex-col mb-5">
-                  <CardSettings
-                    isAbove
-                    setFront={setFrontSide}
-                    setBack={setBackSide}
-                    page={page}
-                    shuffleCards={() => {
-                      setCards(shuffle(cards));
-                      setGlose(cards[currentCardNumber]);
-                      setCurrentCardNumber(currentCardNumber);
-                      toast.remove();
-                      toast.success(
-                        page.attributes.CardsShuffled || "Kortete ble stokket"
-                      );
-                    }}
-                  />
-                  <Button
-                    className="h-24 w-full my-1"
-                    color="green"
-                    onClick={() => removeCard()}
-                  >
-                    {page.attributes.Success || "Klarte det!"}
-                  </Button>
-                  <Button
-                    className="h-24 w-full mt-1"
-                    color="red"
-                    onClick={() => nextCard()}
-                  >
-                    {page.attributes.Failure || "Klarte det ikke"}
-                  </Button>
-                </div>
-              </div>
-            }
-          />
-        </div>
-
-        <NavArrow right onClick={() => nextCard()} />
-      </div>
-    </div>
-  );
 };
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {

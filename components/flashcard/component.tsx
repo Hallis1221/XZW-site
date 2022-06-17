@@ -26,7 +26,7 @@ export function Flashcard({ flipped, onClick, front, back }: FlashcardProps) {
   );
 }
 
-function Flashside({ text }: { text: string }) {
+export function Flashside({ text }: { text: string }) {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1 className="m-24 text-center  w-full text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-semibold  tracking-wide text-gray-900 dark:text-white">

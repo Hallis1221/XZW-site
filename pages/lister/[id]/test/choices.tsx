@@ -14,8 +14,8 @@ import CreateMChoice from "src/lib/choices/smartchoices";
 /* Api call */
 import getListe from "src/lib/pages/getListe";
 import fetchAPI from "strapi/fetch";
-import { MultiChoiceSettings } from "src/components/multiSettings";
-import { MultiChoiceAlternatives } from "src/components/multiAlternatives";
+import { MultiChoiceSettings } from "src/components/multiplechoice/settings";
+import { MultiChoiceAlternatives } from "src/components/multiplechoice/alternatives";
 
 // TODO: Make dependent on strapi
 export default function Page({ liste }) {
