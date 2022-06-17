@@ -89,13 +89,13 @@ function ChoicesComp(
           onClick={() => {
             setHasBeenClicked(true);
             setTimeout(() => {
-              if (answer.isCorrect) {
+              if (answer.isCorrect && !hasBeenClicked) {
                 gloser.splice(currentChoiceIndex - 1, 1);
                 setGloser(gloser);
                 setCurrentChoiceIndex(currentChoiceIndex - 2);
               } else setCurrentChoiceIndex(currentChoiceIndex - 1);
               setHasBeenClicked(false);
-            }, 2000);
+            },1000);
           }}
         />
       ))}
