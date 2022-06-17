@@ -13,7 +13,7 @@ import { MetaSeo } from "types/seo";
 export default function Page({ liste }) {
   let [questionType, setQuestionType] = useState<QuestionType>("hanzi");
   let [answerType, setAnswerType] = useState<AnswerType>("pinyin");
-  let [gloser, setGloser] = useState<Glose[]>([]);
+  let [gloser, setGloser] = useState<Glose[]>(Array.from(liste.gloser));
 
   let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(0);
 
@@ -22,22 +22,15 @@ export default function Page({ liste }) {
   );
 
   useEffect(() => {
-    if (gloser.length <= 2) {
-      // Javascript copies the reference if we dont do Array.from
-      setGloser(Array.from(liste.gloser));
-    }
-  }, [liste.gloser, gloser.length]);
-
-  useEffect(() => {
     setCurrentChoiceIndex(gloser.length);
     let glose = gloser[currentChoiceIndex];
-
+    console.log(gloser.length);
     if (!glose || !gloser) {
       return;
     } else
       setCurrentChoice(
         CreateMChoice({
-          liste: gloser,
+          liste: Array.from(gloser),
           glose: glose,
           questionType,
           answerType,
@@ -58,20 +51,54 @@ export default function Page({ liste }) {
               på {answerType}?
             </span>
           </Card>
-          <div className="w-fit min-w-full max-w-6xl h-3/5 bg-pink-500 grid grid-cols-2 justify-items-center">
-            {currentChoice?.alternatives.map((answer: Choice) => (
-              <Alternative
-                key={Math.random() * answer.text.split("").length}
-                alternative={answer.text}
-                isCorrect={answer.isCorrect}
-                onClick={() => {
-                  setCurrentChoiceIndex(currentChoiceIndex - 1);
-                }}
-              />
-            ))}
-          </div>
+          {ChoicesComp(
+            currentChoice,
+            gloser,
+            currentChoiceIndex,
+            setGloser,
+            setCurrentChoiceIndex
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ChoicesComp(
+  currentChoice: MultiChoice | undefined,
+  gloser: Glose[],
+  currentChoiceIndex: number,
+  setGloser,
+  setCurrentChoiceIndex
+) {
+  let [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
+
+  return (
+    <div
+      className={`w-fit min-w-full max-w-6xl h-3/5 bg-pink-500 grid grid-cols-2 justify-items-center`}
+    >
+      <div
+        className={`absolute h-full w-full 
+      ${hasBeenClicked ? "bg-transparent" : "hidden"} `}
+      />
+      {currentChoice?.alternatives.map((answer: Choice) => (
+        <Alternative
+          key={Math.random() * answer.text.split("").length}
+          alternative={answer.text}
+          isCorrect={answer.isCorrect}
+          onClick={() => {
+            setHasBeenClicked(true);
+            setTimeout(() => {
+              if (answer.isCorrect) {
+                gloser.splice(currentChoiceIndex - 1, 1);
+                setGloser(gloser);
+                setCurrentChoiceIndex(currentChoiceIndex - 2);
+              } else setCurrentChoiceIndex(currentChoiceIndex - 1);
+              setHasBeenClicked(false);
+            }, 2000);
+          }}
+        />
+      ))}
     </div>
   );
 }

@@ -15,15 +15,14 @@ export default function CreateMChoice({
   answerType: AnswerType;
 }): MultiChoice {
   // Remove the glose from the liste for it not to be used again
-  let gloser = liste;
-  gloser.splice(liste.indexOf(glose), 1);
+  liste.splice(liste.indexOf(glose), 1);
 
   let choice: MultiChoice = {
     question: "",
     alternatives: [],
   };
 
-  let amountOfAlternatives = gloser.length >= 3 ? 3 : gloser.length;
+  let amountOfAlternatives = liste.length >= 3 ? 3 : liste.length;
 
   switch (questionType) {
     case "pinyin":
@@ -55,7 +54,7 @@ export default function CreateMChoice({
         : glose.Standard.split("").length;
 
     // Find the word that is the most similar to the glose
-    gloser.forEach((word) => {
+    liste.forEach((word) => {
       let similarity = 0;
 
       // Increase the similarity based on how similair the length of the word is compared to the length of the glose

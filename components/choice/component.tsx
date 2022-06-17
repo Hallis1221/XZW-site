@@ -28,7 +28,9 @@ export function Alternative({ alternative, isCorrect, onClick }: ChoiceProps) {
           } else {
             setAdditionalStyles("bg-red-500");
           }
-          onClick();
+          setTimeout(() => {
+            onClick();
+          }, 1000);
         }}
       >
         <div
