@@ -17,15 +17,25 @@ export default function Page({ liste }) {
 
   let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(0);
 
+  let [choiceManager, setChoiceManager] = useState<{
+    key: string;
+    style: string;
+    submitted?: boolean;
+  }>({
+    key: "",
+    style: "",
+    submitted: false,
+  });
+
   let [currentChoice, setCurrentChoice] = useState<MultiChoice | undefined>(
     undefined
   );
 
   useEffect(() => {
-    setCurrentChoiceIndex(gloser.length);
     let glose = gloser[currentChoiceIndex];
-    console.log(gloser.length);
-    if (!glose || !gloser) {
+    console.log(gloser);
+    if (glose === undefined || gloser === undefined) {
+      console.log(glose === undefined, gloser === undefined);
       return;
     } else
       setCurrentChoice(
@@ -39,7 +49,7 @@ export default function Page({ liste }) {
   }, [answerType, currentChoiceIndex, gloser, questionType]);
 
   return (
-    <div className="absolute top-0 left-0 h-screen flex flex-col justify-start w-screen -z-50 overflow-hidden bg-red-500">
+    <div className="absolute top-0 left-0 h-screen flex flex-col justify-start w-screen -z-50 overflow-hidden">
       <div className="flex flex-row justify-center mt-36 sm:mt-32">
         <div className="w-screen max-w-6xl h-screen">
           <Card className="w-full h-1/5">
@@ -51,54 +61,62 @@ export default function Page({ liste }) {
               på {answerType}?
             </span>
           </Card>
-          {ChoicesComp(
-            currentChoice,
-            gloser,
-            currentChoiceIndex,
-            setGloser,
-            setCurrentChoiceIndex
-          )}
+          <div
+            className={`w-fit min-w-full max-w-6xl h-3/5 grid grid-cols-2`}
+          >
+            {currentChoice?.alternatives.map((answer: Choice) => {
+              let id = answer.text;
+              return (
+                <div
+                  className={`flex flex-grid justify-center h-full w-full ${
+                    choiceManager.key === id ? choiceManager.style : ""
+                  }`}
+                  key={id}
+                  onContextMenu={(e) => {
+                    if (choiceManager.submitted) return;
+                    e.preventDefault();
+                    if (answer.isCorrect) {
+                      setChoiceManager({ key: id, style: "text-green-500" });
+                    } else {
+                      setChoiceManager({ key: id, style: "text-red-500" });
+                    }
+                  }}
+                  onClick={async (e) => {
+                    if (choiceManager.submitted) return;
+                    if (answer.isCorrect) {
+                      setChoiceManager({
+                        key: id,
+                        style: "bg-green-500",
+                        submitted: true,
+                      });
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      gloser.splice(currentChoiceIndex, 1);
+                      setGloser(gloser);
+                      setCurrentChoiceIndex(currentChoiceIndex + 1);
+                    } else {
+                      setChoiceManager({
+                        key: id,
+                        style: "bg-red-500",
+                        submitted: true,
+                      });
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      setCurrentChoiceIndex(currentChoiceIndex + 1);
+                    }
+                    setChoiceManager({ key: "", style: "" });
+                  }}
+                >
+                  <Alternative
+                    alternative={answer.text}
+                    className={
+                      choiceManager.key === id ? choiceManager.style : ""
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function ChoicesComp(
-  currentChoice: MultiChoice | undefined,
-  gloser: Glose[],
-  currentChoiceIndex: number,
-  setGloser,
-  setCurrentChoiceIndex
-) {
-  let [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
-
-  return (
-    <div
-      className={`w-fit min-w-full max-w-6xl h-3/5 bg-pink-500 grid grid-cols-2 justify-items-center`}
-    >
-      <div
-        className={`absolute h-full w-full 
-      ${hasBeenClicked ? "bg-transparent" : "hidden"} `}
-      />
-      {currentChoice?.alternatives.map((answer: Choice) => (
-        <Alternative
-          key={Math.random() * answer.text.split("").length}
-          alternative={answer.text}
-          isCorrect={answer.isCorrect}
-          onClick={() => {
-            setHasBeenClicked(true);
-            setTimeout(() => {
-              if (answer.isCorrect && !hasBeenClicked) {
-                gloser.splice(currentChoiceIndex - 1, 1);
-                setGloser(gloser);
-                setCurrentChoiceIndex(currentChoiceIndex - 2);
-              } else setCurrentChoiceIndex(currentChoiceIndex - 1);
-              setHasBeenClicked(false);
-            },1000);
-          }}
-        />
-      ))}
     </div>
   );
 }
