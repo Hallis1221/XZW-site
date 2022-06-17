@@ -15,16 +15,15 @@ export default function CreateMChoice({
   answerType: AnswerType;
 }): MultiChoice {
   // Remove the glose from the liste for it not to be used again
-  liste.splice(liste.indexOf(glose), 1);
+  let gloser = liste;
+  gloser.splice(liste.indexOf(glose), 1);
 
   let choice: MultiChoice = {
     question: "",
-    alternatives: [
-      { isCorrect: false, text: "" },
-      { isCorrect: false, text: "" },
-      { isCorrect: false, text: "" },
-    ],
+    alternatives: [],
   };
+
+  let amountOfAlternatives = gloser.length >= 3 ? 3 : gloser.length;
 
   switch (questionType) {
     case "pinyin":
@@ -56,7 +55,7 @@ export default function CreateMChoice({
         : glose.Standard.split("").length;
 
     // Find the word that is the most similar to the glose
-    liste.forEach((word) => {
+    gloser.forEach((word) => {
       let similarity = 0;
 
       // Increase the similarity based on how similair the length of the word is compared to the length of the glose
@@ -75,7 +74,13 @@ export default function CreateMChoice({
       lengthDifference *= 1;
       similarity -= lengthDifference;
 
-      choice.question.split("").forEach((letter) => {
+      let relevantWord =
+        answerType === "pinyin"
+          ? glose.Pinyin
+          : answerType === "hanzi"
+          ? glose.Chinese
+          : glose.Standard;
+      relevantWord.split("").forEach((letter) => {
         switch (answerType) {
           case "pinyin":
             word.Pinyin.split("").forEach((alternativeLetter) => {
@@ -116,7 +121,8 @@ export default function CreateMChoice({
           word.Pinyin.includes(choice.question) ||
           word.Chinese.includes(choice.question) ||
           word.Standard.includes(choice.question)
-        )
+        ) ||
+        winners.length >= 3
       ) {
         winners.push({
           similarity,
@@ -130,34 +136,32 @@ export default function CreateMChoice({
       return b.similarity - a.similarity;
     });
 
-    [winners[0].glose, winners[1].glose, winners[2].glose].forEach(
-      (alternative, index) => {
-        switch (answerType) {
-          case "pinyin":
-            choice.alternatives[index] = {
-              isCorrect: false,
-              text: alternative.Pinyin,
-            };
-            break;
-          case "hanzi":
-            choice.alternatives[index] = {
-              isCorrect: false,
-              text: alternative.Chinese,
-            };
-            break;
-          case "standard":
-            choice.alternatives[index] = {
-              isCorrect: false,
-              text: alternative.Standard,
-            };
-            break;
-          default:
-            throw new Error(
-              "Unknown answer type or the answer type is not supported at the moment"
-            );
-        }
+    winners.slice(0, amountOfAlternatives).forEach((alternative, index) => {
+      switch (answerType) {
+        case "pinyin":
+          choice.alternatives[index] = {
+            isCorrect: false,
+            text: alternative.glose.Pinyin,
+          };
+          break;
+        case "hanzi":
+          choice.alternatives[index] = {
+            isCorrect: false,
+            text: alternative.glose.Chinese,
+          };
+          break;
+        case "standard":
+          choice.alternatives[index] = {
+            isCorrect: false,
+            text: alternative.glose.Standard,
+          };
+          break;
+        default:
+          throw new Error(
+            "Unknown answer type or the answer type is not supported at the moment"
+          );
       }
-    );
+    });
 
     switch (answerType) {
       case "pinyin":

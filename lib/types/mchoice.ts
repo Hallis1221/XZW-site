@@ -1,7 +1,7 @@
 
 export type MultiChoice = {
     question: string,
-    alternatives: [Choice, Choice, Choice],
+    alternatives: Choice[],
 }
 
 export type Choice = {

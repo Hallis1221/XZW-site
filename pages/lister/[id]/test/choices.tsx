@@ -1,9 +1,9 @@
 import { Card } from "flowbite-react";
 import { GetStaticPropsContext } from "next";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Alternative } from "src/components/choice";
 import CreateMChoice from "src/lib/choices/smartchoices";
 import getListe from "src/lib/pages/getListe";
-import { shuffle } from "src/lib/shuffle";
 import fetchAPI from "strapi/fetch";
 import { Glose } from "types/glose";
 import { Choice, MultiChoice } from "types/mchoice";
@@ -13,23 +13,36 @@ import { MetaSeo } from "types/seo";
 export default function Page({ liste }) {
   let [questionType, setQuestionType] = useState<QuestionType>("hanzi");
   let [answerType, setAnswerType] = useState<AnswerType>("pinyin");
-  let [gloser, setGloser] = useState<Glose[]>(liste.gloser);
+  let [gloser, setGloser] = useState<Glose[]>([]);
 
-  let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(Math.floor(Math.random() * gloser.length));
+  let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(0);
 
   let [currentChoice, setCurrentChoice] = useState<MultiChoice | undefined>(
     undefined
   );
 
   useEffect(() => {
-    setCurrentChoice(
-      CreateMChoice({
-        liste: gloser,
-        glose: gloser[currentChoiceIndex],
-        questionType,
-        answerType,
-      })
-    );
+    if (gloser.length <= 2) {
+      // Javascript copies the reference if we dont do Array.from
+      setGloser(Array.from(liste.gloser));
+    }
+  }, [liste.gloser, gloser.length]);
+
+  useEffect(() => {
+    setCurrentChoiceIndex(gloser.length);
+    let glose = gloser[currentChoiceIndex];
+
+    if (!glose || !gloser) {
+      return;
+    } else
+      setCurrentChoice(
+        CreateMChoice({
+          liste: gloser,
+          glose: glose,
+          questionType,
+          answerType,
+        })
+      );
   }, [answerType, currentChoiceIndex, gloser, questionType]);
 
   return (
@@ -47,22 +60,19 @@ export default function Page({ liste }) {
           </Card>
           <div className="w-fit min-w-full max-w-6xl h-3/5 bg-pink-500 grid grid-cols-2 justify-items-center">
             {currentChoice?.alternatives.map((answer: Choice) => (
-              <Alternative key={answer.text} alternative={answer.text} isCorrect={answer.isCorrect} />
+              <Alternative
+                key={Math.random() * answer.text.split("").length}
+                alternative={answer.text}
+                isCorrect={answer.isCorrect}
+                onClick={() => {
+                  setCurrentChoiceIndex(currentChoiceIndex - 1);
+                }}
+              />
             ))}
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function Alternative({ alternative, isCorrect }:{alternative: string, isCorrect: boolean}) {
-  return (
-    <Card className="w-11/12 mt-10">
-      <div className="text-center text-3xl font-semibold tracking-widest">
-        {alternative}
-      </div>
-    </Card>
   );
 }
 
