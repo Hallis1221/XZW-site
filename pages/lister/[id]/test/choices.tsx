@@ -1,4 +1,4 @@
-import { Card } from "flowbite-react";
+import { Card, Dropdown } from "flowbite-react";
 import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
 import { Alternative } from "src/components/choice";
@@ -33,9 +33,9 @@ export default function Page({ liste }) {
 
   useEffect(() => {
     let glose = gloser[currentChoiceIndex];
-    console.log(gloser);
     if (glose === undefined || gloser === undefined) {
-      console.log(glose === undefined, gloser === undefined);
+      console.log(glose, gloser);
+      setCurrentChoiceIndex(0);
       return;
     } else
       setCurrentChoice(
@@ -50,27 +50,26 @@ export default function Page({ liste }) {
 
   return (
     <div className="absolute top-0 left-0 h-screen flex flex-col justify-start w-screen -z-50 overflow-hidden">
-      <div className="flex flex-row justify-center mt-36 sm:mt-32">
+      <div className="flex flex-row justify-center mt-16 sm:mt-24">
         <div className="w-screen max-w-6xl h-screen">
-          <Card className="w-full h-1/5">
+          <Card className="relative w-full h-1/5">
+            <div className="absolute right-0 top-0 m-5 font-bold">
+              {currentChoiceIndex} / {gloser.length}
+            </div>
             <span className="text-center text-3xl">
-              Hva er{" "}
+              Hva er `
               <strong className="font-semibold">
                 {currentChoice?.question}
-              </strong>{" "}
-              på {answerType}?
+              </strong>
+              ` i {answerType}?
             </span>
           </Card>
-          <div
-            className={`w-fit min-w-full max-w-6xl h-3/5 grid grid-cols-2`}
-          >
+          <div className={`w-fit min-w-full max-w-6xl h-3/5 grid grid-cols-2`}>
             {currentChoice?.alternatives.map((answer: Choice) => {
               let id = answer.text;
               return (
                 <div
-                  className={`flex flex-grid justify-center h-full w-full ${
-                    choiceManager.key === id ? choiceManager.style : ""
-                  }`}
+                  className={`flex flex-grid justify-center h-full w-full`}
                   key={id}
                   onContextMenu={(e) => {
                     if (choiceManager.submitted) return;
@@ -89,31 +88,85 @@ export default function Page({ liste }) {
                         style: "bg-green-500",
                         submitted: true,
                       });
-                      await new Promise((resolve) => setTimeout(resolve, 1000));
-                      gloser.splice(currentChoiceIndex, 1);
-                      setGloser(gloser);
-                      setCurrentChoiceIndex(currentChoiceIndex + 1);
+                      await new Promise((resolve) => setTimeout(resolve, 2000));
+                      let nyeGloser = Array.from(gloser);
+                      nyeGloser.splice(currentChoiceIndex, 1);
+                      setGloser(nyeGloser);
+                      setAnswerType("pinyin");
                     } else {
                       setChoiceManager({
                         key: id,
                         style: "bg-red-500",
                         submitted: true,
                       });
-                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      await new Promise((resolve) => setTimeout(resolve, 2000));
                       setCurrentChoiceIndex(currentChoiceIndex + 1);
                     }
-                    setChoiceManager({ key: "", style: "" });
+                    setChoiceManager({ key: "", style: "", submitted: false });
                   }}
                 >
                   <Alternative
                     alternative={answer.text}
-                    className={
-                      choiceManager.key === id ? choiceManager.style : ""
-                    }
+                    classNames={[
+                      choiceManager.key === id ? choiceManager.style : "",
+                      choiceManager.submitted !== undefined &&
+                      choiceManager.submitted &&
+                      answer.isCorrect
+                        ? "bg-green-500"
+                        : "",
+                    ]}
                   />
                 </div>
               );
             })}
+          </div>
+          <div className="w-full h-full mt-2 flex flex-row justify-between md:justify-evenly">
+            <Dropdown label="Spørsmåls type" placement="top">
+              <Dropdown.Item
+                onClick={() => {
+                  setQuestionType("hanzi");
+                }}
+              >
+                Hanzi
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setQuestionType("pinyin");
+                }}
+              >
+                Pinyin
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setQuestionType("standard");
+                }}
+              >
+                Standard
+              </Dropdown.Item>
+            </Dropdown>
+            <Dropdown label="Svarstype" placement="top">
+              <Dropdown.Item
+                onClick={() => {
+                  setAnswerType("hanzi");
+                }}
+              >
+                Hanzi
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setAnswerType("pinyin");
+                }}
+              >
+                Pinyin
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  setAnswerType("standard");
+                }}
+              >
+                Standard
+              </Dropdown.Item>
+            </Dropdown>
           </div>
         </div>
       </div>

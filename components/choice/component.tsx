@@ -2,10 +2,10 @@ import { Card } from "flowbite-react";
 import { useState, useEffect } from "react";
 import { ChoiceProps } from "./props";
 
-export function Alternative({ alternative, className="" }: ChoiceProps) {
-
+export function Alternative({ alternative, classNames=[""] }: ChoiceProps) {
   return (
-    <Card className={`w-11/12 mt-10  ${className}`}>
+    <Card className={`w-11/12 mt-10  ${classNames.toString().replace(","," ")}`}>
+
       <div
         className={`h-full w-full flex flex-col justify-center `}
     
