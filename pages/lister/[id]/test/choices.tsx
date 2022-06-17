@@ -1,6 +1,7 @@
 import { Card } from "flowbite-react";
 import { GetStaticPropsContext } from "next";
 import { SetStateAction, useEffect, useState } from "react";
+import CreateMChoice from "src/lib/choices/smartchoices";
 import getListe from "src/lib/pages/getListe";
 import { shuffle } from "src/lib/shuffle";
 import fetchAPI from "strapi/fetch";
@@ -10,23 +11,26 @@ import { AnswerType, QuestionType } from "types/mchoiceQuestion";
 import { MetaSeo } from "types/seo";
 
 export default function Page({ liste }) {
-  let [questionType, setQuestionType] = useState<QuestionType>("pinyin");
+  let [questionType, setQuestionType] = useState<QuestionType>("hanzi");
   let [answerType, setAnswerType] = useState<AnswerType>("pinyin");
+  let [gloser, setGloser] = useState<Glose[]>(liste.gloser);
 
-  let [currentChoice, setCurrentChoice] = useState<Choice | undefined>(
+  let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(Math.floor(Math.random() * gloser.length));
+
+  let [currentChoice, setCurrentChoice] = useState<MultiChoice | undefined>(
     undefined
   );
 
   useEffect(() => {
     setCurrentChoice(
       CreateMChoice({
-        liste: liste.gloser,
-        glose: liste.gloser[0],
+        liste: gloser,
+        glose: gloser[currentChoiceIndex],
         questionType,
         answerType,
       })
     );
-  }, [answerType, liste.gloser, questionType]);
+  }, [answerType, currentChoiceIndex, gloser, questionType]);
 
   return (
     <div className="absolute top-0 left-0 h-screen flex flex-col justify-start w-screen -z-50 overflow-hidden bg-red-500">
@@ -38,12 +42,12 @@ export default function Page({ liste }) {
               <strong className="font-semibold">
                 {currentChoice?.question}
               </strong>{" "}
-              på norsk?
+              på {answerType}?
             </span>
           </Card>
           <div className="w-fit min-w-full max-w-6xl h-3/5 bg-pink-500 grid grid-cols-2 justify-items-center">
-            {currentChoice?.alternatives.map((answer) => (
-              <Alternative key={answer} alternative={answer} />
+            {currentChoice?.alternatives.map((answer: Choice) => (
+              <Alternative key={answer.text} alternative={answer.text} isCorrect={answer.isCorrect} />
             ))}
           </div>
         </div>
@@ -52,162 +56,14 @@ export default function Page({ liste }) {
   );
 }
 
-function Alternative({ alternative }) {
+function Alternative({ alternative, isCorrect }:{alternative: string, isCorrect: boolean}) {
   return (
     <Card className="w-11/12 mt-10">
-      <div className="text-center text-3xl font-semibold leading-3 tracking-widest">
+      <div className="text-center text-3xl font-semibold tracking-widest">
         {alternative}
       </div>
     </Card>
   );
-}
-
-function CreateMChoice({
-  glose,
-  liste,
-  questionType,
-  answerType,
-}: {
-  glose: Glose;
-  liste: Glose[];
-  questionType: QuestionType;
-  answerType: AnswerType;
-}): Choice {
-  // Remove the glose from the liste for it not to be used again
-  liste.splice(liste.indexOf(glose), 1);
-
-  let choice: Choice = {
-    question: "",
-    alternatives: ["", "", ""],
-  };
-
-  switch (questionType) {
-    case "pinyin":
-      choice.question = glose.Pinyin;
-      break;
-    case "hanzi":
-      choice.question = glose.Chinese;
-      break;
-    case "standard":
-      choice.question = glose.Standard;
-      break;
-    default:
-      throw new Error(
-        "Unknown question type or the question type is not supported at the moment"
-      );
-  }
-
-  function createAlternatives() {
-    let winners: Array<any> = [];
-
-    // Find the word that is the most similar to the glose
-    liste.forEach((word) => {
-      let similarity = 0;
-
-      // Increase the similarity based on how similair the length of the word is compared to the length of the glose
-      let lengthDifference = choice.question.length - word.Pinyin.length;
-      lengthDifference =
-        lengthDifference >= 0 ? lengthDifference : lengthDifference * -1;
-      lengthDifference *= 2;
-      similarity -= lengthDifference;
-
-      choice.question.split("").forEach((letter) => {
-        switch (answerType) {
-          case "pinyin":
-            word.Pinyin.split("").forEach((alternativeLetter) => {
-              if (letter === alternativeLetter) {
-                similarity++;
-              }
-            });
-
-            break;
-          case "hanzi":
-            word.Chinese.split("").forEach((alternativeLetter) => {
-              if (letter === alternativeLetter) {
-                similarity++;
-              }
-            });
-
-            break;
-          case "standard":
-            word.Standard.split("").forEach((alternativeLetter) => {
-              if (letter === alternativeLetter) {
-                similarity++;
-              }
-            });
-            break;
-          default:
-            throw new Error(
-              "Unknown answer type or the answer type is not supported at the moment"
-            );
-        }
-      });
-
-      // We dont want to add the word if its just a sentence with the question
-      if (
-        !(
-          choice.question.includes(word.Pinyin) ||
-          choice.question.includes(word.Chinese) ||
-          choice.question.includes(word.Standard) ||
-          word.Pinyin.includes(choice.question) ||
-          word.Chinese.includes(choice.question) ||
-          word.Standard.includes(choice.question)
-        )
-      ) {
-        winners.push({
-          word,
-          similarity,
-        });
-      }
-    });
-
-    // Sort the winners array by similarity
-    winners.sort((a, b) => {
-      return b.similarity - a.similarity;
-    });
-
-    [winners[0].word, winners[1].word, winners[2].word].forEach(
-      (alternative, index) => {
-        switch (answerType) {
-          case "pinyin":
-            choice.alternatives[index] = alternative.Pinyin;
-            break;
-          case "hanzi":
-            choice.alternatives[index] = alternative.Chinese;
-            break;
-          case "standard":
-            choice.alternatives[index] = alternative.Standard;
-            break;
-          default:
-            throw new Error(
-              "Unknown answer type or the answer type is not supported at the moment"
-            );
-        }
-      }
-    );
-
-    switch (answerType) {
-      case "pinyin":
-        choice.alternatives.push(glose.Pinyin);
-        break;
-      case "hanzi":
-        choice.alternatives.push(glose.Chinese);
-        break;
-      case "standard":
-        choice.alternatives.push(glose.Standard);
-        break;
-      default:
-        throw new Error(
-          "Unknown answer type or the answer type is not supported at the moment"
-        );
-    }
-
-    // Shuffle the alternatives
-    choice.alternatives = shuffle(choice.alternatives);
-  }
-  createAlternatives();
-  console.log(choice);
-  return choice;
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
