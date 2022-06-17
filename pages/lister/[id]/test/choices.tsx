@@ -1,55 +1,45 @@
-import { Card, Dropdown } from "flowbite-react";
-import { GetStaticPropsContext } from "next";
+/* Types */
+import type { Glose } from "types/glose";
+import type { Choice, MultiChoice } from "types/mchoice";
+import type { AnswerType, QuestionType } from "types/mchoiceQuestion";
+import type { MetaSeo } from "types/seo";
+import type { GetStaticPropsContext } from "next";
+import type { ChoiceManager } from "types/choiceManager";
+/* Flowbite components */
+import { Card } from "flowbite-react";
+/* Hooks */
 import { useEffect, useState } from "react";
-import { Alternative } from "src/components/choice";
+/* Utils */
 import CreateMChoice from "src/lib/choices/smartchoices";
+/* Api call */
 import getListe from "src/lib/pages/getListe";
 import fetchAPI from "strapi/fetch";
-import { Glose } from "types/glose";
-import { Choice, MultiChoice } from "types/mchoice";
-import { AnswerType, QuestionType } from "types/mchoiceQuestion";
-import { MetaSeo } from "types/seo";
+import { MultiChoiceSettings } from "src/components/multiSettings";
+import { MultiChoiceAlternatives } from "src/components/multiAlternatives";
 
-
-// TODO: what a fucking mess
+// TODO: Make dependent on strapi
 export default function Page({ liste }) {
-  let [questionType, setQuestionType] = useState<QuestionType>();
-  let [answerType, setAnswerType] = useState<AnswerType>();
+  let [questionType, setQuestionType] = useState<QuestionType>("hanzi");
+  let [answerType, setAnswerType] = useState<AnswerType>("pinyin");
   let [gloser, setGloser] = useState<Glose[]>(Array.from(liste.gloser));
 
   let [currentChoiceIndex, setCurrentChoiceIndex] = useState<number>(0);
 
-  let [choiceManager, setChoiceManager] = useState<{
-    key: string;
-    style: string;
-    submitted?: boolean;
-  }>({
+  let [choiceManager, setChoiceManager] = useState<ChoiceManager>({
     key: "",
     style: "",
     submitted: false,
   });
 
-  let [currentChoice, setCurrentChoice] = useState<MultiChoice | undefined>(
-    undefined
-  );
-
-    useEffect(() => {
-      console.log(questionType, answerType);
-      if (!answerType) setAnswerType("pinyin");
-      if (!questionType) setQuestionType("hanzi");
-    }, [answerType, questionType]);
+  let [currentChoice, setCurrentChoice] = useState<MultiChoice | undefined>();
 
   useEffect(() => {
-    let glose = gloser[currentChoiceIndex];
-    if (glose === undefined || gloser === undefined) {
-      console.log(glose, gloser);
-      setCurrentChoiceIndex(0);
-      return;
-    } else
+    if (currentChoiceIndex >= gloser.length) setCurrentChoiceIndex(0);
+    else
       setCurrentChoice(
         CreateMChoice({
           liste: Array.from(gloser),
-          glose: glose,
+          glose: gloser[currentChoiceIndex],
           questionType: questionType || "hanzi",
           answerType: answerType || "pinyin",
         })
@@ -72,109 +62,19 @@ export default function Page({ liste }) {
               ` i {answerType}?
             </span>
           </Card>
-          <div className={`w-fit min-w-full max-w-6xl h-3/5 grid grid-cols-2`}>
-            {currentChoice?.alternatives.map((answer: Choice) => {
-              let id = answer.text;
-              return (
-                <div
-                  className={`flex flex-grid justify-center h-full w-full`}
-                  key={id}
-                  onContextMenu={(e) => {
-                    if (choiceManager.submitted) return;
-                    e.preventDefault();
-                    if (answer.isCorrect) {
-                      setChoiceManager({ key: id, style: "text-green-500" });
-                    } else {
-                      setChoiceManager({ key: id, style: "text-red-500" });
-                    }
-                  }}
-                  onClick={async (e) => {
-                    if (choiceManager.submitted) return;
-                    if (answer.isCorrect) {
-                      setChoiceManager({
-                        key: id,
-                        style: "bg-green-500",
-                        submitted: true,
-                      });
-                      await new Promise((resolve) => setTimeout(resolve, 2000));
-                      let nyeGloser = Array.from(gloser);
-                      nyeGloser.splice(currentChoiceIndex, 1);
-                      setGloser(nyeGloser);
-                    } else {
-                      setChoiceManager({
-                        key: id,
-                        style: "bg-red-500",
-                        submitted: true,
-                      });
-                      await new Promise((resolve) => setTimeout(resolve, 2000));
-                      setCurrentChoiceIndex(currentChoiceIndex + 1);
-                    }
-                    setChoiceManager({ key: "", style: "", submitted: false });
-                  }}
-                >
-                  <Alternative
-                    alternative={answer.text}
-                    classNames={[
-                      choiceManager.key === id ? choiceManager.style : "",
-                      choiceManager.submitted !== undefined &&
-                      choiceManager.submitted &&
-                      answer.isCorrect
-                        ? "bg-green-500"
-                        : "",
-                    ]}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <div className="w-full h-full mt-2 flex flex-row justify-between md:justify-evenly">
-            <Dropdown label="Spørsmåls type" placement="top">
-              <Dropdown.Item
-                onClick={() => {
-                  setQuestionType("hanzi");
-                }}
-              >
-                Hanzi
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  setQuestionType("pinyin");
-                }}
-              >
-                Pinyin
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  setQuestionType("standard");
-                }}
-              >
-                Standard
-              </Dropdown.Item>
-            </Dropdown>
-            <Dropdown label="Svarstype" placement="top">
-              <Dropdown.Item
-                onClick={() => {
-                  setAnswerType("hanzi");
-                }}
-              >
-                Hanzi
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  setAnswerType("pinyin");
-                }}
-              >
-                Pinyin
-              </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => {
-                  setAnswerType("standard");
-                }}
-              >
-                Standard
-              </Dropdown.Item>
-            </Dropdown>
-          </div>
+          <MultiChoiceAlternatives
+            setCurrentChoiceIndex={setCurrentChoiceIndex}
+            currentChoice={currentChoice as MultiChoice}
+            currentChoiceIndex={currentChoiceIndex}
+            setChoiceManager={setChoiceManager}
+            choiceManager={choiceManager}
+            setGloser={setGloser}
+            gloser={gloser}
+          />
+          <MultiChoiceSettings
+            setAnswerType={setAnswerType}
+            setQuestionType={setQuestionType}
+          />
         </div>
       </div>
     </div>
