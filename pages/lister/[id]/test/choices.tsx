@@ -1,6 +1,6 @@
 /* Types */
 import type { Glose } from "types/glose";
-import type { Choice, MultiChoice } from "types/mchoice";
+import type { MultiChoice } from "types/mchoice";
 import type { AnswerType, QuestionType } from "types/mchoiceQuestion";
 import type { MetaSeo } from "types/seo";
 import type { GetStaticPropsContext } from "next";
