@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Alternative } from "components/choice";
+import { Alternative } from "src/components/multiplechoice/choice";
 import type { Choice } from "types/mchoice";
 import { MultiChoiceAlternativeProps } from "./props";
 
