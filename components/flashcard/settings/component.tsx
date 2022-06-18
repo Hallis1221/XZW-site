@@ -1,4 +1,5 @@
 import { Button, Dropdown } from "flowbite-react";
+import toast from "react-hot-toast";
 import ReactToPrint from "react-to-print";
 import { CardSettingsProps } from "./props";
 
@@ -35,10 +36,15 @@ export function CardSettings({
         {page.attributes.ReshuffleCards || "Stokk kortene"}
       </Button>{" "}
       <ReactToPrint
+        onBeforePrint={async () => {
+          toast.loading("Skriver ut, husk å velge å printe på begge sider!");
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          setTimeout(() => toast.remove(), 500);
+        }}
         trigger={() => {
           // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
           // to the root node of the returned component as it will be overwritten.
-          return <Button className="hidden sm:inline" >Print</Button>
+          return <Button className="hidden sm:inline">Print</Button>;
         }}
         content={() => printRef.current}
       />
