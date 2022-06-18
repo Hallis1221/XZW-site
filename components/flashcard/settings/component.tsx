@@ -34,16 +34,14 @@ export function CardSettings({
       <Button onClick={() => shuffleCards()}>
         {page.attributes.ReshuffleCards || "Stokk kortene"}
       </Button>{" "}
-      <Button className="hidden sm:inline">
-        <ReactToPrint
-          trigger={() => {
-            // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
-            // to the root node of the returned component as it will be overwritten.
-            return <a href="#">Print</a>;
-          }}
-          content={() => printRef.current}
-        />
-      </Button>
+      <ReactToPrint
+        trigger={() => {
+          // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
+          // to the root node of the returned component as it will be overwritten.
+          return <Button className="hidden sm:inline" >Print</Button>
+        }}
+        content={() => printRef.current}
+      />
       <Dropdown label="Bak" placement="top">
         <Dropdown.Item onClick={() => setBack("hanzi")}>
           {page.attributes.Hanzi || "hànzì"}

@@ -116,7 +116,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             onRight={() => removeCard()}
           />
 
-        <PrintCards printRef={printRef} liste={liste}/>
+        <PrintCards printRef={printRef} liste={liste} frontSide={frontSide} backSide={backSide}/>
           <FlashcardWithActions
             desktopButtons={
               <div className="w-full mx-2 mt-5">
