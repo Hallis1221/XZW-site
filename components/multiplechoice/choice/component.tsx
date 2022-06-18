@@ -10,7 +10,7 @@ export function Alternative({ alternative, classNames=[""] }: ChoiceProps) {
     
       >
         <div
-          className={`text-center text-3xl font-semibold tracking-widest`}
+          className={`text-center text-xl sm:text-2xl md:text-3xl font-semibold tracking-widest`}
         >
           {alternative}
         </div>

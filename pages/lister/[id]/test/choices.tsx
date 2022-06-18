@@ -54,7 +54,7 @@ export default function Page({ liste }) {
             <div className="absolute right-0 top-0 m-5 font-bold">
               {currentChoiceIndex} / {gloser.length}
             </div>
-            <span className="text-center text-3xl">
+            <span className="text-center text-2xl sm:text-3xl md:text-4xl">
               Hva er `
               <strong className="font-semibold">
                 {currentChoice?.question}
