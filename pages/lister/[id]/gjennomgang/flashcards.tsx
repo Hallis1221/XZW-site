@@ -23,10 +23,14 @@ import { CardSide } from "types/cardSide";
 import { shuffle } from "src/lib/shuffle";
 import { useStopwatch } from "react-timer-hook";
 import { PrintCards } from "src/components/flashcard/print/component";
+import { useSession } from "next-auth/react";
+import md5 from "md5";
 
 // TODO use strapi texts
 
-const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
+const Page: NextPage<{ page: any; liste: GloseListe, id: string }> = ({ page, liste,id }) => {
+  const { data: session } = useSession();
+
   let [currentCardNumber, setCurrentCardNumber] = useState<number>(0);
   let [cards, setCards] = useState<Glose[]>(liste.gloser);
   let [frontSide, setFrontSide] = useState<CardSide>("standard");
@@ -82,6 +86,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   useKeypress("ArrowLeft", () => lastCard());
   useKeypress("Enter", () => removeCard());
 
+
   if (
     cards.length === currentCardNumber ||
     card.back === "" ||
@@ -91,13 +96,17 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
       if (isRunning) pause();
       if (!dbSynced) {
         setDbSynced(true);
-
+        let time = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
         fetch("/api/scores/flashcards", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            gameID: id,
+            time: time.toFixed(0),
+            session: md5(JSON.stringify(session + time.toFixed(0).toString())),
+          }),
         }).then((res) => {
           if (res.status === 200) {
             toast.success("Du har lagret dine poeng!");
@@ -110,6 +119,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             <div
               className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
+                setDbSynced(false);
                 setCards(liste.gloser);
                 reset();
                 setCurrentCardNumber(0);
