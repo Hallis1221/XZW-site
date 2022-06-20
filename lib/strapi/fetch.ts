@@ -9,12 +9,19 @@ import getStrapiURL from "strapi/url";
  * @returns Parsed API call response
  */
 
-export default async function fetchAPI(path: string, urlParamsObject: object = {}, options: object = {}, ) {
+export default async function fetchAPI(
+  path: string,
+  urlParamsObject: object = {},
+  options: object = {},
+  method: string = "GET"
+) {
   // Merge default and user options
   const mergedOptions = {
+    method,
     headers: {
       "Content-Type": "application/json",
-      'Authorization': 'Bearer ' + process.env.STRAPI_API_KEY,
+      Accept: "application/json",
+      Authorization: "Bearer " + process.env.STRAPI_API_KEY,
     },
     ...options,
   };
@@ -24,14 +31,16 @@ export default async function fetchAPI(path: string, urlParamsObject: object = {
   const requestUrl = `${getStrapiURL(
     `/api${path}${queryString ? `?${queryString}` : ""}`
   )}`;
-  
+
   // Trigger API call
   const response = await fetch(requestUrl, mergedOptions);
 
   // Handle response
   if (!response.ok) {
     console.error(response.statusText);
-    throw new Error(`An error occured while fetching ${requestUrl}, status: ${response.status}`);
+    throw new Error(
+      `An error occured while fetching ${requestUrl}, status: ${response.status}`
+    );
   }
   const data = await response.json();
   return data;

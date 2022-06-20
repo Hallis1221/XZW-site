@@ -108,9 +108,9 @@ const Page: NextPage<{ page: any; liste: GloseListe, id: string }> = ({ page, li
             session: md5(JSON.stringify(session + time.toFixed(0).toString())),
           }),
         }).then((res) => {
-          if (res.status === 200) {
-            toast.success("Du har lagret dine poeng!");
-          }
+          if (res.status === 201) {
+            toast.success("Ny highscore!");
+          } else console.log("No new highscore", res.status);
         });
       }
       return (

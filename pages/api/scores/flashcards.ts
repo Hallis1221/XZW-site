@@ -28,32 +28,44 @@ async function handler(req, res) {
       },
     },
   }).then((response) => {
-    console.log(response.Poeng.Flashcards);
     response?.Poeng?.Flashcards?.forEach(async (flashcard) => {
-      if (flashcard.GameID === body.gameID) {
-        await fetchAPI(
+      if (flashcard.GameID === body.gameID && flashcard.Tid > body.time) {
+        let remainingCards = response.Poeng.Flashcards.filter((card) => {
+          card.id = undefined;
+          return card.GameID !== body.gameID;
+
+        });
+
+        let cards = remainingCards || [];
+        cards.push({
+          Title: flashcard.Title,
+          Tid: body.time,
+          GameID: flashcard.GameID,
+        });
+
+        let resol = await fetchAPI(
           `/users/${session?.id}`,
+          {},
+
           {
-            Poeng: {
-              Flashcards: [
-                {
-                  Title: "string",
-                  Tid: 5,
-                  GameID: "tid-1",
-                },
-              ],
-            },
+            body: JSON.stringify({
+              Poeng: {
+                Flashcards: cards,
+              },
+            }),
           },
-          {
-            method: "PUT",
-          }
+          "PUT"
         );
+
+        if (resol.status === 200) {
+          return res.status(201).json({ message: "Success" });
+        }
       }
     });
   });
   // Found the name.
   // Sends a HTTP success code
-  res.status(200).json({});
+  res.status(304).json({});
 }
 
 export default handler;
