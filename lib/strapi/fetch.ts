@@ -9,7 +9,7 @@ import getStrapiURL from "strapi/url";
  * @returns Parsed API call response
  */
 
-export default async function fetchAPI(path: string, urlParamsObject: object = {}, options: object = {}) {
+export default async function fetchAPI(path: string, urlParamsObject: object = {}, options: object = {}, ) {
   // Merge default and user options
   const mergedOptions = {
     headers: {
@@ -31,7 +31,7 @@ export default async function fetchAPI(path: string, urlParamsObject: object = {
   // Handle response
   if (!response.ok) {
     console.error(response.statusText);
-    throw new Error(`An error occured please try again`);
+    throw new Error(`An error occured while fetching ${requestUrl}, status: ${response.status}`);
   }
   const data = await response.json();
   return data;

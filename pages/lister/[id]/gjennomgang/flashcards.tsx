@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 import { SwipeableFlashcard } from "src/components/flashcard/swipeable";
 import { CardSide } from "types/cardSide";
 import { shuffle } from "src/lib/shuffle";
-import { Flashcard, Flashside } from "src/components/flashcard";
+import { useStopwatch } from "react-timer-hook";
 import { PrintCards } from "src/components/flashcard/print/component";
 
 // TODO use strapi texts
@@ -32,6 +32,9 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [frontSide, setFrontSide] = useState<CardSide>("standard");
   let [backSide, setBackSide] = useState<CardSide>("pinyin_hanzi");
   let [glose, setGlose] = useState<Glose>(cards[currentCardNumber]);
+
+  const { seconds, minutes, hours, days, isRunning, start, pause, reset } =
+    useStopwatch({ autoStart: true });
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +48,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     setGlose(cards[currentCardNumber]);
   }, [currentCardNumber, cards]);
   useEffect(() => {
+    if (!isRunning) start();
     if (glose)
       setCard({
         front:
@@ -64,7 +68,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             ? glose.Standard
             : glose.Pinyin + " (" + glose.Chinese + ")",
       });
-  }, [frontSide, backSide, glose]);
+  }, [frontSide, backSide, glose, isRunning, start]);
 
   useKeypress(" ", () => setFlipped(!flipped));
   useKeypress("ArrowRight", () => nextCard());
@@ -76,7 +80,8 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
     card.back === "" ||
     card.front === ""
   ) {
-    if (cards.length <= 0)
+    if (cards.length <= 0) {
+      if (isRunning) pause();
       return (
         <>
           <div className="h-screen w-full absolute top-0 left-0 -z-50">
@@ -87,14 +92,32 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                 setCurrentCardNumber(0);
               }}
             >
-              <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl lg">
+              <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl">
                 {page.attributes.OutOfCards ||
                   "Ingen flere kort. Trykk hvorsomhelst for å starte på nytt."}
               </h1>
+              <h2 className="mt-5 text-xl sm:text-2xl md:text-3xl ">
+                Tiden din var; {" "}
+              <span className="inline font-medium">
+              {
+                  days > 0
+                    ? `${days} dager, ${hours} timer, ${minutes} minutter og ${seconds} sekunder`
+                  : hours > 0
+                    ? `${hours} timer, ${minutes} minutter og ${seconds} sekunder`
+                  : minutes > 0
+                    ? `${minutes} minutter og ${seconds} sekunder`
+                  : seconds > 0 
+                    ? `${seconds} sekunder`
+                  : "0 sekunder"
+                }
+              </span>
+         
+              </h2>
             </div>
           </div>
         </>
       );
+    }
     setCurrentCardNumber(0);
     return <div>Loading...</div>;
   }
@@ -116,7 +139,12 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             onRight={() => removeCard()}
           />
 
-        <PrintCards printRef={printRef} liste={liste} frontSide={frontSide} backSide={backSide}/>
+          <PrintCards
+            printRef={printRef}
+            liste={liste}
+            frontSide={frontSide}
+            backSide={backSide}
+          />
           <FlashcardWithActions
             desktopButtons={
               <div className="w-full mx-2 mt-5">
