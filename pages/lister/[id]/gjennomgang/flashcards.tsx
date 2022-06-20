@@ -28,7 +28,11 @@ import md5 from "md5";
 
 // TODO use strapi texts
 
-const Page: NextPage<{ page: any; liste: GloseListe, id: string }> = ({ page, liste,id }) => {
+const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
+  page,
+  liste,
+  id,
+}) => {
   const { data: session } = useSession();
 
   let [currentCardNumber, setCurrentCardNumber] = useState<number>(0);
@@ -85,7 +89,6 @@ const Page: NextPage<{ page: any; liste: GloseListe, id: string }> = ({ page, li
   useKeypress("ArrowRight", () => nextCard());
   useKeypress("ArrowLeft", () => lastCard());
   useKeypress("Enter", () => removeCard());
-
 
   if (
     cards.length === currentCardNumber ||
