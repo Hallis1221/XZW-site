@@ -4,6 +4,7 @@ import fetchAPI from "strapi/fetch";
 
 async function handler(req, res) {
   const session = await getSession({ req });
+  let newHighscore = false;
 
   if (!session) return res.status(401).json({ message: "Not logged in" });
   // Get data submitted in request's body.
@@ -21,51 +22,53 @@ async function handler(req, res) {
   if (md5(JSON.stringify(session + body.time)) !== body.session)
     return res.status(400).json({ message: "Session mismatch" });
 
-  fetchAPI(`/users/${session?.id}/`, {
+  let response = await fetchAPI(`/users/${session?.id}/`, {
     populate: {
       Poeng: {
         populate: "*",
       },
     },
-  }).then((response) => {
-    response?.Poeng?.Flashcards?.forEach(async (flashcard) => {
-      if (flashcard.GameID === body.gameID && flashcard.Tid > body.time) {
-        let remainingCards = response.Poeng.Flashcards.filter((card) => {
-          card.id = undefined;
-          return card.GameID !== body.gameID;
-
-        });
-
-        let cards = remainingCards || [];
-        cards.push({
-          Title: flashcard.Title,
-          Tid: body.time,
-          GameID: flashcard.GameID,
-        });
-
-        let resol = await fetchAPI(
-          `/users/${session?.id}`,
-          {},
-
-          {
-            body: JSON.stringify({
-              Poeng: {
-                Flashcards: cards,
-              },
-            }),
-          },
-          "PUT"
-        );
-
-        if (resol.status === 200) {
-          return res.status(201).json({ message: "Success" });
-        }
-      }
-    });
   });
+  await response?.Poeng?.Flashcards?.forEach(async (flashcard) => {
+    if (flashcard.GameID === body.gameID && flashcard.Tid > body.time) {
+      newHighscore = true;
+      let remainingCards = response.Poeng.Flashcards.filter((card) => {
+        card.id = undefined;
+        return card.GameID !== body.gameID;
+      });
+
+      let cards = remainingCards || [];
+      cards.push({
+        Title: flashcard.Title,
+        Tid: body.time,
+        GameID: flashcard.GameID,
+      });
+
+      await fetchAPI(
+        `/users/${session?.id}`,
+        {},
+
+        {
+          body: JSON.stringify({
+            Poeng: {
+              Flashcards: cards,
+            },
+          }),
+        },
+        "PUT"
+      ).catch((error) => {
+        console.error(error);
+        return res.status(500).json({ message: "Error updating user" });
+      });
+
+      return res.status(201).json();
+    }
+  });
+
   // Found the name.
   // Sends a HTTP success code
-  res.status(304).json({});
+  if (!newHighscore) 
+  res.status(304).json();
 }
 
 export default handler;
