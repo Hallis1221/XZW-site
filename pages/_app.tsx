@@ -18,7 +18,7 @@ import { Seo } from "src/components/seo";
 import Link from "next/link";
 import App from "next/app";
 /* Flowbite components */
-import { Navbar, Button, Spinner } from "flowbite-react";
+import { Navbar, Button, Spinner, Dropdown, Avatar } from "flowbite-react";
 /* React-hot-toast components */
 import { Toaster } from "react-hot-toast";
 /* API calls */
@@ -26,11 +26,10 @@ import getGlobal from "strapi/global";
 /* Hooks */
 import { useRouter } from "next/router";
 /* Authentication */
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
+import md5 from "md5";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  const router = useRouter();
-console.log(session)
+function MyApp({ Component, pageProps: pageProps }: AppProps) {
   const { global, page } = pageProps;
 
   if (!global || !global.attributes)
@@ -59,32 +58,7 @@ console.log(session)
         <GlobalContext.Provider value={global.attributes || undefined}>
           <Seo pageSeo={page.attributes.seo} global={global.attributes} />
           {/* <Flowbite> */}
-          <Navbar fluid={true} rounded={true}>
-            <Navbar.Brand href="/">
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                {global.attributes.Sitename}
-              </span>
-            </Navbar.Brand>
-            <div className="flex md:order-2">
-              <Link href={global.attributes.ActionButton.href || ""}>
-                <Button>
-                  {global.attributes.ActionButton.DisplayName || ""}
-                </Button>
-              </Link>
-              <Navbar.Toggle />
-            </div>
-            <Navbar.Collapse>
-              {global.attributes.Pages.map((page: any) => (
-                <Navbar.Link
-                  key={page.id}
-                  href={page.href}
-                  active={router.pathname === page.href ? true : false}
-                >
-                  {page.DisplayName}
-                </Navbar.Link>
-              ))}
-            </Navbar.Collapse>
-          </Navbar>
+          <_NavBar global={global} />
 
           <div className="m-10 ">
             <Component {...pageProps} />
@@ -118,3 +92,74 @@ MyApp.getInitialProps = async (ctx: any) => {
 };
 
 export default MyApp;
+
+function _NavBar({ global }) {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  return (
+    <Navbar fluid={true} rounded={true}>
+      <Navbar.Brand href="/">
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+          {global.attributes.Sitename}
+        </span>
+      </Navbar.Brand>
+      <div className="flex order-1 md:order-2">
+        {status == "authenticated" ? (
+          <Dropdown
+            arrowIcon={true}
+            inline={true}
+            label={
+              <Avatar
+                alt="User settings"
+                img={session?.user?.image || `https://www.gravatar.com/avatar/${md5(session?.user?.email)}`}
+                rounded={true}
+              />
+            }
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">{session?.user?.name}</span>
+              <span className="block truncate text-sm font-medium">
+                {session?.user?.email}
+              </span>
+            </Dropdown.Header>
+            <Dropdown.Item >
+              <Link
+                href={global.attributes.ActionButton.href || ""}
+              >
+                {global.attributes.ActionButton.DisplayName || ""}
+              </Link>
+            </Dropdown.Item>
+
+            <Dropdown.Divider />
+            <Dropdown.Item>
+              <button onClick={() => signOut()}>Sign out</button>
+            </Dropdown.Item>
+          </Dropdown>
+        ) : (
+          <Link
+            href={global.attributes.ActionButton.href || ""}
+            className="w-screen"
+          >
+            <Button className="w-screen">
+              {global.attributes.ActionButton.DisplayName || ""}
+            </Button>
+          </Link>
+        )}
+
+        <Navbar.Toggle />
+      </div>
+      <Navbar.Collapse>
+        {global.attributes.Pages.map((page: any) => (
+          <Navbar.Link
+            key={page.id}
+            href={page.href}
+            active={router.pathname === page.href ? true : false}
+          >
+            {page.DisplayName}
+          </Navbar.Link>
+        ))}
+      </Navbar.Collapse>
+    </Navbar>
+  );
+}
