@@ -27,7 +27,7 @@ import getGlobal from "strapi/global";
 import { useRouter } from "next/router";
 /* Authentication */
 import { SessionProvider, signOut, useSession } from "next-auth/react";
-import md5 from "crypto-js/md5";
+import md5 from "md5";
 
 function MyApp({ Component, pageProps: pageProps }: AppProps) {
   const { global, page } = pageProps;
