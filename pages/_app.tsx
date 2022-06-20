@@ -1,9 +1,9 @@
 /**
- * This is the entry point for the application. That is to say, every page in the application will be "underneath" this file. 
+ * This is the entry point for the application. That is to say, every page in the application will be "underneath" this file.
  * The following properties apply to the application as a whole, unless otherwise specified in the file.
  * @author Halvor Vivelstad.
  * @version 0.0.1
- * @license CCLC - Creative Commons Legal Code. 
+ * @license CCLC - Creative Commons Legal Code.
  * @see https://github.com/Hallis1221/XZW-site/blob/main/license.md
  */
 
@@ -25,10 +25,12 @@ import { Toaster } from "react-hot-toast";
 import getGlobal from "strapi/global";
 /* Hooks */
 import { useRouter } from "next/router";
+/* Authentication */
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
-
+console.log(session)
   const { global, page } = pageProps;
 
   if (!global || !global.attributes)
@@ -52,42 +54,43 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-    <Toaster/>
-      <GlobalContext.Provider value={global.attributes || undefined}>
-        <Seo pageSeo={page.attributes.seo} global={global.attributes} />
-        {/* <Flowbite> */}
-        <Navbar fluid={true} rounded={true}>
-          <Navbar.Brand href="/">
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-              {global.attributes.Sitename}
-            </span>
-          </Navbar.Brand>
-          <div className="flex md:order-2">
-            <Link href={global.attributes.ActionButton.href || ""}>
-              <Button>
-                {global.attributes.ActionButton.DisplayName || ""}
-              </Button>
-            </Link>
-            <Navbar.Toggle />
+      <SessionProvider>
+        <Toaster />
+        <GlobalContext.Provider value={global.attributes || undefined}>
+          <Seo pageSeo={page.attributes.seo} global={global.attributes} />
+          {/* <Flowbite> */}
+          <Navbar fluid={true} rounded={true}>
+            <Navbar.Brand href="/">
+              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+                {global.attributes.Sitename}
+              </span>
+            </Navbar.Brand>
+            <div className="flex md:order-2">
+              <Link href={global.attributes.ActionButton.href || ""}>
+                <Button>
+                  {global.attributes.ActionButton.DisplayName || ""}
+                </Button>
+              </Link>
+              <Navbar.Toggle />
+            </div>
+            <Navbar.Collapse>
+              {global.attributes.Pages.map((page: any) => (
+                <Navbar.Link
+                  key={page.id}
+                  href={page.href}
+                  active={router.pathname === page.href ? true : false}
+                >
+                  {page.DisplayName}
+                </Navbar.Link>
+              ))}
+            </Navbar.Collapse>
+          </Navbar>
+
+          <div className="m-10 ">
+            <Component {...pageProps} />
           </div>
-          <Navbar.Collapse>
-            {global.attributes.Pages.map((page: any) => (
-              <Navbar.Link
-                key={page.id}
-                href={page.href}
-                active={router.pathname === page.href ? true : false}
-              >
-                {page.DisplayName}
-              </Navbar.Link>
-            ))}
-          </Navbar.Collapse>
-        </Navbar>
 
-        <div className="m-10 ">
-          <Component {...pageProps} />
-        </div>
-
-        {/* <div className="xl:absolute xl:bottom-0 w-screen -z-10">
+          {/* <div className="xl:absolute xl:bottom-0 w-screen -z-10">
           <Footer className="relative mt-10">
             <Footer.Copyright href="#" by="Halvor V" year={2022} />
             <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
@@ -99,8 +102,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Footer.LinkGroup>
           </Footer>
         </div> */}
-        {/* </Flowbite> */}
-      </GlobalContext.Provider>
+          {/* </Flowbite> */}
+        </GlobalContext.Provider>
+      </SessionProvider>
     </>
   );
 }
