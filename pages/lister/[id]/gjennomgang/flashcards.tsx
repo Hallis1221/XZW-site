@@ -89,6 +89,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
                 setCards(liste.gloser);
+                reset()
                 setCurrentCardNumber(0);
               }}
             >
@@ -97,21 +98,18 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
                   "Ingen flere kort. Trykk hvorsomhelst for å starte på nytt."}
               </h1>
               <h2 className="mt-5 text-xl sm:text-2xl md:text-3xl ">
-                Tiden din var; {" "}
-              <span className="inline font-medium">
-              {
-                  days > 0
+                Tiden din var;{" "}
+                <span className="inline font-medium">
+                  {days > 0
                     ? `${days} dager, ${hours} timer, ${minutes} minutter og ${seconds} sekunder`
-                  : hours > 0
+                    : hours > 0
                     ? `${hours} timer, ${minutes} minutter og ${seconds} sekunder`
-                  : minutes > 0
+                    : minutes > 0
                     ? `${minutes} minutter og ${seconds} sekunder`
-                  : seconds > 0 
+                    : seconds > 0
                     ? `${seconds} sekunder`
-                  : "0 sekunder"
-                }
-              </span>
-         
+                    : "0 sekunder"}
+                </span>
               </h2>
             </div>
           </div>
@@ -139,14 +137,14 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             onRight={() => removeCard()}
           />
 
-    <div className="hidden">
-    <PrintCards
-            printRef={printRef}
-            liste={liste}
-            frontSide={frontSide}
-            backSide={backSide}
-          />
-    </div>
+          <div className="hidden">
+            <PrintCards
+              printRef={printRef}
+              liste={liste}
+              frontSide={frontSide}
+              backSide={backSide}
+            />
+          </div>
           <FlashcardWithActions
             desktopButtons={
               <div className="w-full mx-2 mt-5">
