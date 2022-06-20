@@ -6,7 +6,7 @@ import fetchAPI from "strapi/fetch";
 
 // TODO - type this
 const Home: NextPage = ({ home }: any) => {
-  const {data: session} = useSession();
+  const { data: session } = useSession();
 
   if (session) {
     return (
@@ -14,14 +14,14 @@ const Home: NextPage = ({ home }: any) => {
         Signed in as {session?.user?.email} <br />
         <button onClick={() => signOut()}>Sign out</button>
       </>
-    )
+    );
   }
   return (
     <>
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
     </>
-  )
+  );
 };
 
 export async function getStaticProps() {
@@ -43,4 +43,3 @@ export async function getStaticProps() {
 }
 
 export default Home;
-

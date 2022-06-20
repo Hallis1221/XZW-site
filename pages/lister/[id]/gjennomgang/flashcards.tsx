@@ -32,6 +32,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   let [frontSide, setFrontSide] = useState<CardSide>("standard");
   let [backSide, setBackSide] = useState<CardSide>("pinyin_hanzi");
   let [glose, setGlose] = useState<Glose>(cards[currentCardNumber]);
+  let [dbSynced, setDbSynced] = useState<boolean>(false);
 
   const { seconds, minutes, hours, days, isRunning, start, pause, reset } =
     useStopwatch({ autoStart: true });
@@ -45,10 +46,9 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   });
 
   useEffect(() => {
-    setGlose(cards[currentCardNumber]);
+    if (cards.length > 0) setGlose(cards[currentCardNumber]);
   }, [currentCardNumber, cards]);
   useEffect(() => {
-    if (!isRunning) start();
     if (glose)
       setCard({
         front:
@@ -68,7 +68,14 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
             ? glose.Standard
             : glose.Pinyin + " (" + glose.Chinese + ")",
       });
-  }, [frontSide, backSide, glose, isRunning, start]);
+  }, [frontSide, backSide, glose, cards.length]);
+
+  useEffect(() => {
+    if (!isRunning && cards.length > 0) {
+      console.log("Starting timer");
+      start();
+    }
+  }, [isRunning, start, cards.length]);
 
   useKeypress(" ", () => setFlipped(!flipped));
   useKeypress("ArrowRight", () => nextCard());
@@ -82,6 +89,21 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
   ) {
     if (cards.length <= 0) {
       if (isRunning) pause();
+      if (!dbSynced) {
+        setDbSynced(true);
+
+        fetch("/api/scores/flashcards", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        }).then((res) => {
+          if (res.status === 200) {
+            toast.success("Du har lagret dine poeng!");
+          }
+        });
+      }
       return (
         <>
           <div className="h-screen w-full absolute top-0 left-0 -z-50">
@@ -89,7 +111,7 @@ const Page: NextPage<{ page: any; liste: GloseListe }> = ({ page, liste }) => {
               className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
                 setCards(liste.gloser);
-                reset()
+                reset();
                 setCurrentCardNumber(0);
               }}
             >
