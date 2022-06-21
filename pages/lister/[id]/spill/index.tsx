@@ -98,6 +98,8 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       id: ctx.params?.id || null,
       page: res.data,
     },
+    revalidate: 60*5,
+
   };
 }
 

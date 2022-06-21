@@ -124,6 +124,8 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         gloser: liste.gloser,
       },
     },
+    revalidate: 60*5,
+
   };
 }
 

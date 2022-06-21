@@ -5,7 +5,7 @@ import type { NextPage, GetStaticPropsContext } from "next";
 import type { MetaSeo } from "types/seo";
 import type { Card } from "types/card";
 /* FLowbite components */
-import { Button, Card as FRCard } from "flowbite-react";
+import { Button, Card as FRCard, Table } from "flowbite-react";
 /* Components */
 import { NavArrow } from "components/navArrow";
 import { FlashcardWithActions } from "src/components/flashcard/withactions/component";
@@ -28,11 +28,13 @@ import md5 from "md5";
 
 // TODO use strapi texts
 
-const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
-  page,
-  liste,
-  id,
-}) => {
+const Page: NextPage<{
+  page: any;
+  liste: GloseListe;
+  id: string;
+  scores: UserScore[];
+}> = ({ page, liste, id, scores }) => {
+  console.log(scores);
   const { data: session } = useSession();
 
   let [currentCardNumber, setCurrentCardNumber] = useState<number>(0);
@@ -98,9 +100,8 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
     if (cards.length <= 0) {
       if (isRunning) pause();
       if (!dbSynced) {
-        setDbSynced(true);
         let time = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
-
+        console.log(dbSynced);
         if (session)
           toast.promise(
             fetch("/api/scores/flashcards", {
@@ -140,10 +141,11 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           toast.remove();
           toast.custom("Logg inn for å lagre beste tid!", {});
         }
+        setDbSynced(true);
       }
       return (
         <>
-          <div className="h-screen w-full absolute top-0 left-0 -z-50">
+          <div className="h-screen w-full absolute top-0 left-0 -z-50 justify-center">
             <div
               className="hover:cursor-pointer h-full w-full flex flex-col justify-center text-center"
               onClick={() => {
@@ -171,6 +173,29 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                     : "0 sekunder"}
                 </span>
               </h2>
+              <div className="flex flex-row justify-center">
+                <div className="mt-10 w-2/4 ">
+                  <Table>
+                    <Table.Head>
+                      <Table.HeadCell>Spiller</Table.HeadCell>
+                      <Table.HeadCell>Tid</Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y">
+                      {scores?.map((score: UserScore) => (
+                        <Table.Row
+                          key={score.id + score.name + score.tid}
+                          className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                        >
+                          <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                            {score.name}
+                          </Table.Cell>
+                          <Table.Cell>{score.tid}</Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                </div>
+              </div>
             </div>
           </div>
         </>
@@ -353,6 +378,17 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (!liste) return { notFound: true };
 
+  let globalLeaderboard = (
+    await (
+      await fetch(
+        process.env.NODE_ENV === "production"
+          ? process.env.VERCEL_URL + "/lister"
+          : "http://localhost:3000/" +
+              "api/scores/flashcards/global/" +
+              ctx.params?.id
+      )
+    ).json()
+  ).data;
   listeRes.data.attributes.seo = {
     metaTitle: liste.title,
     metaDescription: liste.description,
@@ -369,12 +405,14 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     props: {
       id: ctx.params?.id || null,
       page: res.data,
+      scores: globalLeaderboard,
       liste: {
         title: liste.title,
         description: liste.description,
         gloser: liste.gloser,
       },
     },
+    revalidate: 60*5,
   };
 }
 
@@ -405,3 +443,9 @@ export async function getStaticPaths() {
 }
 
 export default Page;
+
+type UserScore = {
+  id: string;
+  name: string;
+  tid: number;
+};

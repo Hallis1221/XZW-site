@@ -227,6 +227,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         gloser: liste.gloser,
       },
       page: res.data,
+      revalidate: 60*5,
     },
   };
 }

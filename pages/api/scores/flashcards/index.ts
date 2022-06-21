@@ -1,8 +1,9 @@
 import md5 from "md5";
+import { NextApiRequest } from "next";
 import { getSession } from "next-auth/react";
 import fetchAPI from "strapi/fetch";
 
-async function handler(req, res) {
+async function handler(req: NextApiRequest, res) {
   const session = await getSession({ req });
   let newHighscore = false;
   let highScore;
@@ -34,13 +35,14 @@ async function handler(req, res) {
     if (flashcard.GameID === body.gameID)
       if (flashcard.Tid > body.time) {
         newHighscore = true;
-        let remainingCards = response.Poeng.Flashcards.filter((card) => {
-          card.id = undefined;
+        let remainingCards = await response.Poeng.Flashcards.filter((card) => {
+          console.log(card.id);
           return card.GameID !== body.gameID;
         });
 
         let cards = remainingCards || [];
         cards.push({
+          id: flashcard.id,
           Title: flashcard.Title,
           Tid: body.time,
           GameID: flashcard.GameID,
@@ -53,15 +55,12 @@ async function handler(req, res) {
           {
             body: JSON.stringify({
               Poeng: {
-                Flashcards: cards,
+                Flashcards: Array.from(cards),
               },
             }),
           },
           "PUT"
-        ).catch((error) => {
-          console.error(error);
-          return res.status(500).json({ message: "Error updating user" });
-        });
+        ).catch((error) => {});
 
         return res.status(201).json();
       } else {
@@ -71,8 +70,7 @@ async function handler(req, res) {
 
   // Found the name.
   // Sends a HTTP success code
-  if (!newHighscore)
-    res.status(400).json({ highScore});
+  if (!newHighscore) res.status(400).json({ highScore });
 }
 
 export default handler;
