@@ -5,6 +5,7 @@ import fetchAPI from "strapi/fetch";
 async function handler(req, res) {
   const session = await getSession({ req });
   let newHighscore = false;
+  let highScore;
 
   if (!session) return res.status(401).json({ message: "Not logged in" });
   // Get data submitted in request's body.
@@ -30,45 +31,48 @@ async function handler(req, res) {
     },
   });
   await response?.Poeng?.Flashcards?.forEach(async (flashcard) => {
-    if (flashcard.GameID === body.gameID && flashcard.Tid > body.time) {
-      newHighscore = true;
-      let remainingCards = response.Poeng.Flashcards.filter((card) => {
-        card.id = undefined;
-        return card.GameID !== body.gameID;
-      });
+    if (flashcard.GameID === body.gameID)
+      if (flashcard.Tid > body.time) {
+        newHighscore = true;
+        let remainingCards = response.Poeng.Flashcards.filter((card) => {
+          card.id = undefined;
+          return card.GameID !== body.gameID;
+        });
 
-      let cards = remainingCards || [];
-      cards.push({
-        Title: flashcard.Title,
-        Tid: body.time,
-        GameID: flashcard.GameID,
-      });
+        let cards = remainingCards || [];
+        cards.push({
+          Title: flashcard.Title,
+          Tid: body.time,
+          GameID: flashcard.GameID,
+        });
 
-      await fetchAPI(
-        `/users/${session?.id}`,
-        {},
+        await fetchAPI(
+          `/users/${session?.id}`,
+          {},
 
-        {
-          body: JSON.stringify({
-            Poeng: {
-              Flashcards: cards,
-            },
-          }),
-        },
-        "PUT"
-      ).catch((error) => {
-        console.error(error);
-        return res.status(500).json({ message: "Error updating user" });
-      });
+          {
+            body: JSON.stringify({
+              Poeng: {
+                Flashcards: cards,
+              },
+            }),
+          },
+          "PUT"
+        ).catch((error) => {
+          console.error(error);
+          return res.status(500).json({ message: "Error updating user" });
+        });
 
-      return res.status(201).json();
-    }
+        return res.status(201).json();
+      } else {
+        highScore = flashcard.Tid;
+      }
   });
 
   // Found the name.
   // Sends a HTTP success code
-  if (!newHighscore) 
-  res.status(304).json();
+  if (!newHighscore)
+    res.status(400).json({ highScore});
 }
 
 export default handler;

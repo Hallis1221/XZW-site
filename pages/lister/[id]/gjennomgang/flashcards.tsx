@@ -100,21 +100,46 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
       if (!dbSynced) {
         setDbSynced(true);
         let time = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
-        fetch("/api/scores/flashcards", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            gameID: id,
-            time: time.toFixed(0),
-            session: md5(JSON.stringify(session + time.toFixed(0).toString())),
-          }),
-        }).then((res) => {
-          if (res.status === 201) {
-            toast.success("Ny highscore!");
-          } else console.log("No new highscore", res.status);
-        });
+
+        if (session)
+          toast.promise(
+            fetch("/api/scores/flashcards", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                gameID: id,
+                time: time.toFixed(0),
+                session: md5(
+                  JSON.stringify(session + time.toFixed(0).toString())
+                ),
+              }),
+            }).then(async (res) => {
+              toast.remove();
+              if (res.status !== 201)
+                throw new Error(
+                  "Prøv igjen! Highscoren din er " +
+                    (await res.json()).highScore +
+                    " sekund(er)."
+                );
+              else return "Ny highscore!";
+            }),
+            {
+              loading: "Lagrer...",
+              success: (data) => `${data}`,
+              error: (error) => `${error}`,
+            },
+            {
+              style: {
+                minWidth: "250px",
+              },
+            }
+          );
+        else {
+          toast.remove();
+          toast.custom("Logg inn for å lagre beste tid!", {});
+        }
       }
       return (
         <>
