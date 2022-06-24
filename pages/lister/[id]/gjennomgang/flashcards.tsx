@@ -403,7 +403,15 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (process.env.VERCEL_URL === undefined) globalLeaderboard = [];
   else {
-    console.log(process.env.VERCEL_URL);
+    console.log(
+      process.env.NODE_ENV === "production"
+        ? process.env.VERCEL_URL +
+            "/api/scores/flashcards/global/" +
+            ctx.params?.id
+        : "http://localhost:3000/" +
+            "api/scores/flashcards/global/" +
+            ctx.params?.id
+    );
     globalLeaderboard = (
       await (
         await fetch(
