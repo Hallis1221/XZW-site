@@ -304,7 +304,9 @@ const Page: NextPage<{
                       // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
                       // to the root node of the returned component as it will be overwritten.
                       return (
-                        <Button className="inline sm:hidden h-24 w-full mt-1">Print</Button>
+                        <Button className="inline sm:hidden h-24 w-full mt-1">
+                          Print
+                        </Button>
                       );
                     }}
                     content={() => printRef.current}
@@ -400,7 +402,9 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     await (
       await fetch(
         process.env.NODE_ENV === "production"
-          ? process.env.VERCEL_URL || "https://xzw.halvor.codes" + "/lister"
+          ? process.env.VERCEL_URL +
+              "api/scores/flashcards/global/" +
+              ctx.params?.id
           : "http://localhost:3000/" +
               "api/scores/flashcards/global/" +
               ctx.params?.id
