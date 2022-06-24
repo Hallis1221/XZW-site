@@ -400,7 +400,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     await (
       await fetch(
         process.env.NODE_ENV === "production"
-          ? process.env.VERCEL_URL + "/lister"
+          ? process.env.VERCEL_URL || "https://xzw.halvor.codes" + "/lister"
           : "http://localhost:3000/" +
               "api/scores/flashcards/global/" +
               ctx.params?.id
