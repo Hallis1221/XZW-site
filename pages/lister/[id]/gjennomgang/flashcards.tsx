@@ -25,6 +25,7 @@ import { useStopwatch } from "react-timer-hook";
 import { PrintCards } from "src/components/flashcard/print/component";
 import { useSession } from "next-auth/react";
 import md5 from "md5";
+import ReactToPrint from "react-to-print";
 
 // TODO use strapi texts
 
@@ -291,6 +292,23 @@ const Page: NextPage<{
                   >
                     {page.attributes.Failure || "Klarte det ikke"}
                   </Button>
+                  <ReactToPrint
+                    onBeforePrint={async () => {
+                      toast.loading(
+                        "Skriver ut, husk å velge å printe på begge sider!"
+                      );
+                      await new Promise((resolve) => setTimeout(resolve, 1500));
+                      setTimeout(() => toast.remove(), 500);
+                    }}
+                    trigger={() => {
+                      // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
+                      // to the root node of the returned component as it will be overwritten.
+                      return (
+                        <Button className="inline sm:hidden h-24 w-full mt-1">Print</Button>
+                      );
+                    }}
+                    content={() => printRef.current}
+                  />
                 </div>
               </div>
             }
@@ -412,7 +430,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         gloser: liste.gloser,
       },
     },
-    revalidate: 60*5,
+    revalidate: 60 * 5,
   };
 }
 
