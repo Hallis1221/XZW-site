@@ -14,7 +14,6 @@ async function handler(
 
   res
 ) {
-
   let values: any[] = JSON.parse(req.body).values;
   console.log(JSON.parse(req.body));
 
@@ -24,7 +23,6 @@ async function handler(
     gloser: [],
   };
 
-  console.log(values.length);
   if (!values) return res.status(400).json({ message: "Missing data." });
 
   for (let tval in Array.from(Array(values.length))) {
@@ -45,7 +43,6 @@ async function handler(
         val[i] = `${normal} (${alternatives})`;
       }
     }
-    console.log(val);
     liste.gloser.push({
       Chinese: value.hanzi,
       Pinyin: val.join(""),
@@ -69,8 +66,17 @@ async function handler(
       }),
     },
     "POST"
-  );
-  res.status(200).json({});
+  )
+    .then((response) => {
+      res.status(200).json({
+        ...response.data,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        ...error,
+      });
+    });
 }
 
 export default handler;

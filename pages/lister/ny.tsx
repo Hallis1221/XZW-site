@@ -7,6 +7,7 @@ import { Button, Card, Label, TextInput } from "flowbite-react";
 /* API calls */
 import fetchAPI from "strapi/fetch";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 // TODO - type this
 const Page: NextPage = ({ page, gloser }: any) => {
@@ -19,13 +20,15 @@ const Page: NextPage = ({ page, gloser }: any) => {
   let [title, setTitle] = useState("");
   let [description, setDescription] = useState("");
 
+  let [submitted, setSubmitted] = useState(false);
+
   let [count, setCount] = useState(1);
   console.log(values);
   return (
     <div className="w-full ">
       {" "}
       <div className="flex w-full">
-      <div className="mb-2 block     size={200}">
+        <div className="mb-2 block     size={200}">
           <Label htmlFor="title" defaultValue="Title" />
         </div>
         <TextInput
@@ -34,6 +37,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
           placeholder="Your title"
           required={true}
           shadow={true}
+          disabled={submitted}
           size={50}
           onBlur={(e) => setTitle(e.target.value)}
         />
@@ -44,6 +48,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
         <TextInput
           id="desc"
           type="text"
+          disabled={submitted}
           placeholder="Your description"
           required={true}
           shadow={true}
@@ -61,6 +66,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
           <TextInput
             id="small"
             type="text"
+            disabled={submitted}
             sizing="sm"
             onBlur={(e: any) => {
               if (values.length > 0) {
@@ -81,6 +87,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
                 key={"han" + i}
                 id="small"
                 type="text"
+                disabled={submitted}
                 sizing="sm"
                 className="mt-5"
                 onBlur={(e: any) => {
@@ -104,6 +111,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
           </div>
           <TextInput
             id="small"
+            disabled={submitted}
             type="text"
             sizing="sm"
             onBlur={(e: any) => {
@@ -124,6 +132,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
               <TextInput
                 key={"PIN" + i}
                 id="small"
+                disabled={submitted}
                 type="text"
                 sizing="sm"
                 className="mt-5"
@@ -145,17 +154,38 @@ const Page: NextPage = ({ page, gloser }: any) => {
         </div>
       </div>
       <div className="flex w-full justify-around mt-5">
-        <Button onClick={() => setCount(count + 1)}>Legg til</Button>
+        <Button disabled={submitted} onClick={() => setCount(count + 1)}>
+          Legg til
+        </Button>
         <Button
+          disabled={submitted}
           onClick={() => {
-            fetch("/api/flashcards/new", {
-              method: "POST",
-              body: JSON.stringify({
-                title,
-                description,
-                values,
+            setSubmitted(true);
+            toast.promise(
+              fetch("/api/flashcards/new", {
+                method: "POST",
+                body: JSON.stringify({
+                  title,
+                  description,
+                  values,
+                }),
+              }).then(async (res) => {
+                if (res.ok) {
+                  return await res.json();
+                } else {
+                  setSubmitted(false);
+                  throw new Error("Something went wrong");
+                }
               }),
-            });
+              {
+                loading: "Lagrer...",
+                success: (res) => {
+                  console.log(res);
+                  return "Lagret!";
+                },
+                error: <b>Prøv igjen. Er alle tegn riktige?</b>,
+              }
+            );
           }}
         >
           Submit
