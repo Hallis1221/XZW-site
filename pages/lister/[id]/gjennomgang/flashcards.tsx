@@ -398,19 +398,24 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (!liste) return { notFound: true };
 
-  let globalLeaderboard = (
-    await (
-      await fetch(
-        process.env.NODE_ENV === "production"
-          ? process.env.VERCEL_URL +
-              "api/scores/flashcards/global/" +
-              ctx.params?.id
-          : "http://localhost:3000/" +
-              "api/scores/flashcards/global/" +
-              ctx.params?.id
-      )
-    ).json()
-  ).data;
+  let globalLeaderboard;
+
+  if (process.env.VERCEL_URL === undefined) globalLeaderboard = [];
+  else
+    globalLeaderboard = (
+      await (
+        await fetch(
+          process.env.NODE_ENV === "production"
+            ? process.env.VERCEL_URL +
+                "api/scores/flashcards/global/" +
+                ctx.params?.id
+            : "http://localhost:3000/" +
+                "api/scores/flashcards/global/" +
+                ctx.params?.id
+        )
+      ).json()
+    ).data;
+
   listeRes.data.attributes.seo = {
     metaTitle: liste.title,
     metaDescription: liste.description,
