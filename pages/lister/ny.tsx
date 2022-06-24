@@ -180,7 +180,6 @@ const Page: NextPage = ({ page, gloser }: any) => {
               {
                 loading: "Lagrer...",
                 success: (res) => {
-                  console.log(res);
                   return "Lagret!";
                 },
                 error: <b>Prøv igjen. Er alle tegn riktige?</b>,

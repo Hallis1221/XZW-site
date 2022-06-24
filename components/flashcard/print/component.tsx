@@ -151,7 +151,7 @@ function divideToGroups(array: any[], chunkSize: number) {
   } else {
     for (var i = 0; i < array.length; i += chunkSize) {
       let group = array.slice(i, i + chunkSize);
-      if (group.length !== chunkSize && group.length !== 1)
+      while (group.length !== chunkSize)
         for (let j = 2; j > group.length - 1; j--)
           group.push(<PrintableFlashcard key={j} text=" " />);
 
