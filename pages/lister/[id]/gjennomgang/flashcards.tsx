@@ -401,31 +401,26 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   // TODO bad code
   let globalLeaderboard;
 
-  if (process.env.VERCEL_URL === undefined) globalLeaderboard = [];
-  else {
-    console.log(
-      process.env.NODE_ENV === "production"
-        ? process.env.VERCEL_URL +
-            "/api/scores/flashcards/global/" +
-            ctx.params?.id
-        : "http://localhost:3000/" +
-            "api/scores/flashcards/global/" +
-            ctx.params?.id
-    );
-    globalLeaderboard = (
-      await (
-        await fetch(
-          process.env.NODE_ENV === "production"
-            ? process.env.VERCEL_URL +
-                "/api/scores/flashcards/global/" +
-                ctx.params?.id
-            : "http://localhost:3000/" +
-                "api/scores/flashcards/global/" +
-                ctx.params?.id
-        )
-      ).json()
-    ).data;
-  }
+  let response = await fetchAPI(`/users/`, {
+    populate: {
+      Poeng: {
+        populate: "*",
+      },
+    },
+  });
+
+  if (response)
+    await response.forEach(async (user) => {
+      user.Poeng.Flashcards.forEach(async (flashcard) => {
+        if (flashcard.GameID === ctx.params?.id) {
+          globalLeaderboard.push({
+            id: user.id,
+            name: user.username,
+            tid: flashcard.Tid,
+          });
+        }
+      });
+    });
 
   listeRes.data.attributes.seo = {
     metaTitle: liste.title,
