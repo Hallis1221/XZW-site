@@ -398,6 +398,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (!liste) return { notFound: true };
 
+  // TODO bad code
   let globalLeaderboard;
 
   if (process.env.VERCEL_URL === undefined) globalLeaderboard = [];
