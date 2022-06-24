@@ -409,7 +409,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         await fetch(
           process.env.NODE_ENV === "production"
             ? process.env.VERCEL_URL +
-                "api/scores/flashcards/global/" +
+                "/api/scores/flashcards/global/" +
                 ctx.params?.id
             : "http://localhost:3000/" +
                 "api/scores/flashcards/global/" +
