@@ -37,7 +37,8 @@ export default async function fetchAPI(
 
   // Handle response
   if (!response.ok) {
-    console.error(response.statusText);
+    let message = await response.json();
+    console.error(message);
     throw new Error(
       `An error occured while fetching ${requestUrl}, status: ${response.status}`
     );

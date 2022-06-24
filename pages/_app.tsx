@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps: pageProps }: AppProps) {
           {/* <Flowbite> */}
           <_NavBar global={global} />
 
-          <div className="m-10 ">
+          <div className="m-5 sm:m-10 ">
             <Component {...pageProps} />
           </div>
 
