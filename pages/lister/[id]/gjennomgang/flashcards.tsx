@@ -399,7 +399,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   if (!liste) return { notFound: true };
 
   // TODO bad code
-  let globalLeaderboard;
+  let globalLeaderboard: any[] = [];
 
   let response = await fetchAPI(`/users/`, {
     populate: {
@@ -412,7 +412,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   if (response)
     await response.forEach(async (user) => {
       user.Poeng.Flashcards.forEach(async (flashcard) => {
-        if (flashcard.GameID === ctx.params?.id) {
+        if (flashcard.GameID === ctx.params?.id?.toString().split("-")[1]) {
           globalLeaderboard.push({
             id: user.id,
             name: user.username,
