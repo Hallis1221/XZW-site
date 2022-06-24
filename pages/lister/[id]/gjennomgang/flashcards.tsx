@@ -401,7 +401,8 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   let globalLeaderboard;
 
   if (process.env.VERCEL_URL === undefined) globalLeaderboard = [];
-  else
+  else {
+    console.log(process.env.VERCEL_URL);
     globalLeaderboard = (
       await (
         await fetch(
@@ -415,6 +416,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         )
       ).json()
     ).data;
+  }
 
   listeRes.data.attributes.seo = {
     metaTitle: liste.title,
