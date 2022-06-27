@@ -1,7 +1,26 @@
-# TODO
-
 # Add 'repo' label to any root file changes
 repo:
 - '*'
-UI:
+Component:
 - components/**/*
+
+Flashcard:
+- components/flashcard/**/*
+- pages/lister/[id]/gjennomgang/flashcards
+- pages/api/flashcards/**/*
+- pages/api/scores/flashcards/**/*
+
+Score:
+- pages/api/scores/**/*
+
+TypeDeclaration:
+- lib/types/**/*
+
+Strapi: 
+- lib/strapi/**/*
+
+Meta:
+- .github/**/*
+
+Packages:
+- package.json
