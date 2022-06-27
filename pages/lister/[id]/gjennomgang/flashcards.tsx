@@ -35,7 +35,6 @@ const Page: NextPage<{
   id: string;
   scores: UserScore[];
 }> = ({ page, liste, id, scores }) => {
-  console.log(scores);
   const { data: session } = useSession();
 
   let [currentCardNumber, setCurrentCardNumber] = useState<number>(0);
@@ -102,7 +101,6 @@ const Page: NextPage<{
       if (isRunning) pause();
       if (!dbSynced) {
         let time = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
-        console.log(dbSynced);
         if (session)
           toast.promise(
             fetch("/api/scores/flashcards", {

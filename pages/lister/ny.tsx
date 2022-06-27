@@ -23,7 +23,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
   let [submitted, setSubmitted] = useState(false);
 
   let [count, setCount] = useState(1);
-  console.log(values);
+
   return (
     <div className="w-full ">
       {" "}
@@ -34,7 +34,8 @@ const Page: NextPage = ({ page, gloser }: any) => {
         <TextInput
           id="title"
           type="text"
-          placeholder="Your title"
+          placeholder="Title"
+          className="md:mr-10"
           required={true}
           shadow={true}
           disabled={submitted}
@@ -48,6 +49,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
         <TextInput
           id="desc"
           type="text"
+          className="md:ml-10"
           disabled={submitted}
           placeholder="Your description"
           required={true}
@@ -58,6 +60,27 @@ const Page: NextPage = ({ page, gloser }: any) => {
           }}
         />
       </div>
+      <div className="w-full  mt-2 mb-10">
+        <div className="mb-2 block">
+          <Label htmlFor="small">Importer gloser fra quizlet...</Label>
+        </div>
+        <TextInput
+          id="desc"
+          type="text"
+          disabled={submitted}
+          placeholder="Quizlet link"
+          required={true}
+          shadow={true}
+          size={150}
+          onBlur={(e) => {
+            processQuizletLink(e, values, setCount, setValues);
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            processQuizletLink(e, values, setCount, setValues);
+          }}
+        />{" "}
+      </div>
       <div className="flex w-full justify-between ">
         <div className="w-full mr-2 lg:mr-10">
           <div className="mb-2 block">
@@ -67,6 +90,9 @@ const Page: NextPage = ({ page, gloser }: any) => {
             id="small"
             type="text"
             disabled={submitted}
+            defaultValue={
+              values[0].standard === "" ? undefined : values[0].standard
+            }
             sizing="sm"
             onBlur={(e: any) => {
               if (values.length > 0) {
@@ -84,12 +110,15 @@ const Page: NextPage = ({ page, gloser }: any) => {
             i++;
             return (
               <TextInput
-                key={"han" + i}
+                key={"nor" + i}
                 id="small"
                 type="text"
                 disabled={submitted}
                 sizing="sm"
                 className="mt-5"
+                defaultValue={
+                  values[i]?.standard === "" ? undefined : values[i]?.standard
+                }
                 onBlur={(e: any) => {
                   if (values.length > i) {
                     let newValues = Array.from(values);
@@ -113,6 +142,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
             id="small"
             disabled={submitted}
             type="text"
+            defaultValue={values[0].hanzi === "" ? undefined : values[0].hanzi}
             sizing="sm"
             onBlur={(e: any) => {
               if (values.length > 0) {
@@ -130,9 +160,12 @@ const Page: NextPage = ({ page, gloser }: any) => {
             i++;
             return (
               <TextInput
-                key={"PIN" + i}
+                key={"han" + i}
                 id="small"
                 disabled={submitted}
+                defaultValue={
+                  values[i]?.hanzi === "" ? undefined : values[i]?.hanzi
+                }
                 type="text"
                 sizing="sm"
                 className="mt-5"
@@ -161,17 +194,22 @@ const Page: NextPage = ({ page, gloser }: any) => {
           disabled={submitted}
           onClick={() => {
             setSubmitted(true);
+            // Remove empty values
+            let newValues = Array.from(values);
+            newValues = newValues.filter((v) => v.standard !== "");
+            newValues = newValues.filter((v) => v.hanzi !== "");
+            console.log(newValues);
             toast.promise(
               fetch("/api/flashcards/new", {
                 method: "POST",
                 body: JSON.stringify({
                   title,
                   description,
-                  values,
+                  values: newValues,
                 }),
               }).then(async (res) => {
                 if (res.ok) {
-                  return await res.json();
+                  return await res.json(); 
                 } else {
                   setSubmitted(false);
                   throw new Error("Something went wrong");
@@ -193,6 +231,56 @@ const Page: NextPage = ({ page, gloser }: any) => {
     </div>
   );
 };
+
+function processQuizletLink(
+  e,
+  values: { standard: string; hanzi: string }[],
+  setCount,
+  setValues
+) {
+  quizletLinkToGloser(e.target.value)
+    .then((res) => {
+
+      let newValues: any = [];
+      if (
+        values.length > 1 ||
+        !(values[0].hanzi === "" && values[0].standard === "")
+      ) {
+        // Remove the gloser that is already in values
+        res.forEach((element) => {
+          if (!values.includes(element)) newValues.push(element);
+        });
+      } else newValues.push(...res);
+
+      setCount(newValues.length);
+      setValues(newValues);
+      toast.success("Fant " + newValues.length + " nye gloser");
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error(err.message);
+    });
+}
+
+async function quizletLinkToGloser(url: string) {
+  if (!url || url.length === 0 || !url.startsWith("https://quizlet.com/"))
+    throw new Error("Invalid url");
+
+  let id = url.split("quizlet.com/")[1].split("/")[0];
+  let res: any = await fetch(`/api/gloser/create/quizlet/${id}`, {
+    method: "GET",
+  });
+  res = await res.json();
+
+  res.gloser = res.gloser.map((g: any) => {
+    return {
+      standard: g.Standard,
+      hanzi: g.Chinese,
+    };
+  });
+
+  return res.gloser;
+}
 
 export async function getStaticProps() {
   const res = await fetchAPI("/lister", {

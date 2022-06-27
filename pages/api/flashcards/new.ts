@@ -15,13 +15,13 @@ async function handler(
   res
 ) {
   let values: any[] = JSON.parse(req.body).values;
-  console.log(JSON.parse(req.body));
 
   let liste: any = {
     title: JSON.parse(req.body).title || "Title",
     description: JSON.parse(req.body).description || "No description provided",
     gloser: [],
   };
+
 
   if (!values) return res.status(400).json({ message: "Missing data." });
 
