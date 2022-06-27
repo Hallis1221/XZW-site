@@ -117,7 +117,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
                 sizing="sm"
                 className="mt-5"
                 defaultValue={
-                  values[i].standard === "" ? undefined : values[i].standard
+                  values[i]?.standard === "" ? undefined : values[i]?.standard
                 }
                 onBlur={(e: any) => {
                   if (values.length > i) {
@@ -164,7 +164,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
                 id="small"
                 disabled={submitted}
                 defaultValue={
-                  values[i].hanzi === "" ? undefined : values[i].hanzi
+                  values[i]?.hanzi === "" ? undefined : values[i]?.hanzi
                 }
                 type="text"
                 sizing="sm"
@@ -194,17 +194,22 @@ const Page: NextPage = ({ page, gloser }: any) => {
           disabled={submitted}
           onClick={() => {
             setSubmitted(true);
+            // Remove empty values
+            let newValues = Array.from(values);
+            newValues = newValues.filter((v) => v.standard !== "");
+            newValues = newValues.filter((v) => v.hanzi !== "");
+            console.log(newValues);
             toast.promise(
               fetch("/api/flashcards/new", {
                 method: "POST",
                 body: JSON.stringify({
                   title,
                   description,
-                  values,
+                  values: newValues,
                 }),
               }).then(async (res) => {
                 if (res.ok) {
-                  return await res.json();
+                  return await res.json(); 
                 } else {
                   setSubmitted(false);
                   throw new Error("Something went wrong");
@@ -258,7 +263,7 @@ function processQuizletLink(
 }
 
 async function quizletLinkToGloser(url: string) {
-  if (!url || url.length === 0 || !url.includes("https://quizlet.com/"))
+  if (!url || url.length === 0 || !url.startsWith("https://quizlet.com/"))
     throw new Error("Invalid url");
 
   let id = url.split("quizlet.com/")[1].split("/")[0];
