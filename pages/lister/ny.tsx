@@ -23,7 +23,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
   let [submitted, setSubmitted] = useState(false);
 
   let [count, setCount] = useState(1);
-  console.log(values);
+  quizletLinkToGloser().then((res) => { console.log(res) });
   return (
     <div className="w-full ">
       {" "}
@@ -34,7 +34,8 @@ const Page: NextPage = ({ page, gloser }: any) => {
         <TextInput
           id="title"
           type="text"
-          placeholder="Your title"
+          placeholder="Title"
+          className="md:mr-10"
           required={true}
           shadow={true}
           disabled={submitted}
@@ -48,6 +49,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
         <TextInput
           id="desc"
           type="text"
+          className="md:ml-10"
           disabled={submitted}
           placeholder="Your description"
           required={true}
@@ -57,6 +59,23 @@ const Page: NextPage = ({ page, gloser }: any) => {
             setDescription(e.target.value);
           }}
         />
+      </div>
+      <div className="w-full  mt-2 mb-10">
+        <div className="mb-2 block">
+          <Label htmlFor="small">Importer gloser fra quizlet...</Label>
+        </div>
+        <TextInput
+          id="desc"
+          type="text"
+          disabled={submitted}
+          placeholder="Quizlet link"
+          required={true}
+          shadow={true}
+          size={150}
+          onBlur={(e) => {
+            setDescription(e.target.value);
+          }}
+        />{" "}
       </div>
       <div className="flex w-full justify-between ">
         <div className="w-full mr-2 lg:mr-10">
@@ -193,6 +212,13 @@ const Page: NextPage = ({ page, gloser }: any) => {
     </div>
   );
 };
+
+async function quizletLinkToGloser() {
+  const res = await fetch(
+    "https://quizlet.com/webapi/3.4/studiable-item-documents?filters%5BstudiableContainerId%5D=663259712&filters%5BstudiableContainerType%5D=1&perPage=5&page=1"
+  );
+  return res;
+}
 
 export async function getStaticProps() {
   const res = await fetchAPI("/lister", {
