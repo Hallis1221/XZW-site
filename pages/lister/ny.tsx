@@ -23,7 +23,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
   let [submitted, setSubmitted] = useState(false);
 
   let [count, setCount] = useState(1);
-  quizletLinkToGloser().then((res) => { console.log(res) });
+
   return (
     <div className="w-full ">
       {" "}
@@ -73,7 +73,11 @@ const Page: NextPage = ({ page, gloser }: any) => {
           shadow={true}
           size={150}
           onBlur={(e) => {
-            setDescription(e.target.value);
+            processQuizletLink(e, values, setCount, setValues);
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            processQuizletLink(e, values, setCount, setValues);
           }}
         />{" "}
       </div>
@@ -86,6 +90,9 @@ const Page: NextPage = ({ page, gloser }: any) => {
             id="small"
             type="text"
             disabled={submitted}
+            defaultValue={
+              values[0].standard === "" ? undefined : values[0].standard
+            }
             sizing="sm"
             onBlur={(e: any) => {
               if (values.length > 0) {
@@ -103,12 +110,15 @@ const Page: NextPage = ({ page, gloser }: any) => {
             i++;
             return (
               <TextInput
-                key={"han" + i}
+                key={"nor" + i}
                 id="small"
                 type="text"
                 disabled={submitted}
                 sizing="sm"
                 className="mt-5"
+                defaultValue={
+                  values[i].standard === "" ? undefined : values[i].standard
+                }
                 onBlur={(e: any) => {
                   if (values.length > i) {
                     let newValues = Array.from(values);
@@ -132,6 +142,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
             id="small"
             disabled={submitted}
             type="text"
+            defaultValue={values[0].hanzi === "" ? undefined : values[0].hanzi}
             sizing="sm"
             onBlur={(e: any) => {
               if (values.length > 0) {
@@ -149,9 +160,12 @@ const Page: NextPage = ({ page, gloser }: any) => {
             i++;
             return (
               <TextInput
-                key={"PIN" + i}
+                key={"han" + i}
                 id="small"
                 disabled={submitted}
+                defaultValue={
+                  values[i].hanzi === "" ? undefined : values[i].hanzi
+                }
                 type="text"
                 sizing="sm"
                 className="mt-5"
@@ -213,11 +227,54 @@ const Page: NextPage = ({ page, gloser }: any) => {
   );
 };
 
-async function quizletLinkToGloser() {
-  const res = await fetch(
-    "https://quizlet.com/webapi/3.4/studiable-item-documents?filters%5BstudiableContainerId%5D=663259712&filters%5BstudiableContainerType%5D=1&perPage=5&page=1"
-  );
-  return res;
+function processQuizletLink(
+  e,
+  values: { standard: string; hanzi: string }[],
+  setCount,
+  setValues
+) {
+  quizletLinkToGloser(e.target.value)
+    .then((res) => {
+
+      let newValues: any = [];
+      if (
+        values.length > 1 ||
+        !(values[0].hanzi === "" && values[0].standard === "")
+      ) {
+        // Remove the gloser that is already in values
+        res.forEach((element) => {
+          if (!values.includes(element)) newValues.push(element);
+        });
+      } else newValues.push(...res);
+
+      setCount(newValues.length);
+      setValues(newValues);
+      toast.success("Fant " + newValues.length + " nye gloser");
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error(err.message);
+    });
+}
+
+async function quizletLinkToGloser(url: string) {
+  if (!url || url.length === 0 || !url.includes("https://quizlet.com/"))
+    throw new Error("Invalid url");
+
+  let id = url.split("quizlet.com/")[1].split("/")[0];
+  let res: any = await fetch(`/api/gloser/create/quizlet/${id}`, {
+    method: "GET",
+  });
+  res = await res.json();
+
+  res.gloser = res.gloser.map((g: any) => {
+    return {
+      standard: g.Standard,
+      hanzi: g.Chinese,
+    };
+  });
+
+  return res.gloser;
 }
 
 export async function getStaticProps() {

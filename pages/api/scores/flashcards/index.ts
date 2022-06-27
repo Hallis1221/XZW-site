@@ -36,7 +36,6 @@ async function handler(req: NextApiRequest, res) {
       if (flashcard.Tid > body.time) {
         newHighscore = true;
         let remainingCards = await response.Poeng.Flashcards.filter((card) => {
-          console.log(card.id);
           return card.GameID !== body.gameID;
         });
 
