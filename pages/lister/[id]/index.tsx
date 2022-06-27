@@ -99,7 +99,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
         <div className="my-10 w-full">
           {/* Next.js Link doesn't work here, so we use an <a> */}
           <a
-            href={`${id.replace(["http", "https", "/", "://"], "")}/spill`}
+            href={`${id.replace("\b(?:http|https|www|//|:|://)\b", "")}/spill`}
             className="w-full flex justify-center"
           >
             <Card className="hover:shadow-blue-600 hover:cursor-pointer">
@@ -178,7 +178,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           <div className="my-10 w-full">
             {/* Next.js Link doesn't work here, so we use an <a> */}
             <a
-              href={`${id.replace(["http", "https", "/", "://"], "")}/spill`}
+      href={`${id.replace("\b(?:http|https|www|//|:|://)\b", "")}/spill`}
               className="w-full flex justify-center"
             >
               <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
