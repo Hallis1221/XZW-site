@@ -98,7 +98,10 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
 
         <div className="my-10 w-full">
           {/* Next.js Link doesn't work here, so we use an <a> */}
-          <a href={`${id}/spill`} className="w-full flex justify-center">
+          <a
+            href={`${id.replace(["http", "https", "/", "://"], "")}/spill`}
+            className="w-full flex justify-center"
+          >
             <Card className="hover:shadow-blue-600 hover:cursor-pointer">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -227,7 +230,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         gloser: liste.gloser,
       },
       page: res.data,
-      revalidate: 60*5,
+      revalidate: 60 * 5,
     },
   };
 }
