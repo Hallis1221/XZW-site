@@ -177,7 +177,10 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           </Card>
           <div className="my-10 w-full">
             {/* Next.js Link doesn't work here, so we use an <a> */}
-            <a href={`${id}/spill`} className="w-full flex justify-center">
+            <a
+              href={`${id.replace(["http", "https", "/", "://"], "")}/spill`}
+              className="w-full flex justify-center"
+            >
               <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
                 <>
                   <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
