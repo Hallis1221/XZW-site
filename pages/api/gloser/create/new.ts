@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import fetchAPI from "strapi/fetch";
 import convert from "hanzi-to-pinyin";
 import { GloseListe } from "types/gloseListe";
+import { getSession } from "next-auth/react";
 
 type UserScore = {
   id: string;
@@ -14,6 +15,10 @@ async function handler(
 
   res
 ) {
+  const session = await getSession({ req });
+
+  if (!session) return res.status(401).json({ message: "Not logged in" });
+  
   let values: any[] = JSON.parse(req.body).values;
 
   let liste: any = {

@@ -1,6 +1,7 @@
 /* Import types */
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { LoginComponent } from "src/components/login";
 /* Import API calls */
 import fetchAPI from "strapi/fetch";
 
@@ -17,10 +18,7 @@ const Home: NextPage = ({ home }: any) => {
     );
   }
   return (
-    <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
-    </>
+   <LoginComponent session={session} />
   );
 };
 

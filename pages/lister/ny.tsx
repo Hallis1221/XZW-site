@@ -8,6 +8,8 @@ import { Button, Card, Label, TextInput } from "flowbite-react";
 import fetchAPI from "strapi/fetch";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { LoginComponent } from "src/components/login";
 
 // TODO - type this
 const Page: NextPage = ({ page, gloser }: any) => {
@@ -23,6 +25,12 @@ const Page: NextPage = ({ page, gloser }: any) => {
   let [submitted, setSubmitted] = useState(false);
 
   let [count, setCount] = useState(1);
+
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <div>Loading...</div>;
+
+  if (!session) return <LoginComponent session={session} />;
 
   return (
     <div className="w-full ">
@@ -200,7 +208,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
             newValues = newValues.filter((v) => v.hanzi !== "");
             console.log(newValues);
             toast.promise(
-              fetch("/api/flashcards/new", {
+              fetch("/api/gloser/create/new", {
                 method: "POST",
                 body: JSON.stringify({
                   title,
@@ -209,7 +217,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
                 }),
               }).then(async (res) => {
                 if (res.ok) {
-                  return await res.json(); 
+                  return await res.json();
                 } else {
                   setSubmitted(false);
                   throw new Error("Something went wrong");
@@ -240,7 +248,6 @@ function processQuizletLink(
 ) {
   quizletLinkToGloser(e.target.value)
     .then((res) => {
-
       let newValues: any = [];
       if (
         values.length > 1 ||
