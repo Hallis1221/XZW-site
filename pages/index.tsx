@@ -1,6 +1,6 @@
 /* Import types */
 import type { NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { LoginComponent } from "src/components/login";
 /* Import API calls */
 import fetchAPI from "strapi/fetch";
