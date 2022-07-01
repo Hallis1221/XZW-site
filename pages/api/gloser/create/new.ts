@@ -1,7 +1,6 @@
 import { NextApiRequest } from "next";
 import fetchAPI from "strapi/fetch";
 import convert from "hanzi-to-pinyin";
-import { GloseListe } from "types/gloseListe";
 import { getSession } from "next-auth/react";
 
 type UserScore = {
@@ -18,8 +17,9 @@ async function handler(
   const session = await getSession({ req });
 
   if (!session) return res.status(401).json({ message: "Not logged in" });
-  
+
   let values: any[] = JSON.parse(req.body).values;
+  if (!values) return res.status(400).json({ message: "Missing data." });
 
   let liste: any = {
     title: JSON.parse(req.body).title || "Title",
@@ -27,8 +27,19 @@ async function handler(
     gloser: [],
   };
 
-
-  if (!values) return res.status(400).json({ message: "Missing data." });
+  /* Here is the explanation for the code below, powered by github copilot:
+1. We loop over the values array with the variable tval. 
+2. We get the value at index tval.
+3. We convert the hanzi to pinyin.
+4. If the conversion fails, we log an error and return a 400 status.
+5. If the conversion succeeds, we loop over the pinyin array.
+6. We get the value at index i.
+7. If the value is longer than 1, we check if it is an array.
+8. If it is, we get the first value and join the rest with a slash.
+9. If it is not an array, we just return the value.
+10. We push the value to the gloser array.
+11. We return the liste object. 
+*/
 
   for (let tval in Array.from(Array(values.length))) {
     let value: any = values[tval];
