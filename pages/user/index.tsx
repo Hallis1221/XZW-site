@@ -10,10 +10,10 @@ function AccountPage({}) {
 
   return (
     <div>
-<p className="text-xl text-center w-fit h-2">
-Hei {" "} <b className="font-semibold">{session.user?.name}</b>!
-<div className="flex grow ">{session?.user?.email}</div>
-</p>
+      <p className="text-xl text-center w-fit h-2">
+        Hei <b className="font-semibold">{session.user?.name}</b>!
+        <div className="flex grow ">{session?.user?.email}</div>
+      </p>
     </div>
   );
 }
