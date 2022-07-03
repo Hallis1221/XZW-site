@@ -215,14 +215,16 @@ const Page: NextPage = ({ page, gloser }: any) => {
                   description,
                   values: newValues,
                 }),
-              }).then(async (res) => {
-                if (res.ok) {
-                  return await res.json();
-                } else {
-                  setSubmitted(false);
-                  throw new Error("Something went wrong");
-                }
-              }),
+              })
+                .then(async (res) => {
+                  if (res.ok) {
+                    return await res.json();
+                  } else {
+                    setSubmitted(false);
+                    throw new Error("Something went wrong");
+                  }
+                })
+                .catch(),
               {
                 loading: "Lagrer...",
                 success: (res) => {
@@ -276,7 +278,7 @@ async function quizletLinkToGloser(url: string) {
   let id = url.split("quizlet.com/")[1].split("/")[0];
   let res: any = await fetch(`/api/gloser/create/quizlet/${id}`, {
     method: "GET",
-  });
+  }).catch();
   res = await res.json();
 
   res.gloser = res.gloser.map((g: any) => {
@@ -286,7 +288,7 @@ async function quizletLinkToGloser(url: string) {
     };
   });
 
-  return res.gloser;
+  return res?.gloser;
 }
 
 export async function getStaticProps() {

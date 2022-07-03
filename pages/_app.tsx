@@ -28,11 +28,13 @@ import { useRouter } from "next/router";
 /* Authentication */
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import md5 from "md5";
+import { useState } from "react";
 
 function MyApp({ Component, pageProps: pageProps }: AppProps) {
   const { global, page } = pageProps;
+  const [loadUnsafe, setLoadUnsafe] = useState<boolean>(false);
 
-  if (!global || !global.attributes)
+  if ((!global || !global?.attributes) && !loadUnsafe)
     return (
       <div className="flex h-screen">
         <div className="m-auto">
@@ -44,7 +46,12 @@ function MyApp({ Component, pageProps: pageProps }: AppProps) {
           </div>
           <div className="flex h-0">
             <div className="m-auto">
-              <Spinner aria-label="Extra large spinner example" size="xl" />
+              <div className=" w-full h-fit flex justify-center mb-2">
+                <Spinner aria-label="Extra large spinner example" size="xl" />
+              </div>
+              <Button onClick={(e) => setLoadUnsafe(true)}>
+                Last inn uten data
+              </Button>
             </div>
           </div>
         </div>
@@ -68,7 +75,7 @@ function MyApp({ Component, pageProps: pageProps }: AppProps) {
           <Footer className="relative mt-10">
             <Footer.Copyright href="#" by="Halvor V" year={2022} />
             <Footer.LinkGroup className="mt-3 min-w-max flex-wrap items-center text-sm sm:mt-0">
-              {global.attributes.Pages.map((page: any) => (
+              {global?.attributes.Pages.map((page: any) => (
                 <Footer.Link key={page.id} href={page.href}>
                   {page.DisplayName}
                 </Footer.Link>
@@ -101,7 +108,7 @@ function _NavBar({ global }) {
     <Navbar fluid={true} rounded={true}>
       <Navbar.Brand href="/">
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          {global.attributes.Sitename}
+          {global?.attributes.Sitename}
         </span>
       </Navbar.Brand>
       <div className="flex order-1 md:order-2">
@@ -112,7 +119,10 @@ function _NavBar({ global }) {
             label={
               <Avatar
                 alt="User settings"
-                img={session?.user?.image || `https://www.gravatar.com/avatar/${md5(session?.user?.email)}`}
+                img={
+                  session?.user?.image ||
+                  `https://www.gravatar.com/avatar/${md5(session?.user?.email)}`
+                }
                 rounded={true}
               />
             }
@@ -123,11 +133,9 @@ function _NavBar({ global }) {
                 {session?.user?.email}
               </span>
             </Dropdown.Header>
-            <Dropdown.Item >
-              <Link
-                href={global.attributes.ActionButton.href || ""}
-              >
-                {global.attributes.ActionButton.DisplayName || ""}
+            <Dropdown.Item>
+              <Link href={global?.attributes.ActionButton.href || ""}>
+                {global?.attributes.ActionButton.DisplayName || ""}
               </Link>
             </Dropdown.Item>
 
@@ -138,11 +146,11 @@ function _NavBar({ global }) {
           </Dropdown>
         ) : (
           <Link
-            href={global.attributes.ActionButton.href || ""}
+            href={global?.attributes.ActionButton.href || ""}
             className="w-screen"
           >
             <Button className="w-screen">
-              {global.attributes.ActionButton.DisplayName || ""}
+              {global?.attributes.ActionButton.DisplayName || ""}
             </Button>
           </Link>
         )}
@@ -150,7 +158,7 @@ function _NavBar({ global }) {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        {global.attributes.Pages.map((page: any) => (
+        {global?.attributes.Pages.map((page: any) => (
           <Navbar.Link
             key={page.id}
             href={page.href}

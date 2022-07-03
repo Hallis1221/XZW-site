@@ -15,6 +15,7 @@ export default async function fetchAPI(
   options: object = {},
   method: string = "GET"
 ) {
+
   // Merge default and user options
   const mergedOptions = {
     method,
@@ -31,15 +32,20 @@ export default async function fetchAPI(
   const requestUrl = `${getStrapiURL(
     `/api${path}${queryString ? `?${queryString}` : ""}`
   )}`;
-
   // Trigger API call
-  const response = await fetch(requestUrl, mergedOptions);
+  let response;
+
+  try {
+    response = await fetch(requestUrl, mergedOptions).catch();
+  } catch (error) {};
+
+  if (!response) return;;
+
 
   // Handle response
   if (!response.ok) {
     let message = await response.json();
-    console.error(message);
-    throw new Error(
+    console.error(
       `An error occured while fetching ${requestUrl}, status: ${response.status}`
     );
   }

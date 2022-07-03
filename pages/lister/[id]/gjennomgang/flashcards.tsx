@@ -124,7 +124,7 @@ const Page: NextPage<{
                     " sekund(er)."
                 );
               else return "Ny highscore!";
-            }),
+            }).catch(),
             {
               loading: "Lagrer...",
               success: (data) => `${data}`,

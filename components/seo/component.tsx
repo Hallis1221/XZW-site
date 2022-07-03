@@ -9,15 +9,15 @@ import { MetaSeo, MetaSocial } from "types/seo";
 export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
 
   const seo: MetaSeo = {
-    ...global.seo,
+    ...global?.seo,
     ...pageSeo,
     metaTitle:
       pageSeo?.metaTitle || global?.seo?.metaTitle 
-        ? `${pageSeo?.metaTitle || global.seo.metaTitle} | ${global.Sitename}`
-        : global.Sitename,
+        ? `${pageSeo?.metaTitle || global?.seo?.metaTitle} | ${global?.Sitename}`
+        : global?.Sitename,
     metaImage:
       pageSeo?.metaImage || global?.seo?.metaImage
-        ? getStrapiMedia(pageSeo.metaImage || global.seo.metaImage)
+        ? getStrapiMedia(pageSeo?.metaImage || global?.seo?.metaImage)
         : null,
   };
 
@@ -66,16 +66,16 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
       {/* OpenGraph tags */}
       <>
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={global.Sitename} />
+        <meta property="og:site_name" content={global?.Sitename} />
         <meta property="og:locale" content="nb_NO" />
         <meta property="og:locale:alternate" content="en_US" />
       </>
 
       {/* Icon tags */}
       <>
-        <link rel="icon" href={getStrapiMedia(global.Favicon)} />
-        <link rel="apple-touch-icon" href={getStrapiMedia(global.Favicon)} />
-        <link rel="shortcut icon" href={getStrapiMedia(global.Favicon)} />
+        <link rel="icon" href={getStrapiMedia(global?.Favicon)} />
+        <link rel="apple-touch-icon" href={getStrapiMedia(global?.Favicon)} />
+        <link rel="shortcut icon" href={getStrapiMedia(global?.Favicon)} />
       </>
 
       {/* Twitter tags */}
@@ -96,7 +96,7 @@ export const Seo: FunctionComponent<SeoProps> = ({ pageSeo, global }) => {
           )}
 
           <meta name="twitter:creator" content="@justhallis" />
-          <meta name="twitter:site" content={global.Sitename} />
+          <meta name="twitter:site" content={global?.Sitename} />
           <meta name="twitter:title" content={metaTwitter.title} />
           <meta name="twitter:description" content={metaTwitter.description} />
         </>

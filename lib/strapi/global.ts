@@ -16,7 +16,7 @@ async function getGlobal() {
     },
   });
 
-  return res.data;
+  return res?.data;
 }
 
 export default getGlobal;
