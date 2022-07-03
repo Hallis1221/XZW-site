@@ -55,8 +55,8 @@ function MyApp({ Component, pageProps: pageProps }: AppProps) {
     <>
       <SessionProvider>
         <Toaster />
-        <GlobalContext.Provider value={global.attributes || undefined}>
-          <Seo pageSeo={page.attributes.seo} global={global.attributes} />
+        <GlobalContext.Provider value={global?.attributes || undefined}>
+          <Seo pageSeo={page?.attributes?.seo} global={global?.attributes} />
           {/* <Flowbite> */}
           <_NavBar global={global} />
 
@@ -133,7 +133,7 @@ function _NavBar({ global }) {
 
             <Dropdown.Divider />
             <Dropdown.Item>
-              <button onClick={() => signOut()}>Sign out</button>
+              <button onClick={() => signOut()}>Log ut</button>
             </Dropdown.Item>
           </Dropdown>
         ) : (
