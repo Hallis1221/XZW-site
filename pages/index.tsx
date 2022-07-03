@@ -12,8 +12,8 @@ const Home: NextPage = ({ home }: any) => {
   if (session) {
     return (
       <div className="h-screen w-screen absolute top-0 left-0 bg-transparent -z-10">
-        <div className="w-full h-full flex-col flex justify-center items-center bg-red-">
-          <h1 className="text-center mb-16 font-light text-9xl tracking-widest ">你好!</h1>
+        <div className="w-full h-full flex-col flex justify-center items-center">
+          <h1 className="text-center mb-16 font-light text-9xl tracking-widest bg-blend-darken bg-gradient-to-br from-fuchsia-200 to-fuchsia-600  text-transparent bg-clip-text">你好!</h1>
  
         </div>
       </div>
