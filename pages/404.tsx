@@ -12,7 +12,7 @@ export default function Custom404({page}: any) {
         <div className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
           <XIcon className="h-5 w-5" />
         </div>
-        <div className="ml-3 text-sm font-normal">
+        <div className="ml-3 text-sm font-normal ">
         {page.attributes.ErrorMessage}
         </div>
         <Toast.Toggle />
