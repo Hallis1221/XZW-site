@@ -409,7 +409,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
   if (response)
     await response.forEach(async (user) => {
-      user.Poeng.Flashcards.forEach(async (flashcard) => {
+      user.Poeng?.Flashcards.forEach(async (flashcard) => {
         if (flashcard.GameID === ctx.params?.id?.toString().split("-")[1]) {
           globalLeaderboard.push({
             id: user.id,
