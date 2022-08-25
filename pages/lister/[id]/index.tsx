@@ -41,7 +41,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           </h1>
         </div>
 
-        <div className="w-full flex justify-center mt-4 text">
+        <div className="w-full flex justify-center mt-4 text-center">
           <p className="w-10/12 font-normal text-gray-700 dark:text-gray-400">
             {liste.description.substring(0, 500)}
             {liste.description.length > 500 ? "..." : ""}

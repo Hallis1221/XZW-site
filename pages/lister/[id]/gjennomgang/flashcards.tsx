@@ -212,7 +212,7 @@ const Page: NextPage<{
       <div className="h-full flex sm:justify-start">
         <NavArrow left onClick={() => lastCard()} />
 
-        <div className="h-full w-full flex flex-col">
+        <div className="h-full w-full flex flex-col ">
           <SwipeableFlashcard
             flipped={flipped}
             card={card}
@@ -249,7 +249,7 @@ const Page: NextPage<{
                   }}
                 />
                 <Button
-                  className="h-24 w-full mb-2"
+                  className="h-24 w-[99.999%]"
                   color="green"
                   onClick={() => removeCard()}
                 >
