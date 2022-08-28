@@ -25,11 +25,11 @@ async function handler(
   if (!values) return res.status(400).json({ message: "Missing data." });
 
    liste = {
-    title: JSON.parse(req?.body)?.title ||req.body.title || "Title",
-    description: JSON.parse(req?.body)?.description || req.body.description || "No description provided",
+    title: JSON.parse(req?.body)?.title ||req?.body?.title || "Title",
+    description: JSON.parse(req?.body)?.description || req?.body?.description || "No description provided",
     gloser: [],
   }} catch (error) {
-    return res.status(400).json({ message: "Encontered missing data error, " + error +" The data you sent was: " + req.body + " . The first value were: " + req.body.values[0].standard });
+    return res.status(400).json({ message: "Encontered missing data error, " + error +" The data you sent was: " + req.body  });
   }
 
   /* Here is the explanation for the code below, powered by github copilot:
