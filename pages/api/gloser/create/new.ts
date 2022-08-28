@@ -66,7 +66,7 @@ async function handler(req: NextApiRequest, res) {
   for (let tval in Array.from(Array(values?.length))) {
     let value: any = values[tval];
     console.log("Converting " + value.hanzi);
-    let val = await within(convert, value.hanzi, res, 500);
+    let val = await within(convert, value.hanzi, res, 1500);
     console.log("Converted " + value.hanzi);
 
     if (!val || val === undefined || !val.length) {
