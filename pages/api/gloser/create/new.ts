@@ -29,7 +29,7 @@ async function handler(
     description: JSON.parse(req.body).description || "No description provided",
     gloser: [],
   }} catch (error) {
-    return res.status(400).json({ message: "Missing data." });
+    return res.status(400).json({ message: "Encontered missing data error, " + error });
   }
 
   /* Here is the explanation for the code below, powered by github copilot:
