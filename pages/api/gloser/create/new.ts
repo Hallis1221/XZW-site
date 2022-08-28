@@ -17,7 +17,7 @@ async function handler(req: NextApiRequest, res) {
   let values: any[];
   let liste: any;
 
-  console.log(req)
+  console.log(req.body)
   try {
     values = JSON.parse(req?.body).values || req?.body.values;
     if (!values) return res.status(400).json({ message: "Missing data." });
