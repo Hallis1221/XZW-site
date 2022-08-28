@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import fetchAPI from "strapi/fetch";
 import convert from "hanzi-to-pinyin";
 import { getSession } from "next-auth/react";
+import { data } from "autoprefixer";
 
 type UserScore = {
   id: string;
@@ -17,7 +18,7 @@ async function handler(req: NextApiRequest, res) {
   let values: any[];
   let liste: any;
 
-  console.log(req.body)
+  console.log(req.body);
   try {
     values = JSON.parse(req?.body).values || req?.body.values;
     if (!values) return res.status(400).json({ message: "Missing data." });
@@ -36,19 +37,17 @@ async function handler(req: NextApiRequest, res) {
         gloser: [],
       };
     } catch (error) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Encontered missing data error, " +
-            error +
-            " The data you sent was: " +
-            req.body,
-        });
+      return res.status(400).json({
+        message:
+          "Encontered missing data error, " +
+          error +
+          " The data you sent was: " +
+          req.body,
+      });
     }
   }
 
-  console.log("Parsed data")
+  console.log("Parsed data");
 
   /* Here is the explanation for the code below, powered by github copilot:
 1. We loop over the values array with the variable tval. 
@@ -66,9 +65,9 @@ async function handler(req: NextApiRequest, res) {
 
   for (let tval in Array.from(Array(values?.length))) {
     let value: any = values[tval];
-    console.log("Converting " + value.hanzi)
-    let val = await convert(value.hanzi);
-    console.log("Converted " + value.hanzi)
+    console.log("Converting " + value.hanzi);
+    let val = await within(convert, value.hanzi, res, 500);
+    console.log("Converted " + value.hanzi);
 
     if (!val || val === undefined || !val.length) {
       console.log("No pinyin found for " + value.hanzi + "/" + value.pinyin);
@@ -118,6 +117,26 @@ async function handler(req: NextApiRequest, res) {
         ...error,
       });
     });
+}
+
+async function within(fn, args, res, duration) {
+  const id = setTimeout(() =>
+    res.json(
+      {
+        message: "There was an error with the upstream service!",
+      },
+      duration
+    )
+  );
+
+  try {
+    let data = await fn(args);
+    clearTimeout(id);
+    res.json(data);
+    return data;
+  } catch (e) {
+    res.status(500).json({ message: (e as any).message });
+  }
 }
 
 export default handler;
