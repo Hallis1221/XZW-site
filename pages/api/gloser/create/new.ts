@@ -11,21 +11,26 @@ type UserScore = {
 
 async function handler(
   req: NextApiRequest,
-
   res
 ) {
   const session = await getSession({ req });
 
   if (!session) return res.status(401).json({ message: "Not logged in" });
 
-  let values: any[] = JSON.parse(req.body).values;
+  let values: any[] ;
+  let liste;
+
+  try {
+    values = JSON.parse(req?.body).values;
   if (!values) return res.status(400).json({ message: "Missing data." });
 
-  let liste: any = {
+   liste = {
     title: JSON.parse(req.body).title || "Title",
     description: JSON.parse(req.body).description || "No description provided",
     gloser: [],
-  };
+  }} catch (error) {
+    return res.status(400).json({ message: "Missing data." });
+  }
 
   /* Here is the explanation for the code below, powered by github copilot:
 1. We loop over the values array with the variable tval. 
