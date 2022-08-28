@@ -66,7 +66,9 @@ async function handler(req: NextApiRequest, res) {
 
   for (let tval in Array.from(Array(values?.length))) {
     let value: any = values[tval];
+    console.log("Converting " + value.hanzi)
     let val = await convert(value.hanzi);
+    console.log("Converted " + value.hanzi)
 
     if (!val || val === undefined || !val.length) {
       console.log("No pinyin found for " + value.hanzi + "/" + value.pinyin);
