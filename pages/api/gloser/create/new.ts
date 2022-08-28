@@ -30,6 +30,7 @@ async function handler(
     gloser: [],
   }} catch (e) {
     try {
+      values =  req?.body.values;
       liste = {
         title: req?.body?.title || "Title",
         description: req?.body?.description || "No description provided",
