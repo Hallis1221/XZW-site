@@ -21,7 +21,7 @@ async function handler(
   let liste;
 
   try {
-    values = JSON.parse(req?.body).values;
+    values = JSON.parse(req?.body).values || req?.body.values;
   if (!values) return res.status(400).json({ message: "Missing data." });
 
    liste = {
