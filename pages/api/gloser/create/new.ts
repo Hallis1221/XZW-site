@@ -48,6 +48,8 @@ async function handler(req: NextApiRequest, res) {
     }
   }
 
+  console.log("Parsed data")
+
   /* Here is the explanation for the code below, powered by github copilot:
 1. We loop over the values array with the variable tval. 
 2. We get the value at index tval.
