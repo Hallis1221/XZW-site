@@ -71,7 +71,7 @@ async function handler(
       Aktiv: true,
     });
   }
-
+console.log("Requesting strapi to create new liste");
   await fetchAPI(
     `/glose-listes`,
     {},
