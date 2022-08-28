@@ -9,27 +9,41 @@ type UserScore = {
   tid: number;
 };
 
-async function handler(
-  req: NextApiRequest,
-  res
-) {
+async function handler(req: NextApiRequest, res) {
   const session = await getSession({ req });
 
   if (!session) return res.status(401).json({ message: "Not logged in" });
 
-  let values: any[] ;
+  let values: any[];
   let liste;
+  liste = {
+    title: JSON.parse(req.body).title || req.body.title || "Title",
+    description:
+      JSON.parse(req.body).description ||
+      req.body.description ||
+      "No description provided",
+    gloser: [],
+  };
 
   try {
-    values = JSON.parse(req?.body).values || req?.body.values;
-  if (!values) return res.status(400).json({ message: "Missing data." });
-
-   liste = {
-    title: JSON.parse(req.body).title ||req.body.title || "Title",
-    description: JSON.parse(req.body).description || req.body.description || "No description provided",
-    gloser: [],
-  }} catch (error) {
-    return res.status(400).json({ message: "Encontered missing data error, " + error +" The data you sent was: " + req.body + " . The first value were: " + req.body.values[0].standard });
+    values = JSON.parse(req?.body).values;
+    if (!values) return res.status(400).json({ message: "Missing data." });
+  } catch (error) {
+    try {
+      values = req?.body.values;
+    } catch {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Encontered missing data error, " +
+            error +
+            " The data you sent was: " +
+            req.body +
+            " . The first value were: " +
+            req.body.values[0].standard,
+        });
+    }
   }
 
   /* Here is the explanation for the code below, powered by github copilot:
@@ -71,7 +85,7 @@ async function handler(
       Aktiv: true,
     });
   }
-console.log("Requesting strapi to create new liste");
+  console.log("Requesting strapi to create new liste");
   await fetchAPI(
     `/glose-listes`,
     {},
