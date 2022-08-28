@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "install && next build",
+    "build": "next build",
     "start": "link-module-alias && next start",
     "lint": "next lint",
     "postinstall": "link-module-alias"
