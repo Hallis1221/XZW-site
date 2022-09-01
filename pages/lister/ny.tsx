@@ -199,7 +199,7 @@ const Page: NextPage = ({ page, gloser }: any) => {
           Legg til
         </Button>
         <Button
-          disabled={submitted}
+          
           onClick={() => {
             setSubmitted(true);
             // Remove empty values
