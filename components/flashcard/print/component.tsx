@@ -164,7 +164,7 @@ function divideToGroups(array: any[], chunkSize: number) {
 function PrintableFlashcard({ text }: { text: string }) {
   return (
     <div className="w-screen flex flex-row ">
-      <Card className="my-1 w-2/4 max-h-64">
+      <Card className="my-1 w-2/4 h-44">
         <Flashside text={text} />
       </Card>
     </div>
