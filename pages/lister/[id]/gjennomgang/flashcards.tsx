@@ -238,6 +238,12 @@ const Page: NextPage<{
                   page={page}
                   setFront={setFrontSide}
                   setBack={setBackSide}
+                  halfStock={
+                    ()=> {
+                      setCards(liste.gloser.slice(0, Math.ceil(liste.gloser.length / 2)));
+                      reset();
+                    }
+                  }
                   shuffleCards={() => {
                     setCards(shuffle(cards));
                     setGlose(cards[currentCardNumber]);
@@ -261,6 +267,12 @@ const Page: NextPage<{
               <div className="flex md:hidden absolute bottom-0 w-full mx-5 justify-center">
                 <div className="h-full w-11/12 flex flex-col mb-5">
                   <CardSettings
+                          halfStock={
+                            ()=> {
+                              setCards(liste.gloser.slice(0, Math.ceil(liste.gloser.length / 2)));
+                              reset();
+                            }
+                          }
                     isAbove
                     printRef={printRef}
                     setFront={setFrontSide}

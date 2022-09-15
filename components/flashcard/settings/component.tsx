@@ -7,6 +7,7 @@ export function CardSettings({
   setBack,
   setFront,
   shuffleCards,
+  halfStock,
   printRef,
   page,
   isAbove = false,
@@ -34,6 +35,10 @@ export function CardSettings({
       </Dropdown>
       <Button onClick={() => shuffleCards()}>
         {page.attributes.ReshuffleCards || "Stokk kortene"}
+      </Button>{" "}
+
+      <Button onClick={() => halfStock()}>
+        {page.attributes.HalfStock || "Halver stokken"}
       </Button>{" "}
       <ReactToPrint
         onBeforePrint={async () => {

@@ -7,5 +7,6 @@ export type CardSettingsProps = {
     printRef: React.RefObject<HTMLDivElement>;
     page: any;
     shuffleCards: () => void;
+    halfStock: () => void;
     isAbove?: boolean;
   }
