@@ -62,7 +62,7 @@ export function PrintCards({
   let printableCardlists: Array<Array<ReactNode>> = [];
   for (let i = 0; i < pagesPerType; i++) {
     printableCardlists.push(
-      getSide(frontSide, cardsPerPage, i, hanzis, pinyins, standards, pinhanzis)
+      divideToGroups(getSide(frontSide, cardsPerPage, i, hanzis, pinyins, standards, pinhanzis), 3)
     );
 
     // Getting the backside to be printing behind the corresponding frontside is a bit tricky.
@@ -158,7 +158,16 @@ function divideToGroups(array: any[], chunkSize: number) {
       groups.push(group);
     }
   }
-  return groups;
+
+  // Ensure there are 6 rows of cards
+  while (groups.length < 6) {
+    groups.push(
+      Array.from({ length: 3 }, (_, i) => (
+        <PrintableFlashcard key={i} text=" " />
+      ))
+    );
+  }
+    return groups;
 }
 
 function PrintableFlashcard({ text }: { text: string }) {
