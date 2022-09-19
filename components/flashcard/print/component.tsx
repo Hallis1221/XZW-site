@@ -106,7 +106,7 @@ export function PrintCards({
       <div ref={printRef} className="">
         {printableCardlists.map((cardlist, index) => {
           return (
-            <div key={index} className="h-full mb-24">
+            <div key={index} className="h-full">
               <div className="grid grid-cols-3">{cardlist}</div>
             </div>
           );
@@ -164,7 +164,7 @@ function divideToGroups(array: any[], chunkSize: number) {
 function PrintableFlashcard({ text }: { text: string }) {
   return (
     <div className="w-screen flex flex-row ">
-      <Card className="my-1 w-2/4 h-44">
+      <Card className="my-1 w-2/4 h-[192px]">
         <Flashside text={text} />
       </Card>
     </div>
