@@ -114,6 +114,30 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
               </>
             </Card>
           </a>
+
+          <button
+           onClick={
+            () => {
+              // Copy every glose to clipboard
+              let text = "";
+              liste.gloser.forEach((glose: Glose) => {
+                text += `${glose.Standard} - ${glose.Pinyin} - ${glose.Chinese} \n`;
+              })
+              navigator.clipboard.writeText(text);
+            }
+          }
+          >
+            <Card className="hover:shadow-blue-600 hover:cursor-pointer">
+              <>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {page.attributes.ActionCard.title || "Start å lære"}
+                </h5>
+                <p className="font-normal text-gray-700 dark:text-gray-400">
+                Copy raw
+                </p>
+              </>
+            </Card>
+          </button>
         </div>
         <div
           className={`absolute flex top-0 h-full w-full ${
@@ -201,6 +225,8 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                 liste.gloser.forEach((glose: Glose) => {
                   text += `${glose.Standard} - ${glose.Pinyin} - ${glose.Chinese} \n`;
                 })
+              navigator.clipboard.writeText(text);
+
               }
             }
               className="w-full flex justify-center"
