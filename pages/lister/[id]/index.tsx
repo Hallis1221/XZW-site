@@ -188,7 +188,32 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                   </h5>
                 </>
               </Card>
-            </a>
+
+                     </a>
+          </div>
+          <div className="my-10 w-full">
+            {/* Next.js Link doesn't work here, so we use an <a> */}
+            <button
+            onClick={
+              () => {
+                // Copy every glose to clipboard
+                let text = "";
+                liste.gloser.forEach((glose: Glose) => {
+                  text += `${glose.Standard} - ${glose.Pinyin} - ${glose.Chinese} \n`;
+                })
+              }
+            }
+              className="w-full flex justify-center"
+            >
+              <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full text-center">
+                <>
+                  <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    Copy Raw
+                  </h5>
+                </>
+              </Card>
+
+                     </button>
           </div>
         </div>
         <GloseDetailsPopup
