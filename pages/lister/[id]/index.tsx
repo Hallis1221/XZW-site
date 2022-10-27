@@ -11,6 +11,7 @@ import { MutableRefObject, useState, useRef, SetStateAction } from "react";
 import fetchAPI from "strapi/fetch";
 import getListe from "src/lib/pages/getListe";
 import { GloseDetailsPopup } from "src/components/glose/details";
+import toast from "react-hot-toast";
 
 const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
   page,
@@ -116,6 +117,7 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
           </a>
 
           <button
+          className="w-full mt-5"
            onClick={
             () => {
               // Copy every glose to clipboard
@@ -124,17 +126,16 @@ const Page: NextPage<{ page: any; liste: GloseListe; id: string }> = ({
                 text += `${glose.Standard} - ${glose.Pinyin} - ${glose.Chinese} \n`;
               })
               navigator.clipboard.writeText(text);
+              toast.success("Kopiert til utklippstavle");
             }
           }
           >
-            <Card className="hover:shadow-blue-600 hover:cursor-pointer">
+            <Card className="hover:shadow-blue-600 hover:cursor-pointer w-full">
               <>
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {page.attributes.ActionCard.title || "Start å lære"}
+                Kopier Gloser
                 </h5>
-                <p className="font-normal text-gray-700 dark:text-gray-400">
-                Copy raw
-                </p>
+              
               </>
             </Card>
           </button>
