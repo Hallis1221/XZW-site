@@ -29,7 +29,7 @@
     "hanzi-writer": "^3.3.0",
     "link-module-alias": "^1.2.0",
     "md5": "^2.3.0",
-    "next": "12.1.6",
+    "next": "13.5.0",
     "next-auth": "^4.5.0",
     "postcss": "^8.4.14",
     "qs": "^6.10.5",
